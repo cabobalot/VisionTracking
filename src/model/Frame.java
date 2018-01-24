@@ -14,13 +14,13 @@ import java.awt.image.BufferedImage;
  * 
  * @author Barbara Ericson ericson@cc.gatech.edu
  */
-public class Picture extends SimplePicture {
+public class Frame extends SimplePicture {
 	///////////////////// constructors //////////////////////////////////
 	
 	/**
 	 * Constructor that takes no arguments
 	 */
-	public Picture() {
+	public Frame() {
 		/*
 		 * not needed but use it to show students the implicit call to super() child
 		 * constructors always call a parent constructor
@@ -34,7 +34,7 @@ public class Picture extends SimplePicture {
 	 * @param fileName
 	 *            the name of the file to create the picture from
 	 */
-	public Picture(String fileName) {
+	public Frame(String fileName) {
 		// let the parent class handle this fileName
 		super(fileName);
 	}
@@ -47,7 +47,7 @@ public class Picture extends SimplePicture {
 	 * @param width
 	 *            the width of the desired picture
 	 */
-	public Picture(int height, int width) {
+	public Frame(int height, int width) {
 		// let the parent class handle this width and height
 		super(width, height);
 	}
@@ -58,7 +58,7 @@ public class Picture extends SimplePicture {
 	 * @param copyPicture
 	 *            the picture to copy
 	 */
-	public Picture(Picture copyPicture) {
+	public Frame(Frame copyPicture) {
 		// let the parent class do the copy
 		super(copyPicture);
 	}
@@ -69,7 +69,7 @@ public class Picture extends SimplePicture {
 	 * @param image
 	 *            the buffered image to use
 	 */
-	public Picture(BufferedImage image) {
+	public Frame(BufferedImage image) {
 		super(image);
 	}
 	
@@ -146,7 +146,7 @@ public class Picture extends SimplePicture {
 	 * @param startCol
 	 *            the start col to copy to
 	 */
-	public void copy(Picture fromPic, int startRow, int startCol) {
+	public void copy(Frame fromPic, int startRow, int startCol) {
 		Pixel fromPixel = null;
 		Pixel toPixel = null;
 		Pixel[][] toPixels = this.getPixels2D();
@@ -162,12 +162,12 @@ public class Picture extends SimplePicture {
 	
 	/** Method to create a collage of several pictures */
 	public void createCollage() {
-		Picture flower1 = new Picture("flower1.jpg");
-		Picture flower2 = new Picture("flower2.jpg");
+		Frame flower1 = new Frame("flower1.jpg");
+		Frame flower2 = new Frame("flower2.jpg");
 		this.copy(flower1, 0, 0);
 		this.copy(flower2, 100, 0);
 		this.copy(flower1, 200, 0);
-		Picture flowerNoBlue = new Picture(flower2);
+		Frame flowerNoBlue = new Frame(flower2);
 		flowerNoBlue.zeroBlue();
 		this.copy(flowerNoBlue, 300, 0);
 		this.copy(flower1, 400, 0);
@@ -278,6 +278,18 @@ public class Picture extends SimplePicture {
 						retBuffer += pixels[row][col].getYellow();
 					}
 				}
+			case CYAN:
+				for (int row = 0; row < pixels.length; row++) {
+					for (int col = 0; col < pixels[0].length; col++) {
+						retBuffer += pixels[row][col].getCyan();
+					}
+				}
+			case MAGENTA:
+				for (int row = 0; row < pixels.length; row++) {
+					for (int col = 0; col < pixels[0].length; col++) {
+						retBuffer += pixels[row][col].getMagenta();
+					}
+				}
 		}
 		return retBuffer / (pixels.length * pixels[0].length);
 		
@@ -293,7 +305,7 @@ public class Picture extends SimplePicture {
 							pixels[row][col].setColor(Color.WHITE);
 						}
 						else {
-//							pixels[row][col].setColor(Color.BLACK);
+							pixels[row][col].setColor(Color.BLACK);
 						}
 					}
 				}
@@ -306,7 +318,7 @@ public class Picture extends SimplePicture {
 							pixels[row][col].setColor(Color.WHITE);
 						}
 						else {
-//							pixels[row][col].setColor(Color.BLACK);
+							pixels[row][col].setColor(Color.BLACK);
 						}
 					}
 				}
@@ -319,7 +331,7 @@ public class Picture extends SimplePicture {
 							pixels[row][col].setColor(Color.WHITE);
 						}
 						else {
-//							pixels[row][col].setColor(Color.BLACK);
+							pixels[row][col].setColor(Color.BLACK);
 						}
 					}
 				}
@@ -331,7 +343,31 @@ public class Picture extends SimplePicture {
 							pixels[row][col].setColor(Color.WHITE);
 						}
 						else {
-//							pixels[row][col].setColor(Color.BLACK);
+							pixels[row][col].setColor(Color.BLACK);
+						}
+					}
+				}
+				break;
+			case MAGENTA:
+				for (int row = 0; row < pixels.length; row++) {
+					for (int col = 0; col < pixels[0].length; col++) {
+						if (pixels[row][col].getMagenta() > threshold && pixels[row][col].getCyan() < pixels[row][col].getMagenta() * requiedIntensity && pixels[row][col].getYellow() < pixels[row][col].getMagenta() * requiedIntensity) {
+							pixels[row][col].setColor(Color.WHITE);
+						}
+						else {
+							pixels[row][col].setColor(Color.BLACK);
+						}
+					}
+				}
+				break;
+			case CYAN:
+				for (int row = 0; row < pixels.length; row++) {
+					for (int col = 0; col < pixels[0].length; col++) {
+						if (pixels[row][col].getCyan() > threshold && pixels[row][col].getMagenta() < pixels[row][col].getCyan() * requiedIntensity && pixels[row][col].getYellow() < pixels[row][col].getCyan() * requiedIntensity) {
+							pixels[row][col].setColor(Color.WHITE);
+						}
+						else {
+							pixels[row][col].setColor(Color.BLACK);
 						}
 					}
 				}

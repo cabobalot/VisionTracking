@@ -2,6 +2,10 @@ package model;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
+
+import view.PictureExplorer;
+import view.PictureFrame;
+
 import java.awt.*;
 import java.io.*;
 import java.awt.geom.*;
@@ -548,14 +552,14 @@ public class SimplePicture implements DigitalPicture
    * @param yFactor the amount to scale in y
    * @return the resulting picture
    */
-  public Picture scale(double xFactor, double yFactor)
+  public Frame scale(double xFactor, double yFactor)
   {
     // set up the scale transform
     AffineTransform scaleTransform = new AffineTransform();
     scaleTransform.scale(xFactor,yFactor);
     
     // create a new picture object that is the right size
-    Picture result = new Picture((int) (getWidth() * xFactor),
+    Frame result = new Frame((int) (getWidth() * xFactor),
                                  (int) (getHeight() * yFactor));
     
     // get the graphics 2d object to draw on the result
@@ -575,11 +579,11 @@ public class SimplePicture implements DigitalPicture
    * @param width the desired width
    * @return the resulting picture
    */
-  public Picture getPictureWithWidth(int width)
+  public Frame getPictureWithWidth(int width)
   {
     // set up the scale transform
     double xFactor = (double) width / this.getWidth();
-    Picture result = scale(xFactor,xFactor);
+    Frame result = scale(xFactor,xFactor);
     return result;
   }
   
@@ -590,11 +594,11 @@ public class SimplePicture implements DigitalPicture
    * @param height the desired height
    * @return the resulting picture
    */
-  public Picture getPictureWithHeight(int height)
+  public Frame getPictureWithHeight(int height)
   {
     // set up the scale transform
     double yFactor = (double) height / this.getHeight();
-    Picture result = scale(yFactor,yFactor);
+    Frame result = scale(yFactor,yFactor);
     return result;
   }
  

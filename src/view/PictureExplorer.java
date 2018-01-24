@@ -1,9 +1,12 @@
-package model;
+package view;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.awt.image.*;
 import javax.swing.border.*;
+
+import model.DigitalPicture;
+import model.Pixel;
 /**
  * Displays a picture and lets you explore the picture by displaying the row, column, red,
  * green, and blue values of the pixel at the cursor when you click a mouse button or
@@ -226,9 +229,9 @@ public class PictureExplorer implements MouseMotionListener, ActionListener, Mou
   private void setUpNextAndPreviousButtons()
   {
     // create the image icons for the buttons
-    Icon prevIcon = new ImageIcon(DigitalPicture.class.getResource("leftArrow.gif"), 
+    Icon prevIcon = new ImageIcon(PictureExplorer.class.getResource("leftArrow.gif"), 
                                   "previous index");
-    Icon nextIcon = new ImageIcon(DigitalPicture.class.getResource("rightArrow.gif"), 
+    Icon nextIcon = new ImageIcon(PictureExplorer.class.getResource("rightArrow.gif"), 
                                   "next index");
     // create the arrow buttons
     colPrevButton = new JButton(prevIcon);

@@ -1,5 +1,9 @@
-package model;
+package view;
 import javax.swing.*;
+
+import model.DigitalPicture;
+import model.Frame;
+
 import java.awt.*;
 
 /**
@@ -57,7 +61,7 @@ public class PictureFrame
    * Method to set the picture to show in this picture frame
    * @param picture the new picture to use
    */
-  public void setPicture(Picture picture)
+  public void setPicture(Frame picture)
   {
     this.picture = picture;
     imageIcon.setImage(picture.getImage());
