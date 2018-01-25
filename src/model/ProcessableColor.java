@@ -1,6 +1,6 @@
 package model;
 
-public enum RGB {
+public enum ProcessableColor {
 	RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA
 	
 }

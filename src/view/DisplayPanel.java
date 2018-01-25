@@ -8,7 +8,7 @@ import java.awt.image.*;
  * 
  * @author Barb Ericson ericson@cc.gatech.edu
  */
-public class ImageDisplay extends JPanel implements Scrollable
+public class DisplayPanel extends JPanel implements Scrollable
 {
   
   /////////////////////////// fields (attributes ///////////////////////////
@@ -27,7 +27,7 @@ public class ImageDisplay extends JPanel implements Scrollable
    * Constructor that takes the image to display
    * @param theImage the image to display
    */
-  public ImageDisplay(Image theImage)
+  public DisplayPanel(Image theImage)
   {
     image = theImage;
     prefSize = new Dimension(image.getWidth(this),image.getHeight(this));
@@ -41,7 +41,7 @@ public class ImageDisplay extends JPanel implements Scrollable
    * @param x the current x value to use
    * @param y the current y value to use
    */
-  public ImageDisplay(Image theImage, int x, int y)
+  public DisplayPanel(Image theImage, int x, int y)
   {
     this(theImage);
     currentX = x;

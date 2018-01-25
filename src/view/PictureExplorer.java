@@ -5,7 +5,7 @@ import javax.swing.*;
 import java.awt.image.*;
 import javax.swing.border.*;
 
-import model.DigitalPicture;
+import model.Frame;
 import model.Pixel;
 /**
  * Displays a picture and lets you explore the picture by displaying the row, column, red,
@@ -84,13 +84,13 @@ public class PictureExplorer implements MouseMotionListener, ActionListener, Mou
   private JMenuItem fiveHundred;
   
   /** The picture being explored */
-  private DigitalPicture picture;
+  private Frame picture;
   
   /** The image icon used to display the picture */
   private ImageIcon scrollImageIcon;
   
   /** The image display */
-  private ImageDisplay imageDisplay;
+  private DisplayPanel imageDisplay;
   
   /** the zoom factor (amount to zoom) */
   private double zoomFactor;
@@ -102,7 +102,7 @@ public class PictureExplorer implements MouseMotionListener, ActionListener, Mou
    * Public constructor 
    * @param picture the picture to explore
    */
-  public PictureExplorer(DigitalPicture picture)
+  public PictureExplorer(Frame picture)
   {
     // set the fields
     this.picture=picture;
@@ -192,7 +192,7 @@ public class PictureExplorer implements MouseMotionListener, ActionListener, Mou
     scrollPane = new JScrollPane();
     
     BufferedImage bimg = picture.getBufferedImage();
-    imageDisplay = new ImageDisplay(bimg);
+    imageDisplay = new DisplayPanel(bimg);
     imageDisplay.addMouseMotionListener(this);
     imageDisplay.addMouseListener(this);
     imageDisplay.setToolTipText("Click a mouse button on a pixel to see the pixel information");
@@ -797,7 +797,7 @@ public class PictureExplorer implements MouseMotionListener, ActionListener, Mou
     }
   }
   
-  public void updatePicture(DigitalPicture picture)
+  public void updatePicture(Frame picture)
   {
     // set the fields
     this.picture=picture;

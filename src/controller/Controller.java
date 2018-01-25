@@ -7,27 +7,27 @@ import java.util.concurrent.TimeUnit;
 
 public class Controller {
 	public Controller(String[] args) {
-		RGB color = RGB.CYAN;
+		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.YELLOW, ProcessableColor.GREEN };
 
 		int[] com = new int[2];
-		Frame pic = new Frame("/home/ben/Scripts/webcamShot.jpg");
+		VisionFrameController pic = new VisionFrameController("/home/ben/Scripts/webcamShot.jpg", colors);
 		PictureExplorer window = new PictureExplorer(pic);
 		while (true) {
 			try {
-				pic = new Frame("/home/ben/Scripts/webcamShot.jpg");
+				pic = new VisionFrameController("/home/ben/Scripts/webcamShot.jpg", colors);
 				pic.cutoffBottom(30);
-				pic.colorPick(color, (int) (pic.getAverage(color) * .8), .75);
+				pic.process();
 				com = pic.getCOM();
 				window.displayPixelInformation(String.valueOf(com[0]), String.valueOf(com[1]));
 				if (com[0] == 0) {
-					window.updatePicture(new Frame("/home/ben/Scripts/webcamShot.jpg"));
+					window.updatePicture(new VisionFrame("/home/ben/Scripts/webcamShot.jpg"));
 				} else {
 					window.updatePicture(pic);
 				}
 				TimeUnit.MILLISECONDS.sleep(50);
 			} catch (Exception e) {
 				e.printStackTrace();
-				window.updatePicture(new Frame("/home/ben/Scripts/webcamShot.jpg"));
+				window.updatePicture(new VisionFrame("/home/ben/Scripts/webcamShot.jpg"));
 			}
 		}
 	}

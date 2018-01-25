@@ -1,8 +1,8 @@
 package view;
 import javax.swing.*;
 
-import model.DigitalPicture;
 import model.Frame;
+import model.VisionFrame;
 
 import java.awt.*;
 
@@ -11,7 +11,7 @@ import java.awt.*;
  * 
  * @author Barb Ericson 
  */
-public class PictureFrame
+public class DisplayFrame
 {
   
   ////////////////// fields ////////////////////////////
@@ -27,7 +27,7 @@ public class PictureFrame
   private JLabel label = new JLabel(imageIcon);
   
   /** Digital Picture to display */
-  private DigitalPicture picture;
+  private Frame picture;
   
   ///////////////// constructors ////////////////////////
   
@@ -35,7 +35,7 @@ public class PictureFrame
    * A constructor that takes no arguments.  This is needed
    * for subclasses of this class
    */
-  public PictureFrame()
+  public DisplayFrame()
   {
     // set up the frame
     initFrame();
@@ -46,7 +46,7 @@ public class PictureFrame
    * @param picture  the digital picture to display in the 
    * picture frame
    */
-  public PictureFrame(DigitalPicture picture)
+  public DisplayFrame(Frame picture)
   {
     // set the current object's picture to the passed in picture
     this.picture = picture;
@@ -61,7 +61,7 @@ public class PictureFrame
    * Method to set the picture to show in this picture frame
    * @param picture the new picture to use
    */
-  public void setPicture(Frame picture)
+  public void setPicture(VisionFrame picture)
   {
     this.picture = picture;
     imageIcon.setImage(picture.getImage());
