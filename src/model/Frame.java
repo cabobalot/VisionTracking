@@ -270,52 +270,6 @@ public class Frame {
 	}
 
 	/**
-	 * Method to write the contents of the picture to a file with the passed name
-	 * 
-	 * @param fileName
-	 *            the name of the file to write the picture to
-	 */
-	public void writeOrFail(String fileName) throws IOException {
-		String extension = this.extension; // the default is current
-
-		// create the file object
-		File file = new File(fileName);
-		File fileLoc = file.getParentFile(); // directory name
-
-		// if there is no parent directory use the current media dir
-		if (fileLoc == null) {
-			fileName = FileChooser.getMediaPath(fileName);
-			file = new File(fileName);
-			fileLoc = file.getParentFile();
-		}
-
-		// check that you can write to the directory
-		if (!fileLoc.canWrite()) {
-			throw new IOException(fileName + " could not be opened. Check to see if you can write to the directory.");
-		}
-
-		// get the extension
-		int posDot = fileName.indexOf('.');
-		if (posDot >= 0)
-			extension = fileName.substring(posDot + 1);
-
-		// write the contents of the buffered image to the file
-		ImageIO.write(bufferedImage, extension, file);
-
-	}
-
-	/**
-	 * Method to get the directory for the media
-	 * 
-	 * @param fileName
-	 *            the base file name to use
-	 * @return the full path name by appending the file name to the media directory
-	 */
-	public static String getMediaPath(String fileName) {
-		return FileChooser.getMediaPath(fileName);
-	}
-
-	/**
 	 * Method to get the coordinates of the enclosing rectangle after this
 	 * transformation is applied to the current picture
 	 * 
@@ -436,6 +390,7 @@ public class Frame {
 			color1 = ProcessableColor.CYAN;
 			color2 = ProcessableColor.MAGENTA;
 			requiredIntensity *= .75;
+			thresholdCoeff*=.75;
 			break;
 		default:
 			color1 = color;
@@ -507,6 +462,9 @@ public class Frame {
 		} catch(ArrayIndexOutOfBoundsException e) {
 			drawBox(x, y, color, radius-1);
 		}
+	}
+	public void drawCOM(Color color, double sizeCoeff) {
+		drawBox(getCOM()[0], getCOM()[1], color, (int)(sizeCoeff*Math.sqrt(getArea())/2));
 	}
 
 } // end of SimplePicture class
