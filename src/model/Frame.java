@@ -2,8 +2,6 @@ package model;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import view.DisplayFrame;
-
 import java.awt.*;
 import java.io.*;
 import java.awt.geom.*;
@@ -37,15 +35,10 @@ public class Frame {
 	private BufferedImage bufferedImage;
 
 	/**
-	 * frame used to display the simple picture
-	 */
-	private DisplayFrame pictureFrame;
-
-	/**
 	 * extension for this file (jpg or bmp)
 	 */
 	private String extension;
-	
+
 	private Pixel[][] pixels;
 
 	/////////////////////// Constructors /////////////////////////
@@ -78,7 +71,21 @@ public class Frame {
 		pixels = this.getPixels2D();
 	}
 
+	public Frame(Pixel[][] pixels) {
+		this.pixels = pixels;
+		makeBufferedImage();
+	}
+
 	////////////////////////// Methods //////////////////////////////////
+
+	private void makeBufferedImage() {
+		bufferedImage = new BufferedImage(pixels.length, pixels[0].length, BufferedImage.TYPE_INT_RGB);
+		for (int row = 0; row < pixels.length; row++) {
+			for (int col = 0; col < pixels[0].length; col++) {
+				bufferedImage.setRGB(row, col, pixels[row][col].getColorInt());
+			}
+		}
+	}
 
 	/**
 	 * Method to get the extension for this picture
@@ -89,46 +96,7 @@ public class Frame {
 		return extension;
 	}
 
-	/**
-	 * Method that will copy all of the passed source picture into the current
-	 * picture object
-	 * 
-	 * @param sourcePicture
-	 *            the picture object to copy
-	 */
-	public void copyPicture(Frame sourcePicture) {
-		Pixel sourcePixel = null;
-		Pixel targetPixel = null;
 
-		// loop through the columns
-		for (int sourceX = 0, targetX = 0; sourceX < sourcePicture.getWidth()
-				&& targetX < this.getWidth(); sourceX++, targetX++) {
-			// loop through the rows
-			for (int sourceY = 0, targetY = 0; sourceY < sourcePicture.getHeight()
-					&& targetY < this.getHeight(); sourceY++, targetY++) {
-				sourcePixel = sourcePicture.getPixel(sourceX, sourceY);
-				targetPixel = this.getPixel(targetX, targetY);
-				targetPixel.setColor(sourcePixel.getColor());
-			}
-		}
-
-	}
-
-	/**
-	 * Method to set the color in the picture to the passed color
-	 * 
-	 * @param color
-	 *            the color to set to
-	 */
-	public void setAllPixelsToAColor(Color color) {
-		// loop through all x
-		for (int x = 0; x < this.getWidth(); x++) {
-			// loop through all y
-			for (int y = 0; y < this.getHeight(); y++) {
-				getPixel(x, y).setColor(color);
-			}
-		}
-	}
 
 	/**
 	 * Method to get the buffered image
@@ -185,18 +153,6 @@ public class Frame {
 	}
 
 	/**
-	 * Method to set the title for the picture
-	 * 
-	 * @param title
-	 *            the title to use for the picture
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-		if (pictureFrame != null)
-			pictureFrame.setTitle(title);
-	}
-
-	/**
 	 * Method to get the width of the picture in pixels
 	 * 
 	 * @return the width of the picture in pixels
@@ -212,26 +168,6 @@ public class Frame {
 	 */
 	public int getHeight() {
 		return bufferedImage.getHeight();
-	}
-
-	/**
-	 * Method to get the picture frame for the picture
-	 * 
-	 * @return the picture frame associated with this picture (it may be null)
-	 */
-	public DisplayFrame getPictureFrame() {
-		return pictureFrame;
-	}
-
-	/**
-	 * Method to set the picture frame for this picture
-	 * 
-	 * @param pictureFrame
-	 *            the picture frame to use
-	 */
-	public void setPictureFrame(DisplayFrame pictureFrame) {
-		// set this picture object's picture frame to the passed one
-		this.pictureFrame = pictureFrame;
 	}
 
 	/**
@@ -281,28 +217,9 @@ public class Frame {
 	 */
 	public Pixel getPixel(int x, int y) {
 		// create the pixel object for this picture and the given x and y location
-		Pixel pixel = new Pixel(this, x, y);
-		return pixel;
+		return pixels[y][x];
 	}
 
-	/**
-	 * Method to get a one-dimensional array of Pixels for this simple picture
-	 * 
-	 * @return a one-dimensional array of Pixel objects starting with y=0 to
-	 *         y=height-1 and x=0 to x=width-1.
-	 */
-	public Pixel[] getPixels() {
-		int width = getWidth();
-		int height = getHeight();
-		Pixel[] pixelArray = new Pixel[width * height];
-
-		// loop through height rows from top to bottom
-		for (int row = 0; row < height; row++)
-			for (int col = 0; col < width; col++)
-				pixelArray[row * width + col] = new Pixel(this, col, row);
-
-		return pixelArray;
-	}
 
 	/**
 	 * Method to get a two-dimensional array of Pixels for this simple picture
@@ -310,83 +227,13 @@ public class Frame {
 	 * @return a two-dimensional array of Pixel objects in row-major order.
 	 */
 	public Pixel[][] getPixels2D() {
-		int width = getWidth();
-		int height = getHeight();
-		Pixel[][] pixelArray = new Pixel[height][width];
-
-		// loop through height rows from top to bottom
-		for (int row = 0; row < height; row++)
-			for (int col = 0; col < width; col++)
-				pixelArray[row][col] = new Pixel(this, col, row);
-
-		return pixelArray;
-	}
-
-	/**
-	 * Method to load the buffered image with the passed image
-	 * 
-	 * @param image
-	 *            the image to use
-	 */
-	public void load(Image image) {
-		// get a graphics context to use to draw on the buffered image
-		Graphics2D graphics2d = bufferedImage.createGraphics();
-
-		// draw the image on the buffered image starting at 0,0
-		graphics2d.drawImage(image, 0, 0, null);
-
-		// show the new image
-		show();
-	}
-
-	/**
-	 * Method to show the picture in a picture frame
-	 */
-	public void show() {
-		// if there is a current picture frame then use it
-		if (pictureFrame != null)
-			pictureFrame.updateImageAndShowIt();
-
-		// else create a new picture frame with this picture
-		else
-			pictureFrame = new DisplayFrame(this);
-	}
-
-	/**
-	 * Method to hide the picture display
-	 */
-	public void hide() {
-		if (pictureFrame != null)
-			pictureFrame.setVisible(false);
-	}
-
-	/**
-	 * Method to make this picture visible or not
-	 * 
-	 * @param flag
-	 *            true if you want it visible else false
-	 */
-	public void setVisible(boolean flag) {
-		if (flag)
-			this.show();
-		else
-			this.hide();
+		return pixels;
 	}
 
 	/**
 	 * Method to force the picture to repaint itself. This is very useful after you
 	 * have changed the pixels in a picture and you want to see the change.
 	 */
-	public void repaint() {
-		// if there is a picture frame tell it to repaint
-		if (pictureFrame != null)
-			pictureFrame.repaint();
-
-		// else create a new picture frame
-		else
-			pictureFrame = new DisplayFrame(this);
-	}
-
 	/**
 	 * Method to load the picture from the passed file name
 	 * 
@@ -495,25 +342,6 @@ public class Frame {
 	}
 
 	/**
-	 * Method to load a picture from a file name and show it in a picture frame
-	 * 
-	 * @param fileName
-	 *            the file name to load the picture from
-	 * @return true if success else false
-	 */
-	public boolean loadPictureAndShowIt(String fileName) {
-		boolean result = true; // the default is that it worked
-
-		// try to load the picture into the buffered image from the file name
-		result = load(fileName);
-
-		// show the picture in a picture frame
-		show();
-
-		return result;
-	}
-
-	/**
 	 * Method to write the contents of the picture to a file with the passed name
 	 * 
 	 * @param fileName
@@ -545,26 +373,6 @@ public class Frame {
 
 		// write the contents of the buffered image to the file
 		ImageIO.write(bufferedImage, extension, file);
-
-	}
-
-	/**
-	 * Method to write the contents of the picture to a file with the passed name
-	 * without throwing errors
-	 * 
-	 * @param fileName
-	 *            the name of the file to write the picture to
-	 * @return true if success else false
-	 */
-	public boolean write(String fileName) {
-		try {
-			this.writeOrFail(fileName);
-			return true;
-		} catch (Exception ex) {
-			System.out.println("There was an error trying to write " + fileName);
-			ex.printStackTrace();
-			return false;
-		}
 
 	}
 
@@ -669,13 +477,16 @@ public class Frame {
 		return retBuffer / (pixels.length * pixels[0].length);
 	}
 
-	public void colorIsolate(ProcessableColor color, double thresholdCoeff, double requiedIntensity) {
+	public void colorIsolate(ProcessableColor color, double thresholdCoeff, double requiredIntensity) {
+		thresholdCoeff *= 1.5;
+		requiredIntensity *= .7;
 		ProcessableColor color1, color2;
 		int threshold = (int) (thresholdCoeff * getAverage(color));
 		switch (color) {
 		case RED:
 			color1 = ProcessableColor.BLUE;
 			color2 = ProcessableColor.GREEN;
+			requiredIntensity *= .67;
 			break;
 		case BLUE:
 			color1 = ProcessableColor.RED;
@@ -696,6 +507,7 @@ public class Frame {
 		case YELLOW:
 			color1 = ProcessableColor.CYAN;
 			color2 = ProcessableColor.MAGENTA;
+			requiredIntensity *= .75;
 			break;
 		default:
 			color1 = color;
@@ -705,8 +517,8 @@ public class Frame {
 		for (int row = 0; row < pixels.length; row++) {
 			for (int col = 0; col < pixels[0].length; col++) {
 				if (pixels[row][col].getColor(color) > threshold
-						&& pixels[row][col].getColor(color1) < pixels[row][col].getColor(color) * requiedIntensity
-						&& pixels[row][col].getColor(color2) < pixels[row][col].getColor(color) * requiedIntensity) {
+						&& pixels[row][col].getColor(color1) < pixels[row][col].getColor(color) * requiredIntensity
+						&& pixels[row][col].getColor(color2) < pixels[row][col].getColor(color) * requiredIntensity) {
 					pixels[row][col].setColor(color);
 				} else {
 					pixels[row][col].setColor(Color.BLACK);
@@ -740,6 +552,21 @@ public class Frame {
 		} catch (Exception e) {
 			return new int[] { 0, 0 };
 		}
+	}
+
+	/*
+	 * gets the number of pixels that are not black
+	 */
+	public int getArea() {
+		int area = 0;
+		for (int row = 0; row < pixels.length; row++) {
+			for (int col = 0; col < pixels[0].length; col++) {
+				if (pixels[row][col].getAverage() != 0) {
+					area++;
+				}
+			}
+		}
+		return area;
 	}
 
 } // end of SimplePicture class
