@@ -4,34 +4,41 @@ import java.awt.Color;
 
 public class Pixel {
 	int red, green, blue;
-	
+
 	public Pixel(int red, int green, int blue) {
 		this.red = red;
 		this.green = green;
 		this.blue = blue;
 	}
-	
+
+	public Pixel(int RGB) {
+		setRGB(RGB);
+	}
+
 	public int getRed() {
 		return red;
 	}
+
 	public int getGreen() {
 		return green;
 	}
+
 	public int getBlue() {
 		return blue;
 	}
-	
+
 	public void setRed(int value) {
 		this.red = value;
 	}
+
 	public void setGreen(int value) {
 		this.green = value;
 	}
+
 	public void setBlue(int value) {
 		this.blue = value;
 	}
-	
-	
+
 	public double getAverage() {
 		double average = (getRed() + getGreen() + getBlue()) / 3.0;
 		return average;
@@ -66,8 +73,9 @@ public class Pixel {
 		default:
 			return 0;
 		}
-		
+
 	}
+
 	public void setColor(Color newColor) {
 		// set the red, green, and blue values
 		red = newColor.getRed();
@@ -75,9 +83,9 @@ public class Pixel {
 		blue = newColor.getBlue();
 
 	}
-	
+
 	public void setColor(ProcessableColor color) {
-		switch(color) {
+		switch (color) {
 		case RED:
 			setColor(Color.RED);
 			break;
@@ -98,11 +106,12 @@ public class Pixel {
 			break;
 		}
 	}
+
 	/*
 	 * changes the color of the pixel; currently only RGB is supported
 	 */
 	public void setColor(ProcessableColor color, int newVal) {
-		switch(color) {
+		switch (color) {
 		case RED:
 			setRed(newVal);
 			break;
@@ -115,11 +124,15 @@ public class Pixel {
 		default:
 		}
 	}
-	
-	public int getColorInt() {
+
+	public int getRGB() {
 		return (getRed() << 16) + (getGreen() << 8) + (getBlue());
-		
 	}
 
+	public void setRGB(int RGB) {
+		this.red = (RGB >> 16) & 0x000000FF;
+		this.green = (RGB >> 8) & 0x000000FF;
+		this.blue = (RGB) & 0x000000FF;
+	}
 
 }

@@ -2,7 +2,6 @@ package view;
 
 import javax.swing.JFrame;
 import model.Pixel;
-import model.VisionFrameController;
 
 public class PreviewFrame extends JFrame {
 
@@ -15,14 +14,18 @@ public class PreviewFrame extends JFrame {
 
 		setupFrame();
 	}
-
-	public void setupFrame() {
+	
+	private void setupFrame() {
 		this.setContentPane(panel);
 		this.setTitle("Preview");
 		this.setSize(900, 500);
 		this.setResizable(false);
-		this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
 		
+	}
+	
+	public void updatePicture(Pixel[][] pixels) {
+		panel.setImage(pixels);
 	}
 }

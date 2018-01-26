@@ -82,7 +82,7 @@ public class Frame {
 		bufferedImage = new BufferedImage(pixels.length, pixels[0].length, BufferedImage.TYPE_INT_RGB);
 		for (int row = 0; row < pixels.length; row++) {
 			for (int col = 0; col < pixels[0].length; col++) {
-				bufferedImage.setRGB(row, col, pixels[row][col].getColorInt());
+				bufferedImage.setRGB(col, row, pixels[row][col].getRGB());
 			}
 		}
 	}
@@ -242,31 +242,6 @@ public class Frame {
 	 * @throws IOException
 	 *             if the picture isn't found
 	 */
-	public void loadOrFail(String fileName) throws IOException {
-		// set the current picture's file name
-		this.fileName = fileName;
-
-		// set the extension
-		int posDot = fileName.indexOf('.');
-		if (posDot >= 0)
-			this.extension = fileName.substring(posDot + 1);
-
-		// if the current title is null use the file name
-		if (title == null)
-			title = fileName;
-
-		File file = new File(this.fileName);
-
-		if (!file.canRead()) {
-			// try adding the media path
-			file = new File(FileChooser.getMediaPath(this.fileName));
-			if (!file.canRead()) {
-				throw new IOException(this.fileName + " could not be opened. Check that you specified the path");
-			}
-		}
-
-		bufferedImage = ImageIO.read(file);
-	}
 
 	/**
 	 * Method to read the contents of the picture from a filename without throwing
@@ -276,69 +251,22 @@ public class Frame {
 	 *            the name of the file to write the picture to
 	 * @return true if success else false
 	 */
-	public boolean load(String fileName) {
+	public BufferedImage load(String fileName) {
+		BufferedImage img;
 		try {
-			this.loadOrFail(fileName);
-			return true;
-
-		} catch (Exception ex) {
-			System.out.println("There was an error trying to open " + fileName);
-			bufferedImage = new BufferedImage(600, 200, BufferedImage.TYPE_INT_RGB);
-			addMessage("Couldn't load " + fileName, 5, 100);
-			return false;
+		    img = ImageIO.read(new File(fileName));
+		} catch (IOException e) {
+			e.printStackTrace();
+			img = new BufferedImage(1,1, BufferedImage.TYPE_INT_RGB);
 		}
-
-	}
-
-	/**
-	 * Method to load the picture from the passed file name this just calls
-	 * load(fileName) and is for name compatibility
-	 * 
-	 * @param fileName
-	 *            the file name to use to load the picture from
-	 * @return true if success else false
-	 */
-	public boolean loadImage(String fileName) {
-		return load(fileName);
-	}
-
-	/**
-	 * Method to draw a message as a string on the buffered image
-	 * 
-	 * @param message
-	 *            the message to draw on the buffered image
-	 * @param xPos
-	 *            the x coordinate of the leftmost point of the string
-	 * @param yPos
-	 *            the y coordinate of the bottom of the string
-	 */
-	public void addMessage(String message, int xPos, int yPos) {
-		// get a graphics context to use to draw on the buffered image
-		Graphics2D graphics2d = bufferedImage.createGraphics();
-
-		// set the color to white
-		graphics2d.setPaint(Color.white);
-
-		// set the font to Helvetica bold style and size 16
-		graphics2d.setFont(new Font("Helvetica", Font.BOLD, 16));
-
-		// draw the message
-		graphics2d.drawString(message, xPos, yPos);
-
-	}
-
-	/**
-	 * Method to draw a string at the given location on the picture
-	 * 
-	 * @param text
-	 *            the text to draw
-	 * @param xPos
-	 *            the left x for the text
-	 * @param yPos
-	 *            the top y for the text
-	 */
-	public void drawString(String text, int xPos, int yPos) {
-		addMessage(text, xPos, yPos);
+		this.pixels = new Pixel[img.getHeight()][img.getWidth()];
+		
+		for (int row = 0; row < pixels.length; row++) {
+			for (int col = 0; col < pixels[0].length; col++) {
+				pixels[row][col] = new Pixel(img.getRGB(col, row));
+			}
+		}
+		return img;
 	}
 
 	/**
@@ -567,6 +495,18 @@ public class Frame {
 			}
 		}
 		return area;
+	}
+	
+	public void drawBox(int x, int y, Color color, int radius) {
+		try {
+		for (int row = y-radius; row < y+radius; row++) {
+			for (int col = x-radius; col < x+radius; col++) {
+				pixels[row][col].setColor(color);
+			}
+		}
+		} catch(ArrayIndexOutOfBoundsException e) {
+			drawBox(x, y, color, radius-1);
+		}
 	}
 
 } // end of SimplePicture class

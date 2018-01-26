@@ -2,6 +2,7 @@ package view;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -22,6 +23,7 @@ public class PreviewPanel extends JPanel {
 		super();
 		
 		this.pixels = pixels;
+		this.imageLabel = new JLabel(new ImageIcon(pixelsToBufferedImage(pixels)));
 		
 		layout = new SpringLayout();
 		this.setLayout(layout);
@@ -33,14 +35,19 @@ public class PreviewPanel extends JPanel {
 	
 	
 	public void setImage(Pixel[][] pixels) {
-		BufferedImage image = new BufferedImage(pixels[0].length, pixels.length, BufferedImage.TYPE_INT_RGB);
-		this.imageLabel = new JLabel(new ImageIcon(image));;
+		this.pixels = pixels;
+		this.imageLabel.setIcon(new ImageIcon(pixelsToBufferedImage(pixels)));
 	}
 	
 	
 	
 	private BufferedImage pixelsToBufferedImage(Pixel[][] pixels) {
 		BufferedImage retBuffer = new BufferedImage(pixels[0].length, pixels.length, BufferedImage.TYPE_INT_RGB);
+		for (int row = 0; row < pixels.length; row++) {
+			for (int col = 0; col < pixels[0].length; col++) {
+				retBuffer.setRGB(col, row, pixels[row][col].getRGB());
+			}
+		}
 		
 		return retBuffer;
 	}
