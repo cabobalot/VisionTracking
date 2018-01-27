@@ -12,7 +12,7 @@ public class Controller {
 		long startTime;
 		
 		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.YELLOW, ProcessableColor.GREEN };
-		ProcessableColor color = ProcessableColor.GREEN;
+		ProcessableColor color = ProcessableColor.YELLOW;
 
 		int[] com = new int[2];
 		Frame pic = new Frame("/home/ben/Scripts/webcamShot.jpg");
@@ -23,7 +23,7 @@ public class Controller {
 				
 				pic = new Frame("/home/ben/Scripts/webcamShot.jpg");
 				pic.cutoffBottom(30);
-				pic.colorIsolate(color, 1, 1.1);
+				pic.colorIsolate(color, 1, 1);
 				pic.drawCOM(Color.MAGENTA, .25);
 				com = pic.getCOM();
 
@@ -34,7 +34,7 @@ public class Controller {
 				} else {
 					window.updatePicture(pic.getPixels2D());
 				}
-				TimeUnit.MILLISECONDS.sleep(100);
+				TimeUnit.MILLISECONDS.sleep(990-(System.currentTimeMillis()-startTime));
 			} catch (Exception e) {
 				e.printStackTrace();
 				window.updatePicture(new Frame("/home/ben/Scripts/webcamShot.jpg").getPixels2D());

@@ -39,7 +39,7 @@ public class Frame {
 	 */
 	private String extension;
 
-	private Pixel[][] pixels;
+	protected Pixel[][] pixels;
 
 	/////////////////////// Constructors /////////////////////////
 
@@ -95,8 +95,6 @@ public class Frame {
 	public String getExtension() {
 		return extension;
 	}
-
-
 
 	/**
 	 * Method to get the buffered image
@@ -220,7 +218,6 @@ public class Frame {
 		return pixels[y][x];
 	}
 
-
 	/**
 	 * Method to get a two-dimensional array of Pixels for this simple picture
 	 * 
@@ -254,13 +251,13 @@ public class Frame {
 	public BufferedImage load(String fileName) {
 		BufferedImage img;
 		try {
-		    img = ImageIO.read(new File(fileName));
+			img = ImageIO.read(new File(fileName));
 		} catch (IOException e) {
 			e.printStackTrace();
-			img = new BufferedImage(1,1, BufferedImage.TYPE_INT_RGB);
+			img = load(fileName);
 		}
 		this.pixels = new Pixel[img.getHeight()][img.getWidth()];
-		
+
 		for (int row = 0; row < pixels.length; row++) {
 			for (int col = 0; col < pixels[0].length; col++) {
 				pixels[row][col] = new Pixel(img.getRGB(col, row));
@@ -381,16 +378,20 @@ public class Frame {
 		case CYAN:
 			color1 = ProcessableColor.MAGENTA;
 			color2 = ProcessableColor.YELLOW;
+			requiredIntensity *= .8;
+			thresholdCoeff *= 2;
 			break;
 		case MAGENTA:
 			color1 = ProcessableColor.YELLOW;
 			color2 = ProcessableColor.CYAN;
+			requiredIntensity *= .8;
+			thresholdCoeff *= 2;
 			break;
 		case YELLOW:
 			color1 = ProcessableColor.CYAN;
 			color2 = ProcessableColor.MAGENTA;
-			requiredIntensity *= .75;
-			thresholdCoeff*=.75;
+			requiredIntensity *= .8;
+			thresholdCoeff *= 2;
 			break;
 		default:
 			color1 = color;
@@ -451,20 +452,21 @@ public class Frame {
 		}
 		return area;
 	}
-	
+
 	public void drawBox(int x, int y, Color color, int radius) {
 		try {
-		for (int row = y-radius; row < y+radius; row++) {
-			for (int col = x-radius; col < x+radius; col++) {
-				pixels[row][col].setColor(color);
+			for (int row = y - radius; row < y + radius; row++) {
+				for (int col = x - radius; col < x + radius; col++) {
+					pixels[row][col].setColor(color);
+				}
 			}
-		}
-		} catch(ArrayIndexOutOfBoundsException e) {
-			drawBox(x, y, color, radius-1);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			drawBox(x, y, color, radius - 1);
 		}
 	}
+
 	public void drawCOM(Color color, double sizeCoeff) {
-		drawBox(getCOM()[0], getCOM()[1], color, (int)(sizeCoeff*Math.sqrt(getArea())/2));
+		drawBox(getCOM()[0], getCOM()[1], color, (int) (sizeCoeff * Math.sqrt(getArea()) / 2));
 	}
 
 } // end of SimplePicture class
