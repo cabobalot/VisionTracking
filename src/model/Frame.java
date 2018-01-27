@@ -468,5 +468,10 @@ public class Frame {
 	public void drawCOM(Color color, double sizeCoeff) {
 		drawBox(getCOM()[0], getCOM()[1], color, (int) (sizeCoeff * Math.sqrt(getArea()) / 2));
 	}
+	
+	public void drawBoundingFrame() {
+		
+	}
+	
 
 } // end of SimplePicture class
