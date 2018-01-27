@@ -37,7 +37,7 @@ public class Controller {
 				} else {
 					window.updatePicture(pic.getPixels2D());
 				}
-				TimeUnit.MILLISECONDS.sleep(250- (System.currentTimeMillis() - startTime));
+				TimeUnit.MILLISECONDS.sleep(250);
 			} catch (Exception e) {
 				e.printStackTrace();
 //				window.updatePicture(new Frame(fileName).getPixels2D());
