@@ -14,33 +14,36 @@ public class Controller {
 //		String fileName = "/home/ben/Scripts/webcamShot.jpg";
 		String fileName = "image.jpg";
 
-		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.YELLOW, ProcessableColor.GREEN };
-		ProcessableColor color = ProcessableColor.YELLOW;
+		ProcessableColor[] colors = new ProcessableColor[] {ProcessableColor.GREEN, ProcessableColor.RED, ProcessableColor.BLUE, ProcessableColor.YELLOW, ProcessableColor.CYAN, ProcessableColor.MAGENTA};
 
 		int[] com = new int[2];
-		Frame pic = new Frame(fileName);
+		VisionFrameController pic = new VisionFrameController(fileName, colors);
 		PreviewFrame window = new PreviewFrame(pic.getPixels2D());
+		long iterations = 0;
+		long timeAccumulator = 0;
+		long timeTaken = 0;
 		while (true) {
 			try {
+				
 				startTime = System.currentTimeMillis();
 
-				pic = new Frame(fileName);
-				pic.cutoffBottom(30);
-				pic.colorIsolate(color, 1, 1);
-				pic.drawCOM(Color.MAGENTA, .25);
-				com = pic.getCOM();
+				pic = new VisionFrameController(fileName, colors);
+//				com = pic.getCOM();
 
-				System.out.println("Milliseconds taken: " + (System.currentTimeMillis() - startTime));
-				//
-				if (com[0] == 0) {
-					window.updatePicture(new Frame(fileName).getPixels2D());
-				} else {
+				timeTaken = System.currentTimeMillis() - startTime;
+				timeAccumulator+=timeTaken;
+				iterations++;
+				System.out.println("Milliseconds taken: " + timeTaken);
+				System.out.println("Average: " + timeAccumulator/iterations + "\n");
+
+//				if (com[0] == 0) {
+//					window.updatePicture(new Frame(fileName).getPixels2D());
+//				} else {
 					window.updatePicture(pic.getPixels2D());
-				}
+//				}
 				TimeUnit.MILLISECONDS.sleep(250);
 			} catch (Exception e) {
 				e.printStackTrace();
-//				window.updatePicture(new Frame(fileName).getPixels2D());
 			}
 		}
 	}

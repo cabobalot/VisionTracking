@@ -1,57 +1,76 @@
 package model;
 
 import java.awt.Color;
+import java.util.concurrent.TimeUnit;
 
 public class VisionFrameController extends Frame {
 	ProcessableColor[] colors;
-	Frame[] colorFrames;
+	VisionFrame[] colorFrames;
 	String file;
 
 	public VisionFrameController(String file, ProcessableColor[] colors) {
 		super(file);
 		this.file = file;
 		this.colors = colors;
-		this.colorFrames = new Frame[colors.length];
-		this.pixels = this.getPixels2D();
+		this.colorFrames = new VisionFrame[colors.length];
 
 		populateVisionFrames();
-		System.out.println("Populated frames");
 		process();
-		System.out.println("processed");
-		// concatenateColors();
-		System.out.println("Concatenated Color frames");
+		concatenateColors();
 
 	}
 
 	private void populateVisionFrames() {
+		long startTime = System.currentTimeMillis();
+		cutoffBottom(30);
 		for (int i = 0; i < colorFrames.length; i++) {
-			colorFrames[i] = new Frame(pixels);
+			colorFrames[i] = new VisionFrame(pixels, colors[i]);
+			// TODO pixels is currently being passed by reference rather than being copied
 		}
+		System.out.println("Populated frames");
+		System.out.println(System.currentTimeMillis() - startTime);
 	}
 
 	private void process() {
+		long startTime = System.currentTimeMillis();
+		// assign threads
 		for (int i = 0; i < colorFrames.length; i++) {
-			colorFrames[i].colorIsolate(colors[i], 1, 1);
+			colorFrames[i].start();
 		}
+
+		// wait till all threads complete
+		for (int i = 0; i < colorFrames.length; i++) {
+			while (colorFrames[i].isAlive()) {
+				try {
+					TimeUnit.MICROSECONDS.sleep(250);
+				} catch (InterruptedException e) {
+				}
+			}
+		}
+		System.out.println("Processed Color frames");
+		System.out.println(System.currentTimeMillis() - startTime);
 	}
 
 	private void concatenateColors() {
+		long startTime = System.currentTimeMillis();
 		for (Frame frame : colorFrames) {
-			System.out.println("frame");
+			// System.out.println("frame");
 			for (int row = 0; row < pixels.length; row++) {
 				for (int col = 0; col < pixels[0].length; col++) {
-					if (frame.getPixels2D()[row][col].getAverage() != 0) {
-						System.out.println(col + " " + row);
-						pixels[row][col] = new Pixel(0,0,0);// frame.getPixels2D()[col][row];
+					if (frame.pixels[row][col].getAverage() != 0) {
+						// System.out.println(col + ", " + row);
+						pixels[row][col] = frame.pixels[row][col];
 					}
 				}
 			}
 		}
+		System.out.println("Concatenated Color frames");
+		System.out.println(System.currentTimeMillis() - startTime);
 	}
 
 	public Frame getColoredFrame(ProcessableColor color) {
 		for (int i = 0; i < colorFrames.length; i++) {
-			if(color==colors[i]) {
+			if (color == colors[i]) {
 				return colorFrames[i];
 			}
 		}

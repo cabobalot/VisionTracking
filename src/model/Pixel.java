@@ -39,8 +39,8 @@ public class Pixel {
 		this.blue = value;
 	}
 
-	public double getAverage() {
-		double average = (getRed() + getGreen() + getBlue()) / 3.0;
+	public int getAverage() {
+		int average = (getRed() + getGreen() + getBlue()) / 3;
 		return average;
 	}
 

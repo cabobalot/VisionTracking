@@ -4,6 +4,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.*;
 import java.io.*;
+import java.util.concurrent.TimeUnit;
 import java.awt.geom.*;
 
 /**
@@ -15,29 +16,12 @@ import java.awt.geom.*;
  * 
  * @author Barb Ericson ericson@cc.gatech.edu
  */
-public class Frame {
+public class Frame extends Thread{
 
-	/////////////////////// Fields /////////////////////////
-
-	/**
-	 * the file name associated with the simple picture
-	 */
-	private String fileName;
-
-	/**
-	 * the title of the simple picture
-	 */
-	private String title;
-
-	/**
+	/*
 	 * buffered image to hold pixels for the simple picture
 	 */
-	private BufferedImage bufferedImage;
-
-	/**
-	 * extension for this file (jpg or bmp)
-	 */
-	private String extension;
+	protected BufferedImage bufferedImage;
 
 	protected Pixel[][] pixels;
 
@@ -50,33 +34,32 @@ public class Frame {
 	 *            the file name to use in creating the picture
 	 */
 	public Frame(String fileName) {
+		 long startTime = System.currentTimeMillis();
 
-		// load the picture into the buffered image
 		load(fileName);
-		pixels = this.getPixels2D();
+		 System.out.println("loaded File\n" + (System.currentTimeMillis()-startTime));
 
-	}
-
-	/**
-	 * A constructor that takes a buffered image
-	 * 
-	 * @param image
-	 *            the buffered image
-	 */
-	public Frame(BufferedImage image) {
-		this.bufferedImage = image;
-		title = "None";
-		fileName = "None";
-		extension = "jpg";
-		pixels = this.getPixels2D();
 	}
 
 	public Frame(Pixel[][] pixels) {
-		this.pixels = pixels;
-		makeBufferedImage();
+//		long startTime = System.currentTimeMillis();
+		this.pixels = new Pixel[pixels.length][pixels[0].length];
+		// deep copy, slow as hell. required as not to use a refrence to pixels
+		for (int row = 0; row < pixels.length; row++) {
+			for (int col = 0; col < pixels[0].length; col++) {
+				this.pixels[row][col] = new Pixel(pixels[row][col].getRGB());
+			}
+		}
+		
+//		System.out.println(startTime-System.currentTimeMillis());
+		
 	}
 
 	////////////////////////// Methods //////////////////////////////////
+	
+	public void run(){
+	}
+	
 
 	private void makeBufferedImage() {
 		bufferedImage = new BufferedImage(pixels.length, pixels[0].length, BufferedImage.TYPE_INT_RGB);
@@ -85,15 +68,6 @@ public class Frame {
 				bufferedImage.setRGB(col, row, pixels[row][col].getRGB());
 			}
 		}
-	}
-
-	/**
-	 * Method to get the extension for this picture
-	 * 
-	 * @return the extension (jpg, bmp, giff, etc)
-	 */
-	public String getExtension() {
-		return extension;
 	}
 
 	/**
@@ -120,34 +94,6 @@ public class Frame {
 	 */
 	public Graphics2D createGraphics() {
 		return bufferedImage.createGraphics();
-	}
-
-	/**
-	 * Method to get the file name associated with the picture
-	 * 
-	 * @return the file name associated with the picture
-	 */
-	public String getFileName() {
-		return fileName;
-	}
-
-	/**
-	 * Method to set the file name
-	 * 
-	 * @param name
-	 *            the full pathname of the file
-	 */
-	public void setFileName(String name) {
-		fileName = name;
-	}
-
-	/**
-	 * Method to get the title of the picture
-	 * 
-	 * @return the title of the picture
-	 */
-	public String getTitle() {
-		return title;
 	}
 
 	/**
@@ -186,7 +132,7 @@ public class Frame {
 	 *            the y coordinate of the pixel
 	 * @return the pixel value as an integer (alpha, red, green, blue)
 	 */
-	public int getBasicPixel(int x, int y) {
+	public int getPixelRGB(int x, int y) {
 		return bufferedImage.getRGB(x, y);
 	}
 
@@ -251,9 +197,15 @@ public class Frame {
 	public BufferedImage load(String fileName) {
 		BufferedImage img;
 		try {
+
 			img = ImageIO.read(new File(fileName));
+
 		} catch (IOException e) {
 			e.printStackTrace();
+			try {
+				TimeUnit.MILLISECONDS.sleep(25);
+			} catch (InterruptedException e1) {
+			}
 			img = load(fileName);
 		}
 		this.pixels = new Pixel[img.getHeight()][img.getWidth()];
@@ -322,16 +274,6 @@ public class Frame {
 		return getTransformEnclosingRect(trans);
 	}
 
-	/**
-	 * Method to return a string with information about this picture
-	 * 
-	 * @return a string with information about the picture
-	 */
-	public String toString() {
-		String output = "Simple Picture, filename " + fileName + " height " + getHeight() + " width " + getWidth();
-		return output;
-	}
-
 	///////////////////// My Code///////////////////////////////
 	public void swapColor(ProcessableColor color1, ProcessableColor color2) {
 		int color1Val, color2Val;
@@ -365,7 +307,8 @@ public class Frame {
 		case RED:
 			color1 = ProcessableColor.BLUE;
 			color2 = ProcessableColor.GREEN;
-			requiredIntensity *= .67;
+			requiredIntensity *= .5;
+			thresholdCoeff*=3;
 			break;
 		case BLUE:
 			color1 = ProcessableColor.RED;
@@ -466,12 +409,12 @@ public class Frame {
 	}
 
 	public void drawCOM(Color color, double sizeCoeff) {
-		drawBox(getCOM()[0], getCOM()[1], color, (int) (sizeCoeff * Math.sqrt(getArea()) / 2));
+		int[] com = getCOM();
+		drawBox(com[0], com[1], color, (int) (sizeCoeff * Math.sqrt(getArea()) / 2));
 	}
-	
+
 	public void drawBoundingFrame() {
-		
+
 	}
-	
 
 } // end of SimplePicture class
