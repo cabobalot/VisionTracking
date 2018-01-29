@@ -41,10 +41,7 @@ public class VisionFrameController extends Frame {
 		// wait till all threads complete
 		for (int i = 0; i < colorFrames.length; i++) {
 			while (colorFrames[i].isAlive()) {
-				try {
-					TimeUnit.MICROSECONDS.sleep(250);
-				} catch (InterruptedException e) {
-				}
+				
 			}
 		}
 		System.out.println("Processed Color frames");
@@ -54,11 +51,9 @@ public class VisionFrameController extends Frame {
 	private void concatenateColors() {
 		long startTime = System.currentTimeMillis();
 		for (Frame frame : colorFrames) {
-			// System.out.println("frame");
 			for (int row = 0; row < pixels.length; row++) {
 				for (int col = 0; col < pixels[0].length; col++) {
 					if (frame.pixels[row][col].getAverage() != 0) {
-						// System.out.println(col + ", " + row);
 						pixels[row][col] = frame.pixels[row][col];
 					}
 				}
