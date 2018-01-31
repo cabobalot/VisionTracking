@@ -19,11 +19,9 @@ public class Controller {
 	public Controller(String[] args) {
 
 		long startTime;
-
-		// String fileName = "/home/ben/Scripts/webcamShot.jpg";
 		String fileName = "image.jpg";
 
-		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.GREEN, ProcessableColor.YELLOW };
+		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.GREEN, ProcessableColor.YELLOW,};
 //				ProcessableColor.BLUE, ProcessableColor.RED, ProcessableColor.CYAN, ProcessableColor.MAGENTA };
 
 		int[] com = new int[2];
@@ -50,9 +48,10 @@ public class Controller {
 				iterations++;
 				System.out.println("Milliseconds taken: " + timeTaken);
 				System.out.println("Average: " + timeAccumulator / iterations + "\n");
+//				System.out.println(pic.getColoredFrame(ProcessableColor.GREEN).getCOM());
 
 				window.updatePicture(pic.getPixels2D());
-				TimeUnit.MILLISECONDS.sleep(1000);
+				TimeUnit.MILLISECONDS.sleep(10000);
 				if (garbageCollector.isAlive()) {
 					garbageCollector.start();
 				}

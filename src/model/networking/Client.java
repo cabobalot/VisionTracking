@@ -31,54 +31,77 @@ public class Client {
 		}
 
 	}
-	
+
 	public boolean isClosed() {
 		return socket.isClosed();
 	}
 
 	public void respond() {
+		String message = "";
 		try {
 
 			// read message from the client
-			boolean isDoneReading = false;
-			String message = "";
-			int currentByte = 0;
-			while (!isDoneReading) {
-				currentByte = in.read();
-				if (currentByte != -1) {
-					message += (char) currentByte;
-				} else {
-					isDoneReading = true;
+			message = in.readLine();
+			if (message != null) {
+				System.out.println("Request from " + socket.getInetAddress() + ": " + message);
+
+				// point object to send to the client if required
+				int[] point;
+
+				// process client request and respond with an accurate response
+				switch (Integer.parseInt(message)) {
+				case (Requests.HEIGHT):
+					out.println(Integer.toString(controller.getHeight()));
+					out.flush();
+					System.out.println(Integer.toString(controller.getHeight()));
+					break;
+				case (Requests.WIDTH):
+					out.println(Integer.toString(controller.getWidth()));
+					out.flush();
+					System.out.println(Integer.toString(controller.getWidth()));
+					break;
+				case (Requests.COM):
+					point = controller.getCOM();
+					out.println(point[0] + "," + point[1]);
+					out.flush();
+					System.out.println(point[0] + "," + point[1]);
+					break;
+				case (Requests.NEAREST_CUBE):
+					point = controller.getColoredFrame(ProcessableColor.YELLOW).getCOM();
+					out.println(point[0] + "," + point[1]);
+					out.flush();
+					System.out.println(point[0] + "," + point[1]);
+					break;
+				case (Requests.NEAREST_TAPE):
+					point = controller.getColoredFrame(ProcessableColor.GREEN).getCOM();
+					out.println(point[0] + "," + point[1]);
+					out.flush();
+					System.out.println(point[0] + "," + point[1]);
+					break;
+				default:
+					System.out.println("Invalid request");
+					break;
 				}
-			}
-
-			// point object to send to the client if required
-			int[] point;
-
-			// process client request and respond with an accurate response
-			switch (Character.getNumericValue(message.charAt(0))) {
-			case (Requests.COM):
-				point = controller.getCOM();
-				out.write(point[0] + "," + point[1]);
-				break;
-			case (Requests.HEIGHT):
-				out.write(Integer.toString(controller.getHeight()));
-				break;
-			case (Requests.WIDTH):
-				out.write(Integer.toString(controller.getWidth()));
-				break;
-			case (Requests.NEAREST_CUBE):
-				point = controller.getColoredFrame(ProcessableColor.YELLOW).getCOM();
-				out.write(point[0] + "," + point[1]);
-				break;
-			default:
-				System.out.println("Invalid request from Server: " + Character.getNumericValue(message.charAt(0)));
-				break;
 			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("lost connection to Client");
+			try {
+				socket.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		} catch (NumberFormatException e) {
+			System.out.println("Invalid Request: " + message);
+		}
+
+		// close socket
+		try {
+			socket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

@@ -43,6 +43,7 @@ public class NetworkServerController extends Thread {
 					if (clients.get(i).isClosed()) {
 						clients.remove(i);
 						i--;
+						System.out.println("Client Disconnected");
 					}
 				}
 			} catch (IndexOutOfBoundsException e) {

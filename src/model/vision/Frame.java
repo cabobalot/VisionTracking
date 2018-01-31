@@ -21,7 +21,7 @@ public class Frame extends Thread{
 	/*
 	 * buffered image to hold pixels for the simple picture
 	 */
-	protected BufferedImage bufferedImage;
+//	protected BufferedImage bufferedImage;
 
 	protected Pixel[][] pixels;
 
@@ -51,6 +51,8 @@ public class Frame extends Thread{
 			}
 		}
 		
+//		makeBufferedImage();
+		
 //		System.out.println(startTime-System.currentTimeMillis());
 		
 	}
@@ -61,40 +63,7 @@ public class Frame extends Thread{
 	}
 	
 
-	private void makeBufferedImage() {
-		bufferedImage = new BufferedImage(pixels.length, pixels[0].length, BufferedImage.TYPE_INT_RGB);
-		for (int row = 0; row < pixels.length; row++) {
-			for (int col = 0; col < pixels[0].length; col++) {
-				bufferedImage.setRGB(col, row, pixels[row][col].getRGB());
-			}
-		}
-	}
 
-	/**
-	 * Method to get the buffered image
-	 * 
-	 * @return the buffered image
-	 */
-	public BufferedImage getBufferedImage() {
-		return bufferedImage;
-	}
-
-	/**
-	 * Method to get a graphics object for this picture to use to draw on
-	 * 
-	 * @return a graphics object to use for drawing
-	 */
-	public Graphics getGraphics() {
-		return bufferedImage.getGraphics();
-	}
-
-	/**
-	 * Method to get a Graphics2D object for this picture which can be used to do 2D
-	 * drawing on the picture
-	 */
-	public Graphics2D createGraphics() {
-		return bufferedImage.createGraphics();
-	}
 
 	/**
 	 * Method to get the width of the picture in pixels
@@ -102,7 +71,7 @@ public class Frame extends Thread{
 	 * @return the width of the picture in pixels
 	 */
 	public int getWidth() {
-		return bufferedImage.getWidth();
+		return pixels[0].length;
 	}
 
 	/**
@@ -111,17 +80,9 @@ public class Frame extends Thread{
 	 * @return the height of the picture in pixels
 	 */
 	public int getHeight() {
-		return bufferedImage.getHeight();
+		return pixels.length;
 	}
 
-	/**
-	 * Method to get an image from the picture
-	 * 
-	 * @return the buffered image since it is an image
-	 */
-	public Image getImage() {
-		return bufferedImage;
-	}
 
 	/**
 	 * Method to return the pixel value as an int for the given x and y location
@@ -133,21 +94,7 @@ public class Frame extends Thread{
 	 * @return the pixel value as an integer (alpha, red, green, blue)
 	 */
 	public int getPixelRGB(int x, int y) {
-		return bufferedImage.getRGB(x, y);
-	}
-
-	/**
-	 * Method to set the value of a pixel in the picture from an int
-	 * 
-	 * @param x
-	 *            the x coordinate of the pixel
-	 * @param y
-	 *            the y coordinate of the pixel
-	 * @param rgb
-	 *            the new rgb value of the pixel (alpha, red, green, blue)
-	 */
-	public void setBasicPixel(int x, int y, int rgb) {
-		bufferedImage.setRGB(x, y, rgb);
+		return pixels[y][x].getRGB();
 	}
 
 	/**
@@ -216,62 +163,6 @@ public class Frame extends Thread{
 			}
 		}
 		return img;
-	}
-
-	/**
-	 * Method to get the coordinates of the enclosing rectangle after this
-	 * transformation is applied to the current picture
-	 * 
-	 * @return the enclosing rectangle
-	 */
-	public Rectangle2D getTransformEnclosingRect(AffineTransform trans) {
-		int width = getWidth();
-		int height = getHeight();
-		double maxX = width - 1;
-		double maxY = height - 1;
-		double minX, minY;
-		Point2D.Double p1 = new Point2D.Double(0, 0);
-		Point2D.Double p2 = new Point2D.Double(maxX, 0);
-		Point2D.Double p3 = new Point2D.Double(maxX, maxY);
-		Point2D.Double p4 = new Point2D.Double(0, maxY);
-		Point2D.Double result = new Point2D.Double(0, 0);
-		Rectangle2D.Double rect = null;
-
-		// get the new points and min x and y and max x and y
-		trans.deltaTransform(p1, result);
-		minX = result.getX();
-		maxX = result.getX();
-		minY = result.getY();
-		maxY = result.getY();
-		trans.deltaTransform(p2, result);
-		minX = Math.min(minX, result.getX());
-		maxX = Math.max(maxX, result.getX());
-		minY = Math.min(minY, result.getY());
-		maxY = Math.max(maxY, result.getY());
-		trans.deltaTransform(p3, result);
-		minX = Math.min(minX, result.getX());
-		maxX = Math.max(maxX, result.getX());
-		minY = Math.min(minY, result.getY());
-		maxY = Math.max(maxY, result.getY());
-		trans.deltaTransform(p4, result);
-		minX = Math.min(minX, result.getX());
-		maxX = Math.max(maxX, result.getX());
-		minY = Math.min(minY, result.getY());
-		maxY = Math.max(maxY, result.getY());
-
-		// create the bounding rectangle to return
-		rect = new Rectangle2D.Double(minX, minY, maxX - minX + 1, maxY - minY + 1);
-		return rect;
-	}
-
-	/**
-	 * Method to get the coordinates of the enclosing rectangle after this
-	 * transformation is applied to the current picture
-	 * 
-	 * @return the enclosing rectangle
-	 */
-	public Rectangle2D getTranslationEnclosingRect(AffineTransform trans) {
-		return getTransformEnclosingRect(trans);
 	}
 
 	///////////////////// My Code///////////////////////////////

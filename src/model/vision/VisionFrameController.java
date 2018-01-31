@@ -19,33 +19,6 @@ public class VisionFrameController extends Frame {
 		concatenateColors();
 
 	}
-
-	public int[] getCOM() {
-		return this.getCOM();
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	private void populateVisionFrames() {
