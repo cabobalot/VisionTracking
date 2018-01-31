@@ -13,7 +13,7 @@ import edu.wpi.first.networktables.*;
 import model.vision.ProcessableColor;
 import model.vision.VisionFrameController;
 
-public class NetworkController extends Thread {
+public class NetworkClientController extends Thread {
 	Socket client;
 	DataOutputStream out;
 	InputStream in;
@@ -22,7 +22,7 @@ public class NetworkController extends Thread {
 	String ipAddress;
 	int port;
 
-	public NetworkController(String ipAddress, int port, VisionFrameController controller) {
+	public NetworkClientController(String ipAddress, int port, VisionFrameController controller) {
 		boolean isConnected = false;
 		while (!isConnected) {
 			try {

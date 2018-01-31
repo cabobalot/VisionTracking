@@ -5,7 +5,8 @@ import view.PreviewFrame;
 import java.awt.Color;
 import java.util.concurrent.TimeUnit;
 
-import model.networking.NetworkController;
+//import model.networking.NetworkClientController;
+import model.networking.NetworkServerController;
 import model.vision.*;
 
 public class Controller {
@@ -13,7 +14,7 @@ public class Controller {
 	VisionFrameController pic;
 	PreviewFrame window;
 	GarbageCollector garbageCollector;
-	NetworkController rioResponder;
+	NetworkServerController rioResponder;
 
 	public Controller(String[] args) {
 
@@ -29,7 +30,7 @@ public class Controller {
 		pic = new VisionFrameController(fileName, colors);
 		window = new PreviewFrame(pic.getPixels2D());
 		
-		rioResponder = new NetworkController("www.google.com", 8080, pic);
+		rioResponder = new NetworkServerController(4585, pic);
 		rioResponder.start();
 
 		garbageCollector = new GarbageCollector();
@@ -51,7 +52,7 @@ public class Controller {
 				System.out.println("Average: " + timeAccumulator / iterations + "\n");
 
 				window.updatePicture(pic.getPixels2D());
-				TimeUnit.MILLISECONDS.sleep(10);
+				TimeUnit.MILLISECONDS.sleep(1000);
 				if (garbageCollector.isAlive()) {
 					garbageCollector.start();
 				}
