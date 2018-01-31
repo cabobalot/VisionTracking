@@ -37,7 +37,7 @@ public class NetworkServerController extends Thread {
 			// add connecting clients
 			try {
 				clients.add(new Client(controller, server.accept()));
-				System.out.println("Client Connected");
+//				System.out.println("Client Connected");
 			} catch (IOException e) {
 			}
 
@@ -47,16 +47,17 @@ public class NetworkServerController extends Thread {
 					if (clients.get(i).isClosed()) {
 						clients.remove(i);
 						i--;
-						System.out.println("Client Disconnected");
+//						System.out.println("Client Disconnected")
 					}
 				}
 			} catch (IndexOutOfBoundsException e) {
 
 			}
 
+			System.out.println(clients.size());
 			// respond to all connected clients
 			for (Client currentClient : clients) {
-				currentClient.respond();
+				currentClient.run();
 			}
 
 		}

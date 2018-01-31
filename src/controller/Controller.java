@@ -51,7 +51,6 @@ public class Controller {
 				
 				System.out.println("Milliseconds taken: " + timeTaken);
 				System.out.println("Average: " + timeAccumulator / iterations + "\n");
-				System.out.println(pic.getColoredFrame(ProcessableColor.GREEN).getCOM());
 
 				window.updatePicture(pic.getPixels2D());
 				
@@ -59,7 +58,7 @@ public class Controller {
 					garbageCollector.start();
 				}
 				
-				TimeUnit.MILLISECONDS.sleep(100);
+				TimeUnit.MILLISECONDS.sleep(250);
 				
 			} catch (Exception e) {
 				e.printStackTrace();
