@@ -26,6 +26,10 @@ public class NetworkServerController extends Thread {
 		}
 		clients = new ArrayList<Client>();
 	}
+	
+	public void setVisionFrameController(VisionFrameController controller) {
+		this.controller = controller;
+	}
 
 	public void run() {
 		while (server != null && !server.isClosed() && !this.isInterrupted()) {

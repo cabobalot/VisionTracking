@@ -43,7 +43,7 @@ public class Client {
 			// read message from the client
 			message = in.readLine();
 			if (message != null) {
-				System.out.println("Request from " + socket.getInetAddress() + ": " + message);
+//				System.out.println("Request from " + socket.getInetAddress() + ": " + message);
 
 				// point object to send to the client if required
 				int[] point;
@@ -53,33 +53,33 @@ public class Client {
 				case (Requests.HEIGHT):
 					out.println(Integer.toString(controller.getHeight()));
 					out.flush();
-					System.out.println(Integer.toString(controller.getHeight()));
+//					System.out.println(Integer.toString(controller.getHeight()));
 					break;
 				case (Requests.WIDTH):
 					out.println(Integer.toString(controller.getWidth()));
 					out.flush();
-					System.out.println(Integer.toString(controller.getWidth()));
+//					System.out.println(Integer.toString(controller.getWidth()));
 					break;
 				case (Requests.COM):
 					point = controller.getCOM();
 					out.println(point[0] + "," + point[1]);
 					out.flush();
-					System.out.println(point[0] + "," + point[1]);
+//					System.out.println(point[0] + "," + point[1]);
 					break;
 				case (Requests.NEAREST_CUBE):
 					point = controller.getColoredFrame(ProcessableColor.YELLOW).getCOM();
 					out.println(point[0] + "," + point[1]);
 					out.flush();
-					System.out.println(point[0] + "," + point[1]);
+//					System.out.println(point[0] + "," + point[1]);
 					break;
 				case (Requests.NEAREST_TAPE):
 					point = controller.getColoredFrame(ProcessableColor.GREEN).getCOM();
 					out.println(point[0] + "," + point[1]);
 					out.flush();
-					System.out.println(point[0] + "," + point[1]);
+//					System.out.println(point[0] + "," + point[1]);
 					break;
 				default:
-					System.out.println("Invalid request");
+//					System.out.println("Invalid request");
 					break;
 				}
 			}
@@ -93,7 +93,7 @@ public class Client {
 				e1.printStackTrace();
 			}
 		} catch (NumberFormatException e) {
-			System.out.println("Invalid Request: " + message);
+//			System.out.println("Invalid Request: " + message);
 		}
 
 		// close socket

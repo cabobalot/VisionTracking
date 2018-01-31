@@ -42,19 +42,25 @@ public class Controller {
 				startTime = System.currentTimeMillis();
 
 				pic = new VisionFrameController(fileName, colors);
+				
+				rioResponder.setVisionFrameController(pic);
 
 				timeTaken = System.currentTimeMillis() - startTime;
 				timeAccumulator += timeTaken;
 				iterations++;
+				
 				System.out.println("Milliseconds taken: " + timeTaken);
 				System.out.println("Average: " + timeAccumulator / iterations + "\n");
-//				System.out.println(pic.getColoredFrame(ProcessableColor.GREEN).getCOM());
+				System.out.println(pic.getColoredFrame(ProcessableColor.GREEN).getCOM());
 
 				window.updatePicture(pic.getPixels2D());
-				TimeUnit.MILLISECONDS.sleep(10000);
+				
 				if (garbageCollector.isAlive()) {
 					garbageCollector.start();
 				}
+				
+				TimeUnit.MILLISECONDS.sleep(100);
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
