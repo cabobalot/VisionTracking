@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 
-import model.Pixel;
+import model.vision.Pixel;
 
 public class PreviewPanel extends JPanel {
 	

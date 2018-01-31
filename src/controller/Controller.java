@@ -1,16 +1,19 @@
 package controller;
 
-import model.*;
 import view.PreviewFrame;
 
 import java.awt.Color;
 import java.util.concurrent.TimeUnit;
+
+import model.networking.NetworkController;
+import model.vision.*;
 
 public class Controller {
 
 	VisionFrameController pic;
 	PreviewFrame window;
 	GarbageCollector garbageCollector;
+	NetworkController rioResponder;
 
 	public Controller(String[] args) {
 
@@ -25,6 +28,9 @@ public class Controller {
 		int[] com = new int[2];
 		pic = new VisionFrameController(fileName, colors);
 		window = new PreviewFrame(pic.getPixels2D());
+		
+		rioResponder = new NetworkController("www.google.com", 8080, pic);
+		rioResponder.start();
 
 		garbageCollector = new GarbageCollector();
 

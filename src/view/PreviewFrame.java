@@ -1,10 +1,10 @@
 package view;
 
 import javax.swing.JFrame;
-import model.Pixel;
+
+import model.vision.Pixel;
 
 public class PreviewFrame extends JFrame {
-
 	private PreviewPanel panel;
 
 	public PreviewFrame(Pixel[][] pixels) {

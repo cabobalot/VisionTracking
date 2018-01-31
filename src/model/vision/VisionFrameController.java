@@ -1,4 +1,4 @@
-package model;
+package model.vision;
 
 import java.awt.Color;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +20,34 @@ public class VisionFrameController extends Frame {
 
 	}
 
+	public int[] getCOM() {
+		return this.getCOM();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	private void populateVisionFrames() {
 		long startTime = System.currentTimeMillis();
 		cutoffBottom(30);
@@ -71,4 +99,8 @@ public class VisionFrameController extends Frame {
 		}
 		return new Frame(file);
 	}
+	
+	
+	
+	
 }
