@@ -3,7 +3,10 @@ package controller;
 import view.PreviewFrame;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.util.concurrent.TimeUnit;
+
+import com.github.sarxos.webcam.Webcam;
 
 //import model.networking.NetworkClientController;
 import model.networking.NetworkServerController;
@@ -15,19 +18,21 @@ public class Controller {
 	PreviewFrame window;
 	GarbageCollector garbageCollector;
 	NetworkServerController rioResponder;
+	Webcam webcam;
 
 	public Controller(String[] args) {
 
 		long startTime;
-		String fileName = "image.jpg";
+		// String fileName = "image.jpg";
+		webcam = Webcam.getDefault();
+		// webcam.setViewSize(new Dimension(176, 144));
+		webcam.open(false);
 
 		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.GREEN, ProcessableColor.YELLOW,};
 //				ProcessableColor.BLUE, ProcessableColor.RED, ProcessableColor.CYAN, ProcessableColor.MAGENTA };
-
-		int[] com = new int[2];
-		pic = new VisionFrameController(fileName, colors);
+		pic = new VisionFrameController(webcam.getImage(), colors);
 		window = new PreviewFrame(pic.getPixels2D());
-		
+
 		rioResponder = new NetworkServerController(4585, pic);
 		rioResponder.start();
 
@@ -41,25 +46,29 @@ public class Controller {
 
 				startTime = System.currentTimeMillis();
 
-				pic = new VisionFrameController(fileName, colors);
-				
+				pic = new VisionFrameController(webcam.getImage(), colors);
+
 				rioResponder.setVisionFrameController(pic);
 
-				timeTaken = System.currentTimeMillis() - startTime;
-				timeAccumulator += timeTaken;
+				if (iterations > 10) {
+					timeAccumulator += timeTaken;
+				}
 				iterations++;
-				
+				timeTaken = System.currentTimeMillis() - startTime;
+
 				System.out.println("Milliseconds taken: " + timeTaken);
-				System.out.println("Average: " + timeAccumulator / iterations + "\n");
+				System.out.println("Average: " + timeAccumulator / (iterations - 9) + "\n");
 
 				window.updatePicture(pic.getPixels2D());
-				
-				if (garbageCollector.isAlive()) {
+
+				try {
 					garbageCollector.start();
+				} catch (IllegalThreadStateException e) {
+
 				}
-				
-				TimeUnit.MILLISECONDS.sleep(250);
-				
+
+				// TimeUnit.MILLISECONDS.sleep(250);
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

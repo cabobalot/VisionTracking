@@ -34,7 +34,7 @@ public class VisionFrame extends Frame {
 	
 	//entry point
 	public void run() {
-		this.colorIsolate(colorToIsolate, 1, 1);
+		this.colorIsolate(colorToIsolate, .7, 1.2);
 		this.drawCOM(Color.MAGENTA, .25);
 	}
 

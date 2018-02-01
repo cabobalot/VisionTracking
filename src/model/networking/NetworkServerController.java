@@ -54,7 +54,6 @@ public class NetworkServerController extends Thread {
 
 			}
 
-			System.out.println(clients.size());
 			// respond to all connected clients
 			for (Client currentClient : clients) {
 				currentClient.run();

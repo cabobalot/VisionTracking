@@ -1,16 +1,27 @@
 package model.vision;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.util.concurrent.TimeUnit;
+
+import com.github.sarxos.webcam.Webcam;
 
 public class VisionFrameController extends Frame {
 	ProcessableColor[] colors;
 	VisionFrame[] colorFrames;
-	String file;
 
 	public VisionFrameController(String file, ProcessableColor[] colors) {
 		super(file);
-		this.file = file;
+		this.colors = colors;
+		this.colorFrames = new VisionFrame[colors.length];
+
+		populateVisionFrames();
+		process();
+		concatenateColors();
+
+	}
+	public VisionFrameController(BufferedImage image, ProcessableColor[] colors) {
+		super(image);
 		this.colors = colors;
 		this.colorFrames = new VisionFrame[colors.length];
 
@@ -26,7 +37,6 @@ public class VisionFrameController extends Frame {
 		cutoffBottom(30);
 		for (int i = 0; i < colorFrames.length; i++) {
 			colorFrames[i] = new VisionFrame(pixels, colors[i]);
-			// TODO pixels is currently being passed by reference rather than being copied
 		}
 		System.out.println("Populated frames");
 		System.out.println(System.currentTimeMillis() - startTime);
@@ -70,7 +80,7 @@ public class VisionFrameController extends Frame {
 				return colorFrames[i];
 			}
 		}
-		return new Frame(file);
+		return null;
 	}
 	
 	

@@ -25,7 +25,7 @@ public class Client extends Thread{
 			this.controller = controller;
 			out = new PrintWriter(socket.getOutputStream());
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			socket.setSoTimeout(250);
+			socket.setSoTimeout(100);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
