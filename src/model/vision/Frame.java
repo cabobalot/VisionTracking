@@ -45,19 +45,19 @@ public class Frame extends Thread {
 	public Frame(Pixel[][] pixels) {
 
 		this.pixels = new Pixel[pixels.length][pixels[0].length];
-//		Arrays.fill(pixels, new Pixel(0));
+		// Arrays.fill(pixels, new Pixel(0));
 		// deep copy, slow as hell. required as not to use a refrence to pixels
 		for (int row = 0; row < pixels.length; row++) {
 			for (int col = 0; col < pixels[0].length; col++) {
 				this.pixels[row][col] = new Pixel(pixels[row][col].getRGB());
-//				this.pixels[row][col].setRGB(pixels[row][col].getRGB());
+				// this.pixels[row][col].setRGB(pixels[row][col].getRGB());
 			}
 		}
 
 		// makeBufferedImage();
 
-
 	}
+
 	public Frame(BufferedImage img) {
 		this.pixels = new Pixel[img.getHeight()][img.getWidth()];
 
@@ -211,8 +211,8 @@ public class Frame extends Thread {
 		case BLUE:
 			color1 = ProcessableColor.RED;
 			color2 = ProcessableColor.GREEN;
-			requiredIntensity*=1;
-			thresholdCoeff*=1;
+			requiredIntensity *= 1;
+			thresholdCoeff *= 1;
 			break;
 		case GREEN:
 			color1 = ProcessableColor.BLUE;
@@ -252,28 +252,29 @@ public class Frame extends Thread {
 				}
 			}
 		}
-	
 
-//		int blockSize = 2;
-//		int thisRow;
-//		int thisCol;
-//		for (int row = 0; row < (pixels.length) / blockSize; row++) {
-//			thisRow = row * blockSize;
-//			for (int col = 0; col < (pixels[0].length) / blockSize; col++) {
-//				thisCol = col * blockSize;
-//				if (pixels[thisRow][thisCol].getColor(color) > threshold
-//						&& pixels[thisRow][thisCol].getColor(color1) < pixels[thisRow][thisCol].getColor(color)
-//								* requiredIntensity
-//						&& pixels[thisRow][thisCol].getColor(color2) < pixels[thisRow][thisCol].getColor(color)
-//								* requiredIntensity) {
-//					// pixels[row][col].setColor(color);
-//					this.drawBox(thisCol, thisRow, color, blockSize);
-//				} else {
-//					// pixels[row][col].setColor(Color.BLACK);
-//					this.drawBox(thisCol, thisRow, Color.BLACK, blockSize);
-//				}
-//			}
-//		}
+		// int blockSize = 2;
+		// int thisRow;
+		// int thisCol;
+		// for (int row = 0; row < (pixels.length) / blockSize; row++) {
+		// thisRow = row * blockSize;
+		// for (int col = 0; col < (pixels[0].length) / blockSize; col++) {
+		// thisCol = col * blockSize;
+		// if (pixels[thisRow][thisCol].getColor(color) > threshold
+		// && pixels[thisRow][thisCol].getColor(color1) <
+		// pixels[thisRow][thisCol].getColor(color)
+		// * requiredIntensity
+		// && pixels[thisRow][thisCol].getColor(color2) <
+		// pixels[thisRow][thisCol].getColor(color)
+		// * requiredIntensity) {
+		// // pixels[row][col].setColor(color);
+		// this.drawBox(thisCol, thisRow, color, blockSize);
+		// } else {
+		// // pixels[row][col].setColor(Color.BLACK);
+		// this.drawBox(thisCol, thisRow, Color.BLACK, blockSize);
+		// }
+		// }
+		// }
 	}
 
 	public void cutoffBottom(int numOfPixels) {
@@ -347,8 +348,9 @@ public class Frame extends Thread {
 		drawBox(com[0], com[1], color, (int) (sizeCoeff * Math.sqrt(getArea()) / 2));
 	}
 
-	public void drawBoundingFrame() {
-
+	// TODO do this
+	public double getDistanceFeet() {
+		return 0;
 	}
 
 } // end of SimplePicture class

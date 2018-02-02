@@ -18,7 +18,7 @@ public class PreviewFrame extends JFrame {
 	private void setupFrame() {
 		this.setContentPane(panel);
 		this.setTitle("Preview");
-		this.setSize(900, 500);
+		this.setSize(1280, 720);
 		this.setResizable(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);

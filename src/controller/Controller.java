@@ -25,11 +25,14 @@ public class Controller {
 		long startTime;
 		// String fileName = "image.jpg";
 		webcam = Webcam.getDefault();
-		// webcam.setViewSize(new Dimension(176, 144));
-		webcam.open(false);
+		Dimension d = new Dimension(640, 480);
+		webcam.setCustomViewSizes(new Dimension[] { d });
+		webcam.setViewSize(d);
+		webcam.open();
 
-		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.GREEN, ProcessableColor.YELLOW,};
-//				ProcessableColor.BLUE, ProcessableColor.RED, ProcessableColor.CYAN, ProcessableColor.MAGENTA };
+		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.GREEN, ProcessableColor.YELLOW };
+		// ProcessableColor.BLUE, ProcessableColor.RED, ProcessableColor.CYAN,
+		// ProcessableColor.MAGENTA };
 		pic = new VisionFrameController(webcam.getImage(), colors);
 		window = new PreviewFrame(pic.getPixels2D());
 
@@ -48,16 +51,15 @@ public class Controller {
 
 				pic = new VisionFrameController(webcam.getImage(), colors);
 
-				rioResponder.setVisionFrameController(pic);
-
 				if (iterations > 10) {
 					timeAccumulator += timeTaken;
 				}
 				iterations++;
 				timeTaken = System.currentTimeMillis() - startTime;
 
+				rioResponder.setVisionFrameController(pic);
 				System.out.println("Milliseconds taken: " + timeTaken);
-				System.out.println("Average: " + timeAccumulator / (iterations - 9) + "\n");
+				System.out.println("Average: " + timeAccumulator / (iterations - 10) + "\n");
 
 				window.updatePicture(pic.getPixels2D());
 
