@@ -63,9 +63,8 @@ public class Client extends Thread{
 					out.println(Integer.toString(controller.getWidth()));
 					out.flush();
 					break;
-				case (Requests.COM):
-					point = controller.getCOM();
-					out.println(point[0] + "," + point[1]);
+				case (Requests.NEAREST_CUBE_DISTANCE):
+					out.println(controller.getColoredFrame(ProcessableColor.YELLOW).getDistanceFeet(13, 10.5));
 					out.flush();
 					break;
 				case (Requests.NEAREST_CUBE):

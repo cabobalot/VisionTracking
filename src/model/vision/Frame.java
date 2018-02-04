@@ -1,6 +1,7 @@
 package model.vision;
 
 import javax.imageio.ImageIO;
+import java.awt.image.DataBufferByte;
 import java.awt.image.BufferedImage;
 import java.awt.*;
 import java.io.*;
@@ -25,6 +26,8 @@ public class Frame extends Thread {
 	// protected BufferedImage bufferedImage;
 
 	protected Pixel[][] pixels;
+
+	protected Integer area;
 
 	/////////////////////// Constructors /////////////////////////
 
@@ -58,14 +61,26 @@ public class Frame extends Thread {
 
 	}
 
-	public Frame(BufferedImage img) {
-		this.pixels = new Pixel[img.getHeight()][img.getWidth()];
+	public Frame(BufferedImage image) {
 
+		long startTime = System.currentTimeMillis();
+		FastRGB img = new FastRGB(image);
+
+		this.pixels = new Pixel[image.getHeight()][image.getWidth()];
 		for (int row = 0; row < pixels.length; row++) {
 			for (int col = 0; col < pixels[0].length; col++) {
 				pixels[row][col] = new Pixel(img.getRGB(col, row));
 			}
 		}
+
+		System.out.println(System.currentTimeMillis() - startTime);
+
+		// this.pixels = new Pixel[img.getHeight()][img.getWidth()];
+		// for (int row = 0; row < pixels.length; row++) {
+		// for (int col = 0; col < pixels[0].length; col++) {
+		// pixels[row][col] = new Pixel(img.getRGB(col, row));
+		// }
+		// }
 	}
 
 	////////////////////////// Methods //////////////////////////////////
@@ -200,13 +215,12 @@ public class Frame extends Thread {
 		thresholdCoeff *= 1.5;
 		requiredIntensity *= .7;
 		ProcessableColor color1, color2;
-		int threshold = (int) (thresholdCoeff * getAverage(color));
 		switch (color) {
 		case RED:
 			color1 = ProcessableColor.BLUE;
 			color2 = ProcessableColor.GREEN;
 			requiredIntensity *= .5;
-			thresholdCoeff *= 3;
+			thresholdCoeff *= 1;
 			break;
 		case BLUE:
 			color1 = ProcessableColor.RED;
@@ -222,24 +236,26 @@ public class Frame extends Thread {
 			color1 = ProcessableColor.MAGENTA;
 			color2 = ProcessableColor.YELLOW;
 			requiredIntensity *= .8;
-			thresholdCoeff *= 2;
+			thresholdCoeff *= 1.2;
 			break;
 		case MAGENTA:
 			color1 = ProcessableColor.YELLOW;
 			color2 = ProcessableColor.CYAN;
-			requiredIntensity *= .8;
-			thresholdCoeff *= 2;
+			requiredIntensity *= 1;
+			thresholdCoeff *= 1;
 			break;
 		case YELLOW:
 			color1 = ProcessableColor.CYAN;
 			color2 = ProcessableColor.MAGENTA;
 			requiredIntensity *= 1;
-			thresholdCoeff *= 2;
+			thresholdCoeff *= 1;
 			break;
 		default:
 			color1 = color;
 			color2 = color;
 		}
+
+		int threshold = (int) (thresholdCoeff * getAverage(color));
 
 		for (int row = 0; row < pixels.length; row++) {
 			for (int col = 0; col < pixels[0].length; col++) {
@@ -308,15 +324,19 @@ public class Frame extends Thread {
 	 * gets the number of pixels that are not black
 	 */
 	public int getArea() {
-		int area = 0;
-		for (int row = 0; row < pixels.length; row++) {
-			for (int col = 0; col < pixels[0].length; col++) {
-				if (pixels[row][col].getAverage() != 0) {
-					area++;
+		if (this.area == null) {
+			int thisArea = 0;
+			for (int row = 0; row < pixels.length; row++) {
+				for (int col = 0; col < pixels[0].length; col++) {
+					if (pixels[row][col].getAverage() != 0) {
+						thisArea++;
+					}
 				}
 			}
+			this.area = thisArea;
+			return thisArea;
 		}
-		return area;
+		return this.area;
 	}
 
 	public void drawBox(int x, int y, Color color, int radius) {
@@ -346,11 +366,6 @@ public class Frame extends Thread {
 	public void drawCOM(Color color, double sizeCoeff) {
 		int[] com = getCOM();
 		drawBox(com[0], com[1], color, (int) (sizeCoeff * Math.sqrt(getArea()) / 2));
-	}
-
-	// TODO do this
-	public double getDistanceFeet() {
-		return 0;
 	}
 
 } // end of SimplePicture class

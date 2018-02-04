@@ -74,7 +74,7 @@ public class VisionFrameController extends Frame {
 		System.out.println(System.currentTimeMillis() - startTime);
 	}
 
-	public Frame getColoredFrame(ProcessableColor color) {
+	public VisionFrame getColoredFrame(ProcessableColor color) {
 		for (int i = 0; i < colorFrames.length; i++) {
 			if (color == colors[i]) {
 				return colorFrames[i];
