@@ -16,6 +16,10 @@ public class VisionObject extends Frame{
 		super(pixels);
 		this.color = color;
 	}
+	public VisionObject(int rows, int cols, ProcessableColor color) {
+		super(rows, cols);
+		this.color = color;
+	}
 	
 	
 }

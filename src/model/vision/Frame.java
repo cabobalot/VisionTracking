@@ -27,7 +27,9 @@ public class Frame extends Thread {
 
 	protected Pixel[][] pixels;
 
-	protected Integer area;
+	private Integer area;
+
+	private Integer[] com = new Integer[] { null, null };
 
 	/////////////////////// Constructors /////////////////////////
 
@@ -53,17 +55,20 @@ public class Frame extends Thread {
 		for (int row = 0; row < pixels.length; row++) {
 			for (int col = 0; col < pixels[0].length; col++) {
 				this.pixels[row][col] = new Pixel(pixels[row][col].getRGB());
-				// this.pixels[row][col].setRGB(pixels[row][col].getRGB());
 			}
 		}
+	}
 
-		// makeBufferedImage();
-
+	public Frame(int rows, int cols) {
+		this.pixels = new Pixel[rows][cols];
+		for (int row = 0; row < pixels.length; row++) {
+			for (int col = 0; col < pixels[0].length; col++) {
+				this.pixels[row][col] = new Pixel(0);
+			}
+		}
 	}
 
 	public Frame(BufferedImage image) {
-
-		long startTime = System.currentTimeMillis();
 		FastRGB img = new FastRGB(image);
 
 		this.pixels = new Pixel[image.getHeight()][image.getWidth()];
@@ -72,15 +77,6 @@ public class Frame extends Thread {
 				pixels[row][col] = new Pixel(img.getRGB(col, row));
 			}
 		}
-
-		System.out.println(System.currentTimeMillis() - startTime);
-
-		// this.pixels = new Pixel[img.getHeight()][img.getWidth()];
-		// for (int row = 0; row < pixels.length; row++) {
-		// for (int col = 0; col < pixels[0].length; col++) {
-		// pixels[row][col] = new Pixel(img.getRGB(col, row));
-		// }
-		// }
 	}
 
 	////////////////////////// Methods //////////////////////////////////
@@ -247,7 +243,7 @@ public class Frame extends Thread {
 		case YELLOW:
 			color1 = ProcessableColor.CYAN;
 			color2 = ProcessableColor.MAGENTA;
-			requiredIntensity *= 1;
+			requiredIntensity *= .9;
 			thresholdCoeff *= 1;
 			break;
 		default:
@@ -257,40 +253,40 @@ public class Frame extends Thread {
 
 		int threshold = (int) (thresholdCoeff * getAverage(color));
 
-		for (int row = 0; row < pixels.length; row++) {
-			for (int col = 0; col < pixels[0].length; col++) {
-				if (pixels[row][col].getColor(color) > threshold
-						&& pixels[row][col].getColor(color1) < pixels[row][col].getColor(color) * requiredIntensity
-						&& pixels[row][col].getColor(color2) < pixels[row][col].getColor(color) * requiredIntensity) {
-					pixels[row][col].setColor(color);
+		// for (int row = 0; row < pixels.length; row++) {
+		// for (int col = 0; col < pixels[0].length; col++) {
+		// if (pixels[row][col].getColor(color) > threshold
+		// && pixels[row][col].getColor(color1) < pixels[row][col].getColor(color) *
+		// requiredIntensity
+		// && pixels[row][col].getColor(color2) < pixels[row][col].getColor(color) *
+		// requiredIntensity) {
+		// pixels[row][col].setColor(color);
+		// } else {
+		// pixels[row][col].setColor(Color.BLACK);
+		// }
+		// }
+		// }
+
+		int blockSize = 2;
+		int thisRow;
+		int thisCol;
+		for (int row = 0; row < (pixels.length) / blockSize; row++) {
+			thisRow = row * blockSize;
+			for (int col = 0; col < (pixels[0].length) / blockSize; col++) {
+				thisCol = col * blockSize;
+				if (pixels[thisRow][thisCol].getColor(color) > threshold
+						&& pixels[thisRow][thisCol].getColor(color1) < pixels[thisRow][thisCol].getColor(color)
+								* requiredIntensity
+						&& pixels[thisRow][thisCol].getColor(color2) < pixels[thisRow][thisCol].getColor(color)
+								* requiredIntensity) {
+					// pixels[row][col].setColor(color);
+					this.drawBox(thisCol, thisRow, color, blockSize);
 				} else {
-					pixels[row][col].setColor(Color.BLACK);
+					// pixels[row][col].setColor(Color.BLACK);
+					this.drawBox(thisCol, thisRow, Color.BLACK, blockSize);
 				}
 			}
 		}
-
-		// int blockSize = 2;
-		// int thisRow;
-		// int thisCol;
-		// for (int row = 0; row < (pixels.length) / blockSize; row++) {
-		// thisRow = row * blockSize;
-		// for (int col = 0; col < (pixels[0].length) / blockSize; col++) {
-		// thisCol = col * blockSize;
-		// if (pixels[thisRow][thisCol].getColor(color) > threshold
-		// && pixels[thisRow][thisCol].getColor(color1) <
-		// pixels[thisRow][thisCol].getColor(color)
-		// * requiredIntensity
-		// && pixels[thisRow][thisCol].getColor(color2) <
-		// pixels[thisRow][thisCol].getColor(color)
-		// * requiredIntensity) {
-		// // pixels[row][col].setColor(color);
-		// this.drawBox(thisCol, thisRow, color, blockSize);
-		// } else {
-		// // pixels[row][col].setColor(Color.BLACK);
-		// this.drawBox(thisCol, thisRow, Color.BLACK, blockSize);
-		// }
-		// }
-		// }
 	}
 
 	public void cutoffBottom(int numOfPixels) {
@@ -299,25 +295,40 @@ public class Frame extends Thread {
 				pixels[row][col].setColor(Color.BLACK);
 			}
 		}
+	}
 
+	public void drawBlackBorder() {
+		for (int row = 0; row < pixels.length; row++) {
+			pixels[row][0].setColor(Color.black);
+			pixels[row][pixels[0].length - 1].setColor(Color.black);
+		}
+
+		for (int col = 0; col < pixels[0].length; col++) {
+			pixels[0][col].setColor(Color.black);
+			;
+			pixels[pixels.length - 1][col].setColor(Color.black);
+		}
 	}
 
 	public int[] getCOM() {
-		double colTotal = 0, rowTotal = 0, massTotal = 0;
-		for (int row = 0; row < pixels.length; row++) {
-			for (int col = 0; col < pixels[0].length; col++) {
-				massTotal += (double) pixels[row][col].getAverage();
-				rowTotal += (double) pixels[row][col].getAverage() * row;
-				colTotal += (double) pixels[row][col].getAverage() * col;
+		if (com[0] == null) {
+			double colTotal = 0, rowTotal = 0, massTotal = 0;
+			for (int row = 0; row < pixels.length; row++) {
+				for (int col = 0; col < pixels[0].length; col++) {
+					massTotal += (double) pixels[row][col].getAverage();
+					rowTotal += (double) pixels[row][col].getAverage() * row;
+					colTotal += (double) pixels[row][col].getAverage() * col;
+				}
+			}
+			try {
+				colTotal /= massTotal;
+				rowTotal /= massTotal;
+				this.com = new Integer[] { (int) colTotal, (int) rowTotal };
+			} catch (Exception e) {
+				this.com = new Integer[] {0, 0};
 			}
 		}
-		try {
-			colTotal /= massTotal;
-			rowTotal /= massTotal;
-			return new int[] { (int) colTotal, (int) rowTotal };
-		} catch (Exception e) {
-			return new int[] { 0, 0 };
-		}
+		return new int[] {this.com[0], this.com[1]};
 	}
 
 	/*
@@ -334,7 +345,6 @@ public class Frame extends Thread {
 				}
 			}
 			this.area = thisArea;
-			return thisArea;
 		}
 		return this.area;
 	}

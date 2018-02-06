@@ -20,6 +20,7 @@ public class VisionFrameController extends Frame {
 		concatenateColors();
 
 	}
+
 	public VisionFrameController(BufferedImage image, ProcessableColor[] colors) {
 		super(image);
 		this.colors = colors;
@@ -30,8 +31,7 @@ public class VisionFrameController extends Frame {
 		concatenateColors();
 
 	}
-	
-	
+
 	private void populateVisionFrames() {
 		long startTime = System.currentTimeMillis();
 		cutoffBottom(30);
@@ -52,7 +52,7 @@ public class VisionFrameController extends Frame {
 		// wait till all threads complete
 		for (int i = 0; i < colorFrames.length; i++) {
 			while (colorFrames[i].isAlive()) {
-				
+
 			}
 		}
 		System.out.println("Processed Color frames");
@@ -82,8 +82,5 @@ public class VisionFrameController extends Frame {
 		}
 		return null;
 	}
-	
-	
-	
-	
+
 }
