@@ -6,8 +6,6 @@ import java.util.List;
 
 public class VisionFrame extends Frame {
 
-	final double cameraCoeff = 1; // used to calibrate distance
-
 	private List<VisionObject> objects;
 
 	protected ProcessableColor colorToIsolate = ProcessableColor.GREEN;
@@ -25,6 +23,12 @@ public class VisionFrame extends Frame {
 		this.objects = new ArrayList<VisionObject>();
 	}
 
+	public VisionFrame(int rows, int cols, ProcessableColor colorToIsolate) {
+		super(rows, cols);
+		this.colorToIsolate = colorToIsolate;
+		this.objects = new ArrayList<VisionObject>();
+	}
+
 	public void setColorToIsolate(ProcessableColor color) {
 		this.colorToIsolate = color;
 	}
@@ -33,7 +37,7 @@ public class VisionFrame extends Frame {
 	public void run() {
 		this.colorIsolate(colorToIsolate, .7, 1.2);
 		this.drawBlackBorder();
-		this.breakIntoObjects(.1);
+		this.breakIntoObjects(0);
 		this.concatenateObjects();
 
 		// this.colorIsolate(colorToIsolate, .7, 1.2);
@@ -42,7 +46,6 @@ public class VisionFrame extends Frame {
 	}
 
 	private void concatenateObjects() {
-//		System.out.println("size: " + objects.size());
 		for (VisionObject frame : objects) {
 			for (int row = 0; row < pixels.length; row++) {
 				for (int col = 0; col < pixels[0].length; col++) {
@@ -59,18 +62,21 @@ public class VisionFrame extends Frame {
 		for (int row = 0; row < pixels.length; row++) {
 			for (int col = 0; col < pixels[0].length; col++) {
 				try {
-					if (pixels[row][col].getAverage() != 0) {
-						object = findObject(row, col, 50);
-//						if ((object.getArea() / (this.getHeight() * this.getWidth())) > minimumArea) {
+					if (pixels[row][col].getColor(colorToIsolate) > 127) {
+						object = findObject(row, col, 25);
+						if (((double) pixels.length * (double) pixels[0].length)
+								* minimumArea < ((double) object.getArea())) {
 							object.drawCOM(Color.MAGENTA, .25);
 							objects.add(object);
-//						}
+
+						}
 					}
 				} catch (NullPointerException e) {
 				}
 			}
 		}
 	}
+
 
 	private VisionObject findObject(int startRow, int startCol, int fudgeFactor) {
 		int col = startCol;
@@ -164,11 +170,24 @@ public class VisionFrame extends Frame {
 
 		return object;
 
-	}
+}
 
-	public double getDistanceFeet(double widthInches, double heightInches) {
-		return (Math.sqrt(pixels[0].length * pixels.length) / Math.sqrt(getArea()) * ((widthInches + heightInches) / 2)
-				* .095 * cameraCoeff);
+	public VisionObject getNearestObject() {
+		int largestIndex = 0;
+		double largestSize = 0;
+		double currentSize;
+		try {
+			for (int i = 0; i < objects.size(); i++) {
+				currentSize = objects.get(i).getDistanceFeet(10, 10);
+				if (currentSize > largestSize) {
+					largestSize = currentSize;
+					largestIndex = i;
+				}
+			}
+			return objects.get(largestIndex);
+		} catch (IndexOutOfBoundsException e) {
+			return new VisionObject(pixels.length, pixels[0].length, colorToIsolate);
+		}
 	}
 
 	public List<VisionObject> getObjects() {

@@ -25,7 +25,7 @@ public class Client extends Thread{
 			this.controller = controller;
 			out = new PrintWriter(socket.getOutputStream());
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			socket.setSoTimeout(100);
+			socket.setSoTimeout(10000);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -64,16 +64,16 @@ public class Client extends Thread{
 					out.flush();
 					break;
 				case (Requests.NEAREST_CUBE_DISTANCE):
-					out.println(controller.getColoredFrame(ProcessableColor.YELLOW).getDistanceFeet(13, 10.5));
+					out.println(controller.getColoredFrame(ProcessableColor.YELLOW).getNearestObject().getDistanceFeet(13, 10.5));
 					out.flush();
 					break;
 				case (Requests.NEAREST_CUBE):
-					point = controller.getColoredFrame(ProcessableColor.YELLOW).getCOM();
+					point = controller.getColoredFrame(ProcessableColor.YELLOW).getNearestObject().getCOM();
 					out.println(point[0] + "," + point[1]);
 					out.flush();
 					break;
 				case (Requests.NEAREST_TAPE):
-					point = controller.getColoredFrame(ProcessableColor.GREEN).getCOM();
+					point = controller.getColoredFrame(ProcessableColor.GREEN).getNearestObject().getCOM();
 					out.println(point[0] + "," + point[1]);
 					out.flush();
 					break;

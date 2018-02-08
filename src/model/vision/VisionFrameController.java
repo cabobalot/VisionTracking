@@ -10,22 +10,26 @@ public class VisionFrameController extends Frame {
 	ProcessableColor[] colors;
 	VisionFrame[] colorFrames;
 
-	public VisionFrameController(String file, ProcessableColor[] colors) {
+	public VisionFrameController(String file, ProcessableColor[] colors, int blurAmount) {
 		super(file);
 		this.colors = colors;
 		this.colorFrames = new VisionFrame[colors.length];
 
+		if (blurAmount != 0)
+			fastBlur(blurAmount);
 		populateVisionFrames();
 		process();
 		concatenateColors();
 
 	}
 
-	public VisionFrameController(BufferedImage image, ProcessableColor[] colors) {
+	public VisionFrameController(BufferedImage image, ProcessableColor[] colors, int blurAmount) {
 		super(image);
 		this.colors = colors;
 		this.colorFrames = new VisionFrame[colors.length];
 
+		if (blurAmount != 0)
+			fastBlur(blurAmount);
 		populateVisionFrames();
 		process();
 		concatenateColors();
@@ -34,7 +38,6 @@ public class VisionFrameController extends Frame {
 
 	private void populateVisionFrames() {
 		long startTime = System.currentTimeMillis();
-		cutoffBottom(30);
 		for (int i = 0; i < colorFrames.length; i++) {
 			colorFrames[i] = new VisionFrame(pixels, colors[i]);
 		}
@@ -80,7 +83,8 @@ public class VisionFrameController extends Frame {
 				return colorFrames[i];
 			}
 		}
-		return null;
+		System.out.println("Requested color not in color list");
+		return new VisionFrame(getWidth(), getHeight(), color);
 	}
 
 }

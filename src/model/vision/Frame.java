@@ -9,15 +9,6 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.awt.geom.*;
 
-/**
- * A class that represents a simple picture. A simple picture may have an
- * associated file name and a title. A simple picture has pixels, width, and
- * height. A simple picture uses a BufferedImage to hold the pixels. You can
- * show a simple picture in a PictureFrame (a JFrame). You can also explore a
- * simple picture.
- * 
- * @author Barb Ericson ericson@cc.gatech.edu
- */
 public class Frame extends Thread {
 
 	/*
@@ -243,8 +234,8 @@ public class Frame extends Thread {
 		case YELLOW:
 			color1 = ProcessableColor.CYAN;
 			color2 = ProcessableColor.MAGENTA;
-			requiredIntensity *= .9;
-			thresholdCoeff *= 1;
+			requiredIntensity *= 1;
+			thresholdCoeff *= 1.25;
 			break;
 		default:
 			color1 = color;
@@ -305,7 +296,6 @@ public class Frame extends Thread {
 
 		for (int col = 0; col < pixels[0].length; col++) {
 			pixels[0][col].setColor(Color.black);
-			;
 			pixels[pixels.length - 1][col].setColor(Color.black);
 		}
 	}
@@ -325,10 +315,65 @@ public class Frame extends Thread {
 				rowTotal /= massTotal;
 				this.com = new Integer[] { (int) colTotal, (int) rowTotal };
 			} catch (Exception e) {
-				this.com = new Integer[] {0, 0};
+				this.com = new Integer[] { 0, 0 };
 			}
 		}
-		return new int[] {this.com[0], this.com[1]};
+		return new int[] { this.com[0], this.com[1] };
+	}
+
+	public void blur(int amount) {
+		int red, green, blue;
+		for (int i = 0; i < amount; i++) {
+			for (int row = 0; row < pixels.length; row++) {
+				for (int col = 0; col < pixels[0].length; col++) {
+					try {
+						red = (pixels[row - 1][col].getRed() + pixels[row + 1][col].getRed()
+								+ pixels[row][col - 1].getRed() + pixels[row][col + 1].getRed()
+								+ pixels[row][col].getRed()) / 5;
+						green = (pixels[row - 1][col].getGreen() + pixels[row + 1][col].getGreen()
+								+ pixels[row][col - 1].getGreen() + pixels[row][col + 1].getGreen()
+								+ pixels[row][col].getGreen()) / 5;
+						blue = (pixels[row - 1][col].getBlue() + pixels[row + 1][col].getBlue()
+								+ pixels[row][col - 1].getBlue() + pixels[row][col + 1].getBlue()
+								+ pixels[row][col].getBlue()) / 5;
+
+						pixels[row][col].setRed(red);
+						pixels[row][col].setGreen(green);
+						pixels[row][col].setBlue(blue);
+					} catch (ArrayIndexOutOfBoundsException e) {
+
+					}
+				}
+			}
+		}
+	}
+
+	public void fastBlur(int amount) {
+		amount /= 4;
+		int red, green, blue;
+		for (int i = 0; i < amount; i++) {
+			for (int row = 0; row < pixels.length; row++) {
+				for (int col = 0; col < pixels[0].length; col++) {
+					try {
+						red = (pixels[row - amount][col].getRed() + pixels[row + amount][col].getRed()
+								+ pixels[row][col - amount].getRed() + pixels[row][col + amount].getRed()
+								+ pixels[row][col].getRed()) / 5;
+						green = (pixels[row - amount][col].getGreen() + pixels[row + amount][col].getGreen()
+								+ pixels[row][col - amount].getGreen() + pixels[row][col + amount].getGreen()
+								+ pixels[row][col].getGreen()) / 5;
+						blue = (pixels[row - amount][col].getBlue() + pixels[row + amount][col].getBlue()
+								+ pixels[row][col - amount].getBlue() + pixels[row][col + amount].getBlue()
+								+ pixels[row][col].getBlue()) / 5;
+
+						pixels[row][col].setRed(red);
+						pixels[row][col].setGreen(green);
+						pixels[row][col].setBlue(blue);
+					} catch (ArrayIndexOutOfBoundsException e) {
+
+					}
+				}
+			}
+		}
 	}
 
 	/*

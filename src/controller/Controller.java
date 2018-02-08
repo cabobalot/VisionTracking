@@ -14,6 +14,7 @@ import model.vision.*;
 
 public class Controller {
 
+	// VisionFrameController pic;
 	VisionFrameController pic;
 	PreviewFrame window;
 	GarbageCollector garbageCollector;
@@ -23,15 +24,15 @@ public class Controller {
 	public Controller(String[] args) {
 
 		long startTime;
-		// String fileName = "image.jpg";
 		webcam = Webcam.getDefault();
 		Dimension d = new Dimension(640, 480);
 		webcam.setViewSize(d);
 		webcam.open();
 
-		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.YELLOW, ProcessableColor.GREEN};
-		
-		pic = new VisionFrameController(webcam.getImage(), colors);
+		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.GREEN };// , ProcessableColor.YELLOW};
+
+		pic = new VisionFrameController(webcam.getImage(), colors, 0);
+		// pic = new Frame(webcam.getImage());
 		window = new PreviewFrame(pic.getPixels2D());
 
 		rioResponder = new NetworkServerController(4585, pic);
@@ -47,7 +48,7 @@ public class Controller {
 
 				startTime = System.currentTimeMillis();
 
-				pic = new VisionFrameController(webcam.getImage(), colors);
+				pic = new VisionFrameController(webcam.getImage(), colors, 20);
 
 				timeTaken = System.currentTimeMillis() - startTime;
 				iterations++;
@@ -58,16 +59,16 @@ public class Controller {
 				rioResponder.setVisionFrameController(pic);
 				System.out.println("Milliseconds taken: " + timeTaken);
 				System.out.println("Average: " + timeAccumulator / (iterations - 10) + "\n");
-				
+
 				window.updatePicture(pic.getPixels2D());
 
-				try {
-					garbageCollector.start();
-				} catch (IllegalThreadStateException e) {
+//				try {
+//					garbageCollector.start();
+//				} catch (IllegalThreadStateException e) {
+//
+//				}
 
-				}
-
-				// TimeUnit.MILLISECONDS.sleep(250);
+//				 TimeUnit.MILLISECONDS.sleep(1000);
 
 			} catch (Exception e) {
 				e.printStackTrace();
