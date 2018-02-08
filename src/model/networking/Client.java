@@ -64,16 +64,16 @@ public class Client extends Thread{
 					out.flush();
 					break;
 				case (Requests.NEAREST_CUBE_DISTANCE):
-					out.println(controller.getColoredFrame(ProcessableColor.YELLOW).getNearestObject().getDistanceFeet(13, 10.5));
+					out.println(controller.getColoredFrame(ProcessableColor.YELLOW).getLargestObject().getDistanceFeet(13, 10.5));
 					out.flush();
 					break;
 				case (Requests.NEAREST_CUBE):
-					point = controller.getColoredFrame(ProcessableColor.YELLOW).getNearestObject().getCOM();
+					point = controller.getColoredFrame(ProcessableColor.YELLOW).getLargestObject().getCOM();
 					out.println(point[0] + "," + point[1]);
 					out.flush();
 					break;
 				case (Requests.NEAREST_TAPE):
-					point = controller.getColoredFrame(ProcessableColor.GREEN).getNearestObject().getCOM();
+					point = controller.getColoredFrame(ProcessableColor.GREEN).getLargestObject().getCOM();
 					out.println(point[0] + "," + point[1]);
 					out.flush();
 					break;

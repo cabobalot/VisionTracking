@@ -48,7 +48,7 @@ public class Controller {
 
 				startTime = System.currentTimeMillis();
 
-				pic = new VisionFrameController(webcam.getImage(), colors, 20);
+				pic = new VisionFrameController(webcam.getImage(), colors, 10);
 
 				timeTaken = System.currentTimeMillis() - startTime;
 				iterations++;

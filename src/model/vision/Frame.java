@@ -129,6 +129,16 @@ public class Frame extends Thread {
 		return pixels;
 	}
 
+	public void add(Pixel[][] newPixels) {
+		for (int row = 0; row < pixels.length; row++) {
+			for (int col = 0; col < pixels[0].length; col++) {
+				pixels[row][col].setRed(pixels[row][col].getRed() + newPixels[row][col].getRed());
+				pixels[row][col].setGreen(pixels[row][col].getGreen() + newPixels[row][col].getGreen());
+				pixels[row][col].setBlue(pixels[row][col].getBlue() + newPixels[row][col].getBlue());
+			}
+		}
+	}
+
 	/**
 	 * Method to force the picture to repaint itself. This is very useful after you
 	 * have changed the pixels in a picture and you want to see the change.

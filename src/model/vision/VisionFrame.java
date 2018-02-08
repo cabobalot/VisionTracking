@@ -172,13 +172,13 @@ public class VisionFrame extends Frame {
 
 }
 
-	public VisionObject getNearestObject() {
+	public VisionObject getLargestObject() {
 		int largestIndex = 0;
 		double largestSize = 0;
 		double currentSize;
 		try {
 			for (int i = 0; i < objects.size(); i++) {
-				currentSize = objects.get(i).getDistanceFeet(10, 10);
+				currentSize = objects.get(i).getArea();
 				if (currentSize > largestSize) {
 					largestSize = currentSize;
 					largestIndex = i;
