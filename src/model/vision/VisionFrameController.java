@@ -9,14 +9,20 @@ import com.github.sarxos.webcam.Webcam;
 public class VisionFrameController extends Frame {
 	ProcessableColor[] colors;
 	VisionFrame[] colorFrames;
+	int blurAmount;
 
 	public VisionFrameController(String file, ProcessableColor[] colors, int blurAmount) {
 		super(file);
 		this.colors = colors;
 		this.colorFrames = new VisionFrame[colors.length];
+		this.blurAmount = blurAmount;
 
-		if (blurAmount != 0)
+		if (blurAmount > 0) {
+			long startTime = System.currentTimeMillis();
 			fastBlur(blurAmount);
+			System.out.println("Blurred image");
+			System.out.println(System.currentTimeMillis() - startTime);
+		}
 		populateVisionFrames();
 		process();
 		concatenateColors();
@@ -27,13 +33,49 @@ public class VisionFrameController extends Frame {
 		super(image);
 		this.colors = colors;
 		this.colorFrames = new VisionFrame[colors.length];
+		this.blurAmount = blurAmount;
 
-		if (blurAmount != 0)
+		if (blurAmount > 0) {
+			long startTime = System.currentTimeMillis();
 			fastBlur(blurAmount);
+			System.out.println("Blurred image");
+			System.out.println(System.currentTimeMillis() - startTime);
+		}
 		populateVisionFrames();
 		process();
 		concatenateColors();
 
+	}
+
+	
+	//written in order to save time by not creating a new object every time
+	public void setBufferedImage(BufferedImage image) {
+		FastRGB img = new FastRGB(image);
+
+		try {
+			for (int row = 0; row < pixels.length; row++) {
+				for (int col = 0; col < pixels[0].length; col++) {
+					pixels[row][col] = new Pixel(img.getRGB(col, row));
+				}
+			}
+		} catch (ArrayIndexOutOfBoundsException e) {
+
+			this.pixels = new Pixel[image.getHeight()][image.getWidth()];
+			for (int row = 0; row < pixels.length; row++) {
+				for (int col = 0; col < pixels[0].length; col++) {
+					pixels[row][col] = new Pixel(img.getRGB(col, row));
+				}
+			}
+		}
+		if (blurAmount > 0) {
+			long startTime = System.currentTimeMillis();
+			fastBlur(blurAmount);
+			System.out.println("Blurred image");
+			System.out.println(System.currentTimeMillis() - startTime);
+		}
+		populateVisionFrames();
+		process();
+		concatenateColors();
 	}
 
 	private void populateVisionFrames() {
@@ -67,7 +109,7 @@ public class VisionFrameController extends Frame {
 		for (Frame frame : colorFrames) {
 			for (int row = 0; row < pixels.length; row++) {
 				for (int col = 0; col < pixels[0].length; col++) {
-					if (frame.pixels[row][col].getAverage() != 0) {
+					if (!frame.pixels[row][col].isBlack()) {
 						pixels[row][col] = frame.pixels[row][col];
 					}
 				}
@@ -83,7 +125,6 @@ public class VisionFrameController extends Frame {
 				return colorFrames[i];
 			}
 		}
-		System.out.println("Requested color not in color list");
 		return new VisionFrame(getWidth(), getHeight(), color);
 	}
 

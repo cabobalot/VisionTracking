@@ -60,6 +60,7 @@ public class Frame extends Thread {
 	}
 
 	public Frame(BufferedImage image) {
+		long startTime = System.currentTimeMillis();
 		FastRGB img = new FastRGB(image);
 
 		this.pixels = new Pixel[image.getHeight()][image.getWidth()];
@@ -68,6 +69,7 @@ public class Frame extends Thread {
 				pixels[row][col] = new Pixel(img.getRGB(col, row));
 			}
 		}
+		System.out.println("Read image\n" + (System.currentTimeMillis()-startTime));
 	}
 
 	////////////////////////// Methods //////////////////////////////////
@@ -185,18 +187,6 @@ public class Frame extends Thread {
 	}
 
 	///////////////////// My Code///////////////////////////////
-	public void swapColor(ProcessableColor color1, ProcessableColor color2) {
-		int color1Val, color2Val;
-		for (int row = 0; row < pixels.length; row++) {
-			for (int col = 0; col < pixels[0].length; col++) {
-				color1Val = pixels[row][col].getColor(color1);
-				color2Val = pixels[row][col].getColor(color2);
-
-				pixels[row][col].setColor(color1, color1Val);
-				pixels[row][col].setColor(color2, color2Val);
-			}
-		}
-	}
 
 	public int getAverage(ProcessableColor color) {
 		int retBuffer = 0;
@@ -394,7 +384,7 @@ public class Frame extends Thread {
 			int thisArea = 0;
 			for (int row = 0; row < pixels.length; row++) {
 				for (int col = 0; col < pixels[0].length; col++) {
-					if (pixels[row][col].getAverage() != 0) {
+					if (!pixels[row][col].isBlack()) {
 						thisArea++;
 					}
 				}

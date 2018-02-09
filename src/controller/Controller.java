@@ -7,8 +7,8 @@ import java.awt.Dimension;
 import java.util.concurrent.TimeUnit;
 
 import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.ds.ipcam.*;
 
-//import model.networking.NetworkClientController;
 import model.networking.NetworkServerController;
 import model.vision.*;
 
@@ -29,16 +29,13 @@ public class Controller {
 		webcam.setViewSize(d);
 		webcam.open();
 
-		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.GREEN };// , ProcessableColor.YELLOW};
+		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.GREEN, ProcessableColor.YELLOW};
 
-		pic = new VisionFrameController(webcam.getImage(), colors, 0);
-		// pic = new Frame(webcam.getImage());
+		pic = new VisionFrameController(webcam.getImage(), colors, 10);
 		window = new PreviewFrame(pic.getPixels2D());
 
 		rioResponder = new NetworkServerController(4585, pic);
 		rioResponder.start();
-
-		garbageCollector = new GarbageCollector();
 
 		long iterations = 0;
 		long timeAccumulator = 0;
@@ -49,26 +46,19 @@ public class Controller {
 				startTime = System.currentTimeMillis();
 
 				pic = new VisionFrameController(webcam.getImage(), colors, 10);
-
+				rioResponder.setVisionFrameController(pic);
 				timeTaken = System.currentTimeMillis() - startTime;
 				iterations++;
 				if (iterations > 10) {
 					timeAccumulator += timeTaken;
 				}
 
-				rioResponder.setVisionFrameController(pic);
 				System.out.println("Milliseconds taken: " + timeTaken);
-				System.out.println("Average: " + timeAccumulator / (iterations - 10) + "\n");
+				System.out.println("Average: " + timeAccumulator / (iterations - 9) + "\n");
 
 				window.updatePicture(pic.getPixels2D());
 
-//				try {
-//					garbageCollector.start();
-//				} catch (IllegalThreadStateException e) {
-//
-//				}
-
-//				 TimeUnit.MILLISECONDS.sleep(1000);
+				// TimeUnit.MILLISECONDS.sleep(1000);
 
 			} catch (Exception e) {
 				e.printStackTrace();

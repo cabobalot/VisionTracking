@@ -49,7 +49,7 @@ public class VisionFrame extends Frame {
 		for (VisionObject frame : objects) {
 			for (int row = 0; row < pixels.length; row++) {
 				for (int col = 0; col < pixels[0].length; col++) {
-					if (frame.pixels[row][col].getAverage() != 0) {
+					if (!frame.pixels[row][col].isBlack()) {
 						this.pixels[row][col] = frame.pixels[row][col];
 					}
 				}
@@ -62,7 +62,7 @@ public class VisionFrame extends Frame {
 		for (int row = 0; row < pixels.length; row++) {
 			for (int col = 0; col < pixels[0].length; col++) {
 				try {
-					if (pixels[row][col].getColor(colorToIsolate) > 127) {
+					if (!pixels[row][col].isBlack()) {
 						object = findObject(row, col, 25);
 						if (((double) pixels.length * (double) pixels[0].length)
 								* minimumArea < ((double) object.getArea())) {
@@ -101,40 +101,40 @@ public class VisionFrame extends Frame {
 			 */
 			switch (direction) {
 			case 0: // North
-				if (pixels[row][col - 1].getColor(ProcessableColor.GREEN) > 127) {// turn left
+				if (!pixels[row][col - 1].isBlack()) {// turn left
 					direction = 3;
 					col--;
-				} else if (pixels[row - 1][col].getColor(ProcessableColor.GREEN) > 127) {// go straight
+				} else if (!pixels[row - 1][col].isBlack()) {// go straight
 					row--;
 				} else {
 					direction++;
 				}
 				break;
 			case 1: // East
-				if (pixels[row - 1][col].getColor(ProcessableColor.GREEN) > 127) {// turn left
+				if (!pixels[row - 1][col].isBlack()) {// turn left
 					direction--;
 					row--;
-				} else if (pixels[row][col + 1].getColor(ProcessableColor.GREEN) > 127) {// go straight
+				} else if (!pixels[row][col + 1].isBlack()) {// go straight
 					col++;
 				} else {
 					direction++;
 				}
 				break;
 			case 2: // South
-				if (pixels[row][col + 1].getColor(ProcessableColor.GREEN) > 127) {// turn left
+				if (!pixels[row][col + 1].isBlack()) {// turn left
 					direction--;
 					col++;
-				} else if (pixels[row + 1][col].getColor(ProcessableColor.GREEN) > 127) {// go straight
+				} else if (!pixels[row + 1][col].isBlack()) {// go straight
 					row++;
 				} else {
 					direction++;
 				}
 				break;
 			case 3: // West
-				if (pixels[row + 1][col].getColor(ProcessableColor.GREEN) > 127) {// turn left
+				if (!pixels[row + 1][col].isBlack()) {// turn left
 					direction--;
 					row++;
-				} else if (pixels[row][col - 1].getColor(ProcessableColor.GREEN) > 127) {// go straight
+				} else if (!pixels[row][col - 1].isBlack()) {// go straight
 					col--;
 				} else {
 					direction = 0;
@@ -157,7 +157,7 @@ public class VisionFrame extends Frame {
 		for (row = minRow - fudgeFactor; row < maxRow + fudgeFactor; row++) {
 			for (col = minCol - fudgeFactor; col < maxCol + fudgeFactor; col++) {
 				try {
-					if (pixels[row][col].getColor(colorToIsolate) > 127) {
+					if (!pixels[row][col].isBlack()) {
 						pixels[row][col].setColor(Color.black);
 						object.pixels[row][col].setColor(colorToIsolate);
 					}

@@ -40,8 +40,7 @@ public class Pixel {
 	}
 
 	public int getAverage() {
-		int average = (getRed() + getGreen() + getBlue()) / 3;
-		return average;
+		return (getRed() + getGreen() + getBlue()) / 3;
 	}
 
 	public int getYellow() {
@@ -106,23 +105,11 @@ public class Pixel {
 			break;
 		}
 	}
-
-	/*
-	 * changes the color of the pixel; currently only RGB is supported
-	 */
-	public void setColor(ProcessableColor color, int newVal) {
-		switch (color) {
-		case RED:
-			setRed(newVal);
-			break;
-		case GREEN:
-			setGreen(newVal);
-			break;
-		case BLUE:
-			setBlue(newVal);
-			break;
-		default:
-		}
+	
+	public boolean isBlack() {
+		if(getGreen()==0 && getBlue()==0 && getRed()==0)
+			return true;
+		return false;
 	}
 
 	public int getRGB() {
