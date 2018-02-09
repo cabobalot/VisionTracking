@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 import model.vision.ProcessableColor;
 import model.vision.VisionFrameController;
 
-public class Client extends Thread{
+public class Client extends Thread {
 
 	private PrintWriter out;
 	private BufferedReader in;
@@ -36,7 +36,7 @@ public class Client extends Thread{
 	public boolean isClosed() {
 		return socket.isClosed();
 	}
-	
+
 	public void run() {
 		respond();
 	}
@@ -64,7 +64,11 @@ public class Client extends Thread{
 					out.flush();
 					break;
 				case (Requests.NEAREST_CUBE_DISTANCE):
-					out.println(controller.getColoredFrame(ProcessableColor.YELLOW).getLargestObject().getDistanceFeet(13, 10.5));
+					double distance = controller.getColoredFrame(ProcessableColor.YELLOW).getLargestObject().getDistanceFeet(13, 10.5);
+					if (distance < 50)
+						out.println(distance);
+					else
+						out.println("0");
 					out.flush();
 					break;
 				case (Requests.NEAREST_CUBE):
@@ -84,14 +88,14 @@ public class Client extends Thread{
 
 		} catch (IOException e) {
 			e.printStackTrace();
-//			System.out.println("lost connection to Client");
+			// System.out.println("lost connection to Client");
 			try {
 				socket.close();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
 		} catch (NumberFormatException e) {
-//			System.out.println("Invalid Request: " + message);
+			// System.out.println("Invalid Request: " + message);
 		}
 
 		// close socket
