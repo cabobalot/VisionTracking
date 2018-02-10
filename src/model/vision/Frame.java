@@ -69,7 +69,7 @@ public class Frame extends Thread {
 				pixels[row][col] = new Pixel(img.getRGB(col, row));
 			}
 		}
-		System.out.println("Read image\n" + (System.currentTimeMillis()-startTime));
+		System.out.println("Read image\n" + (System.currentTimeMillis() - startTime));
 	}
 
 	////////////////////////// Methods //////////////////////////////////
@@ -188,6 +188,19 @@ public class Frame extends Thread {
 
 	///////////////////// My Code///////////////////////////////
 
+	public void swapColor(ProcessableColor color1, ProcessableColor color2) {
+		int color1Val, color2Val;
+		for (int row = 0; row < pixels.length; row++) {
+			for (int col = 0; col < pixels[0].length; col++) {
+				color1Val = pixels[row][col].getColor(color1);
+				color2Val = pixels[row][col].getColor(color2);
+
+				pixels[row][col].setColor(color1, color2Val);
+				pixels[row][col].setColor(color2, color1Val);
+			}
+		}
+	}
+
 	public int getAverage(ProcessableColor color) {
 		int retBuffer = 0;
 		for (int row = 0; row < pixels.length; row++) {
@@ -242,8 +255,8 @@ public class Frame extends Thread {
 			color2 = color;
 		}
 
-		int threshold = (int) (thresholdCoeff * (getAverage(color)+5));
-		
+		int threshold = (int) (thresholdCoeff * (getAverage(color) + 5));
+
 		int blockSize = 2;
 		int thisRow;
 		int thisCol;

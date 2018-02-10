@@ -21,27 +21,30 @@ public class Controller {
 	GarbageCollector garbageCollector;
 	NetworkServerController rioResponder;
 	Webcam webcam;
+	boolean isIpCam = false;
 
 	public Controller(String[] args) {
 
 		long startTime;
 		
-//		Webcam.setDriver(new IpCamDriver());
-//		try {
-//			IpCamDeviceRegistry.register("Camera", "http://10.224.41.80:8080/video", IpCamMode.PULL);
-//		} catch (MalformedURLException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
+		try {
+			IpCamDeviceRegistry.register("Camera", "http://10.45.85.2:5800/stream.mjpg", IpCamMode.PUSH);
+			Webcam.setDriver(new IpCamDriver());
+			webcam = Webcam.getDefault();
+			isIpCam = true;
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			Dimension d = new Dimension(640, 480);
+			webcam = Webcam.getDefault();
+			webcam.setViewSize(d);
+			e1.printStackTrace();
+		}
 		
-		webcam = Webcam.getDefault();
-//		Dimension d = new Dimension(640, 480);
-//		webcam.setViewSize(d);
 		webcam.open();
 
 		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.GREEN, ProcessableColor.YELLOW};
 
-		pic = new VisionFrameController(webcam.getImage(), colors, 10);
+		pic = new VisionFrameController(webcam.getImage(), colors, 10, isIpCam);
 		window = new PreviewFrame(pic.getPixels2D());
 
 		rioResponder = new NetworkServerController(4585, pic);
@@ -55,7 +58,7 @@ public class Controller {
 
 				startTime = System.currentTimeMillis();
 
-				pic = new VisionFrameController(webcam.getImage(), colors, 10);
+				pic = new VisionFrameController(webcam.getImage(), colors, 10, isIpCam);
 				rioResponder.setVisionFrameController(pic);
 				timeTaken = System.currentTimeMillis() - startTime;
 				iterations++;

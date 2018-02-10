@@ -105,9 +105,24 @@ public class Pixel {
 			break;
 		}
 	}
-	
+
+	public void setColor(ProcessableColor color, int newVal) {
+		switch (color) {
+		case RED:
+			setRed(newVal);
+			break;
+		case GREEN:
+			setGreen(newVal);
+			break;
+		case BLUE:
+			setBlue(newVal);
+			break;
+		default:
+		}
+	}
+
 	public boolean isBlack() {
-		if(getGreen()!=0 || getBlue()!=0 || getRed()!=0)
+		if (getGreen() != 0 || getBlue() != 0 || getRed() != 0)
 			return false;
 		return true;
 	}
