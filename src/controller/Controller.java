@@ -32,15 +32,16 @@ public class Controller {
 			Webcam.setDriver(new IpCamDriver());
 			webcam = Webcam.getDefault();
 			isIpCam = true;
+			webcam.open();
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
-			Dimension d = new Dimension(640, 480);
-			webcam = Webcam.getDefault();
-			webcam.setViewSize(d);
+//			Dimension d = new Dimension(640, 480);
+//			webcam = Webcam.getDefault();
+//			webcam.setViewSize(d);
 			e1.printStackTrace();
 		}
 		
-		webcam.open();
+//		webcam.open();
 
 		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.GREEN, ProcessableColor.YELLOW};
 
