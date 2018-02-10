@@ -107,9 +107,9 @@ public class Pixel {
 	}
 	
 	public boolean isBlack() {
-		if(getGreen()==0 && getBlue()==0 && getRed()==0)
-			return true;
-		return false;
+		if(getGreen()!=0 || getBlue()!=0 || getRed()!=0)
+			return false;
+		return true;
 	}
 
 	public int getRGB() {

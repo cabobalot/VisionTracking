@@ -199,7 +199,7 @@ public class Frame extends Thread {
 	}
 
 	public void colorIsolate(ProcessableColor color, double thresholdCoeff, double requiredIntensity) {
-		thresholdCoeff *= 1.5;
+		thresholdCoeff *= 1.45;
 		requiredIntensity *= .7;
 		ProcessableColor color1, color2;
 		switch (color) {
@@ -242,22 +242,8 @@ public class Frame extends Thread {
 			color2 = color;
 		}
 
-		int threshold = (int) (thresholdCoeff * getAverage(color));
-
-		// for (int row = 0; row < pixels.length; row++) {
-		// for (int col = 0; col < pixels[0].length; col++) {
-		// if (pixels[row][col].getColor(color) > threshold
-		// && pixels[row][col].getColor(color1) < pixels[row][col].getColor(color) *
-		// requiredIntensity
-		// && pixels[row][col].getColor(color2) < pixels[row][col].getColor(color) *
-		// requiredIntensity) {
-		// pixels[row][col].setColor(color);
-		// } else {
-		// pixels[row][col].setColor(Color.BLACK);
-		// }
-		// }
-		// }
-
+		int threshold = (int) (thresholdCoeff * (getAverage(color)+5));
+		
 		int blockSize = 2;
 		int thisRow;
 		int thisCol;
