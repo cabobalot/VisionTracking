@@ -35,8 +35,8 @@ public class Controller {
 //		}
 		
 		webcam = Webcam.getDefault();
-		Dimension d = new Dimension(640, 480);
-		webcam.setViewSize(d);
+//		Dimension d = new Dimension(640, 480);
+//		webcam.setViewSize(d);
 		webcam.open();
 
 		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.GREEN, ProcessableColor.YELLOW};
