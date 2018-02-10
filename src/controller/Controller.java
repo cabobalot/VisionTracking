@@ -26,13 +26,13 @@ public class Controller {
 
 		long startTime;
 		
-		Webcam.setDriver(new IpCamDriver());
-		try {
-			IpCamDeviceRegistry.register("Camera", "http://10.224.41.80:8080/video", IpCamMode.PULL);
-		} catch (MalformedURLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+//		Webcam.setDriver(new IpCamDriver());
+//		try {
+//			IpCamDeviceRegistry.register("Camera", "http://10.224.41.80:8080/video", IpCamMode.PULL);
+//		} catch (MalformedURLException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 		
 		webcam = Webcam.getDefault();
 		Dimension d = new Dimension(640, 480);
