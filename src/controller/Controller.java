@@ -28,10 +28,14 @@ public class Controller {
 
 		long startTime;
 		try {
-			webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
-		} catch (MalformedURLException e1) {
-			e1.printStackTrace();
-			webcam = new Camera(640, 480);
+			try {
+				webcam = new Camera(args[0]);
+			} catch (Exception e) {
+				webcam = new Camera(640, 480);
+//				webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.GREEN, ProcessableColor.YELLOW };
