@@ -189,7 +189,7 @@ public class Frame extends Thread {
 		return img;
 	}
 
-	///////////////////// My Code///////////////////////////////
+	///////////////////// Filters //////////////////////////////
 
 	public void swapColor(ProcessableColor color1, ProcessableColor color2) {
 		int color1Val, color2Val;
@@ -212,6 +212,44 @@ public class Frame extends Thread {
 			}
 		}
 		return retBuffer / (pixels.length * pixels[0].length);
+	}
+
+	public void edgeDetection(int threshold, ProcessableColor color) {
+		Pixel[][] thisPixels = new Pixel[getHeight()][getWidth()];
+		for (int row = 0; row < pixels.length; row++) {
+			for (int col = 0; col < pixels[0].length; col++) {
+				thisPixels[row][col] = new Pixel(pixels[row][col].getRGB());
+			}
+		}
+		int currentColorVal;
+		for (int row = 0; row < pixels.length; row++) {
+			for (int col = 0; col < pixels[0].length; col++) {
+				currentColorVal = pixels[row][col].getColor(color);
+				try {
+					if (currentColorVal - pixels[row][col - 1].getColor(color) > threshold
+							|| currentColorVal - pixels[row][col + 1].getColor(color) > threshold
+							|| currentColorVal - pixels[row - 1][col].getColor(color) > threshold
+							|| currentColorVal - pixels[row + 1][col].getColor(color) > threshold) {
+
+						thisPixels[row][col].setColor(color);
+					} else {
+						thisPixels[row][col].setColor(Color.BLACK);
+					}
+				} catch (ArrayIndexOutOfBoundsException e) {
+				}
+			}
+		}
+		pixels = thisPixels;
+	}
+
+	public void contrast(double power) {
+		for (int row = 0; row < pixels.length; row++) {
+			for (int col = 0; col < pixels[0].length; col++) {
+				pixels[row][col].setRed((int)(Math.pow((pixels[row][col].getRed()/255.0), power)*255));
+				pixels[row][col].setBlue((int)(Math.pow((pixels[row][col].getBlue()/255.0), power)*255));
+				pixels[row][col].setGreen((int)(Math.pow((pixels[row][col].getGreen()/255.0), power)*255));
+			}
+		}
 	}
 
 	public void colorIsolate(ProcessableColor color, double thresholdCoeff, double requiredIntensity) {

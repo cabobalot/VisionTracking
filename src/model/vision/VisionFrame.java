@@ -47,6 +47,8 @@ public class VisionFrame extends Frame {
 
 	private void concatenateObjects() {
 		for (VisionObject frame : objects) {
+//			frame.edgeDetection(128, colorToIsolate);
+
 			for (int row = 0; row < pixels.length; row++) {
 				for (int col = 0; col < pixels[0].length; col++) {
 					if (!frame.pixels[row][col].isBlack()) {

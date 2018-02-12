@@ -14,6 +14,14 @@ public class Pixel {
 	public Pixel(int RGB) {
 		setRGB(RGB);
 	}
+	
+	public Pixel(Color newColor) {
+		setColor(newColor);
+	}
+	
+	public Pixel(ProcessableColor newColor) {
+		setColor(newColor);
+	}
 
 	public int getRed() {
 		return red;

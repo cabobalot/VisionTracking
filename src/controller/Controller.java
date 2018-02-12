@@ -31,10 +31,10 @@ public class Controller {
 		long startTime;
 		try {
 			try {
-				webcam = new Camera(args[0]);
+//				webcam = new Camera(args[0]);
+				 webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
 			} catch (Exception e) {
 				webcam = new Camera(640, 480);
-				// webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -60,6 +60,10 @@ public class Controller {
 				rioResponder.setVisionFrameController(pic);
 				window.updatePicture(pic.getPixels2D());
 
+//				Frame frame = new Frame(webcam.getImage());
+//				frame.contrast(5);
+//				window.updatePicture(frame.getPixels2D());
+				
 				timeTaken = System.currentTimeMillis() - startTime;
 				iterations++;
 				if (iterations > 10) {

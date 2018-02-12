@@ -17,16 +17,16 @@ public class VisionFrameController extends Frame {
 		this.colorFrames = new VisionFrame[colors.length];
 		this.blurAmount = blurAmount;
 
+		//filters
 		if (swapBlueRed) {
 			this.swapColor(ProcessableColor.BLUE, ProcessableColor.RED);
 		}
-
+		contrast(2);
 		if (blurAmount > 0) {
-			long startTime = System.currentTimeMillis();
 			fastBlur(blurAmount);
-			System.out.println("Blurred image");
-			System.out.println(System.currentTimeMillis() - startTime);
 		}
+		
+		
 		populateVisionFrames();
 		process();
 		concatenateColors();
@@ -39,16 +39,16 @@ public class VisionFrameController extends Frame {
 		this.colorFrames = new VisionFrame[colors.length];
 		this.blurAmount = blurAmount;
 
+		// filters
 		if (swapBlueRed) {
 			this.swapColor(ProcessableColor.BLUE, ProcessableColor.RED);
 		}
-
+		contrast(2);
 		if (blurAmount > 0) {
-			long startTime = System.currentTimeMillis();
 			fastBlur(blurAmount);
-			System.out.println("Blurred image");
-			System.out.println(System.currentTimeMillis() - startTime);
 		}
+		
+		
 		populateVisionFrames();
 		process();
 		concatenateColors();
