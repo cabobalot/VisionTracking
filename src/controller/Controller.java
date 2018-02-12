@@ -24,6 +24,8 @@ public class Controller {
 	NetworkServerController rioResponder;
 	Camera webcam;
 
+	int framerate = 24;
+
 	public Controller(String[] args) {
 
 		long startTime;
@@ -32,7 +34,7 @@ public class Controller {
 				webcam = new Camera(args[0]);
 			} catch (Exception e) {
 				webcam = new Camera(640, 480);
-//				webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
+				// webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -56,6 +58,8 @@ public class Controller {
 
 				pic = new VisionFrameController(webcam.getImage(), colors, 10, webcam.isIpCamera());
 				rioResponder.setVisionFrameController(pic);
+				window.updatePicture(pic.getPixels2D());
+
 				timeTaken = System.currentTimeMillis() - startTime;
 				iterations++;
 				if (iterations > 10) {
@@ -65,9 +69,7 @@ public class Controller {
 				System.out.println("Milliseconds taken: " + timeTaken);
 				System.out.println("Average: " + timeAccumulator / (iterations - 9) + "\n");
 
-				window.updatePicture(pic.getPixels2D());
-
-				// TimeUnit.MILLISECONDS.sleep(1000);
+				TimeUnit.MILLISECONDS.sleep((1000 / framerate) - timeTaken > 0 ? (1000 / framerate) - timeTaken : 0);
 
 			} catch (Exception e) {
 				e.printStackTrace();
