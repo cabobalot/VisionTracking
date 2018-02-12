@@ -81,6 +81,14 @@ public class Client extends Thread {
 					out.println(point[0] + "," + point[1]);
 					out.flush();
 					break;
+				case (Requests.AMOUNT_CUBES):
+					out.println(Integer.toString(controller.getColoredFrame(ProcessableColor.YELLOW).getObjects().size()));
+					out.flush();
+					break;
+				case (Requests.AMOUNT_TAPE):
+					out.println(Integer.toString(controller.getColoredFrame(ProcessableColor.GREEN).getObjects().size()));
+				out.flush();
+				break;
 				default:
 					break;
 				}
