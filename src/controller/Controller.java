@@ -11,6 +11,8 @@ import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.ds.ipcam.*;
 
 import model.networking.NetworkServerController;
+import model.util.Camera;
+import model.util.GarbageCollector;
 import model.vision.*;
 
 public class Controller {
@@ -20,35 +22,24 @@ public class Controller {
 	PreviewFrame window;
 	GarbageCollector garbageCollector;
 	NetworkServerController rioResponder;
-	Webcam webcam;
-	boolean isIpCam = false;
+	Camera webcam;
 
 	public Controller(String[] args) {
 
 		long startTime;
-		
 		try {
-			IpCamDeviceRegistry.register("Camera", "http://10.45.85.2:5800/stream.mjpg", IpCamMode.PUSH);
-			Webcam.setDriver(new IpCamDriver());
-			webcam = Webcam.getDefault();
-			isIpCam = true;
-			webcam.open();
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-//			Dimension d = new Dimension(640, 480);
-//			webcam = Webcam.getDefault();
-//			webcam.setViewSize(d);
+			webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
+		} catch (MalformedURLException e1) {
 			e1.printStackTrace();
+			webcam = new Camera(640, 480);
 		}
-		
-//		webcam.open();
 
-		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.GREEN, ProcessableColor.YELLOW};
+		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.GREEN, ProcessableColor.YELLOW };
 
-		pic = new VisionFrameController(webcam.getImage(), colors, 10, isIpCam);
+		pic = new VisionFrameController(webcam.getImage(), colors, 10, webcam.isIpCamera());
 		window = new PreviewFrame(pic.getPixels2D());
 
-		rioResponder = new NetworkServerController(4585, pic);
+		rioResponder = new NetworkServerController(5801, pic);
 		rioResponder.start();
 
 		long iterations = 0;
@@ -59,7 +50,7 @@ public class Controller {
 
 				startTime = System.currentTimeMillis();
 
-				pic = new VisionFrameController(webcam.getImage(), colors, 10, isIpCam);
+				pic = new VisionFrameController(webcam.getImage(), colors, 10, webcam.isIpCamera());
 				rioResponder.setVisionFrameController(pic);
 				timeTaken = System.currentTimeMillis() - startTime;
 				iterations++;

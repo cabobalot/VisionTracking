@@ -1,4 +1,4 @@
-package model.vision;
+package model.util;
 
 import java.util.concurrent.TimeUnit;
 

@@ -1,6 +1,9 @@
 package model.vision;
 
 import javax.imageio.ImageIO;
+
+import model.util.FastRGB;
+
 import java.awt.image.DataBufferByte;
 import java.awt.image.BufferedImage;
 import java.awt.*;
