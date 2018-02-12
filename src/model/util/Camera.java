@@ -36,9 +36,8 @@ public class Camera {
 	}
 
 	public BufferedImage getImage() {
-		try {
-			image = webcam.getImage();
-		} catch (Exception e) {
+		image = webcam.getImage();
+		if (!webcam.isImageNew()) {
 			try {
 				IpCamDeviceRegistry.register("Camera", url, IpCamMode.PUSH);
 			} catch (Exception e1) {
