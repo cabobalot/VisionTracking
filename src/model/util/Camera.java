@@ -8,7 +8,6 @@ import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.ds.ipcam.IpCamDeviceRegistry;
 import com.github.sarxos.webcam.ds.ipcam.IpCamDriver;
 import com.github.sarxos.webcam.ds.ipcam.IpCamMode;
-import java.awt.image.ColorConvertOp;
 
 public class Camera {
 	Webcam webcam;
@@ -42,8 +41,7 @@ public class Camera {
 		} catch (Exception e) {
 			try {
 				IpCamDeviceRegistry.register("Camera", url, IpCamMode.PUSH);
-			} catch (MalformedURLException e1) {
-				// TODO Auto-generated catch block
+			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 			image = webcam.getImage();
