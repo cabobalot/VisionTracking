@@ -23,11 +23,12 @@ public class Controller {
 	private GarbageCollector garbageCollector;
 	private NetworkServerController rioResponder;
 	private Camera webcam;
-	
+
 	private double thresholdCoeff = .7;
 	private double requiredIntensity = 1.2;
 	private int blur = 10;
 	private int framerate = 30;
+	public int maxFramerate = 0;
 
 	public Controller(String[] args) {
 
@@ -36,7 +37,7 @@ public class Controller {
 			try {
 				webcam = new Camera(args[0]);
 			} catch (Exception e) {
-				webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
+				 webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
 //				webcam = new Camera(640, 480);
 			}
 		} catch (Exception e) {
@@ -45,36 +46,35 @@ public class Controller {
 
 		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.GREEN, ProcessableColor.YELLOW };
 
-		pic = new VisionFrameController(webcam.getImage(), colors, blur, webcam.isIpCamera(), thresholdCoeff, requiredIntensity);
+		pic = new VisionFrameController(webcam.getImage(), colors, blur, webcam.isIpCamera(), thresholdCoeff,
+				requiredIntensity);
 		window = new PreviewFrame(pic.getPixels2D(), this);
 
 		rioResponder = new NetworkServerController(5801, pic);
 		rioResponder.start();
 
-		long iterations = 0;
-		long timeAccumulator = 0;
 		long timeTaken = 0;
+		int averageTimeTaken = 0;
 		while (true) {
 			try {
 
 				startTime = System.currentTimeMillis();
 
-				pic = new VisionFrameController(webcam.getImage(), colors, blur, webcam.isIpCamera(), thresholdCoeff, requiredIntensity);
+				pic = new VisionFrameController(webcam.getImage(), colors, blur, webcam.isIpCamera(), thresholdCoeff,
+						requiredIntensity);
 				rioResponder.setVisionFrameController(pic);
-				window.updatePicture(pic.getPixels2D());
+				window.update(pic.getPixels2D());
 
-//				Frame frame = new Frame(webcam.getImage());
-//				frame.contrast(5);
-//				window.updatePicture(frame.getPixels2D());
+				// Frame frame = new Frame(webcam.getImage());
+				// frame.contrast(5);
+				// window.updatePicture(frame.getPixels2D());
 				
 				timeTaken = System.currentTimeMillis() - startTime;
-				iterations++;
-				if (iterations > 10) {
-					timeAccumulator += timeTaken;
-				}
+				averageTimeTaken = (int) (timeTaken*.05 + (averageTimeTaken*.95));
+				maxFramerate = (int) (((1000 / (double) averageTimeTaken) * .1) + ((double) maxFramerate * .9));
 
-				System.out.println("Milliseconds taken: " + timeTaken);
-				System.out.println("Average: " + timeAccumulator / (iterations - 9) + "\n");
+				System.out.println("Milliseconds taken: " + averageTimeTaken);
+				System.out.println("Average: " + averageTimeTaken + "\n");
 
 				TimeUnit.MILLISECONDS.sleep((1000 / framerate) - timeTaken > 0 ? (1000 / framerate) - timeTaken : 0);
 
@@ -83,26 +83,20 @@ public class Controller {
 			}
 		}
 	}
-	
+
 	public void setThresholdCoeff(double value) {
 		this.thresholdCoeff = value;
 	}
-	
+
 	public void setRequiredIntensity(double value) {
 		this.requiredIntensity = value;
 	}
-	
+
 	public void setFrameRate(int value) {
 		this.framerate = value;
 	}
+
 	public void setBlur(int value) {
 		this.blur = value;
 	}
 }
-
-
-
-
-
-
-

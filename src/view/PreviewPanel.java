@@ -69,7 +69,7 @@ public class PreviewPanel extends JPanel {
 		layout.putConstraint(SpringLayout.WEST, framerateSlider, 10, SpringLayout.WEST, this);
 		this.setLayout(layout);
 
-		setImage(pixels);
+		update(pixels);
 
 		this.add(imageLabel);
 		this.add(framerateSlider);
@@ -84,14 +84,14 @@ public class PreviewPanel extends JPanel {
 
 	}
 
-	public void setImage(Pixel[][] pixels) {
+	public void update(Pixel[][] pixels) {
 		this.pixels = pixels;
 		this.imageLabel.setIcon(new ImageIcon(pixelsToBufferedImage(pixels)));
 
 		// update controller values
 		
 		intensityLabel.setText("Intensity: " + (double)intensitySlider.getValue()/100);
-		framerateLabel.setText("Framerate: " + framerateSlider.getValue());
+		framerateLabel.setText("Framerate: " + framerateSlider.getValue() + "/" + controller.maxFramerate);
 		thresholdLabel.setText("Threshold: " + (double)thresholdSlider.getValue()/100);
 		blurLabel.setText("Blur: " + blurSlider.getValue());
 		
