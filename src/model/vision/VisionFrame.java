@@ -10,23 +10,35 @@ public class VisionFrame extends Frame {
 
 	protected ProcessableColor colorToIsolate = ProcessableColor.GREEN;
 
-	public VisionFrame(String fileName, ProcessableColor colorToIsolate) {
+	private double thresholdCoeff;
+	private double requiredIntensity;
+
+	public VisionFrame(String fileName, ProcessableColor colorToIsolate, double thresholdCoeff,
+			double requiredIntensity) {
 		super(fileName);
 		this.colorToIsolate = colorToIsolate;
 		this.objects = new ArrayList<VisionObject>();
+		this.thresholdCoeff = thresholdCoeff;
+		this.requiredIntensity = requiredIntensity;
 
 	}
 
-	public VisionFrame(Pixel[][] pixels, ProcessableColor colorToIsolate) {
+	public VisionFrame(Pixel[][] pixels, ProcessableColor colorToIsolate, double thresholdCoeff,
+			double requiredIntensity) {
 		super(pixels);
 		this.colorToIsolate = colorToIsolate;
 		this.objects = new ArrayList<VisionObject>();
+		this.thresholdCoeff = thresholdCoeff;
+		this.requiredIntensity = requiredIntensity;
 	}
 
-	public VisionFrame(int rows, int cols, ProcessableColor colorToIsolate) {
+	public VisionFrame(int rows, int cols, ProcessableColor colorToIsolate, double thresholdCoeff,
+			double requiredIntensity) {
 		super(rows, cols);
 		this.colorToIsolate = colorToIsolate;
 		this.objects = new ArrayList<VisionObject>();
+		this.thresholdCoeff = thresholdCoeff;
+		this.requiredIntensity = requiredIntensity;
 	}
 
 	public void setColorToIsolate(ProcessableColor color) {
@@ -35,9 +47,9 @@ public class VisionFrame extends Frame {
 
 	// entry point
 	public void run() {
-		this.colorIsolate(colorToIsolate, .7, 1.2);
+		this.colorIsolate(colorToIsolate, thresholdCoeff, requiredIntensity);
 		this.drawBlackBorder();
-		this.breakIntoObjects(0);
+		this.breakIntoObjects(.0001);
 		this.concatenateObjects();
 
 		// this.colorIsolate(colorToIsolate, .7, 1.2);
@@ -47,7 +59,7 @@ public class VisionFrame extends Frame {
 
 	private void concatenateObjects() {
 		for (VisionObject frame : objects) {
-//			frame.edgeDetection(128, colorToIsolate);
+			// frame.edgeDetection(128, colorToIsolate);
 
 			for (int row = 0; row < pixels.length; row++) {
 				for (int col = 0; col < pixels[0].length; col++) {
@@ -65,7 +77,7 @@ public class VisionFrame extends Frame {
 			for (int col = 0; col < pixels[0].length; col++) {
 				try {
 					if (!pixels[row][col].isBlack()) {
-						object = findObject(row, col, 25);
+						object = findObject(row, col, getHeight() / 20);
 						if (((double) pixels.length * (double) pixels[0].length)
 								* minimumArea < ((double) object.getArea())) {
 							object.drawCOM(Color.MAGENTA, .25);
@@ -78,7 +90,6 @@ public class VisionFrame extends Frame {
 			}
 		}
 	}
-
 
 	private VisionObject findObject(int startRow, int startCol, int fudgeFactor) {
 		int col = startCol;
@@ -167,12 +178,12 @@ public class VisionFrame extends Frame {
 				}
 			}
 		}
-		
-		int[] center = new int[] {(maxRow + minRow)/2, (maxCol + minCol)/2};
+
+		int[] center = new int[] { (maxRow + minRow) / 2, (maxCol + minCol) / 2 };
 
 		return object;
 
-}
+	}
 
 	public VisionObject getLargestObject() {
 		int largestIndex = 0;

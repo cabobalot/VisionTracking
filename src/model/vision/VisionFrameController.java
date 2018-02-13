@@ -10,20 +10,27 @@ public class VisionFrameController extends Frame {
 	ProcessableColor[] colors;
 	VisionFrame[] colorFrames;
 	int blurAmount;
+	private double thresholdCoeff;
+	private double requiredIntensity;
 
-	public VisionFrameController(String file, ProcessableColor[] colors, int blurAmount, boolean swapBlueRed) {
+	public VisionFrameController(String file, ProcessableColor[] colors, int blurAmount, boolean swapBlueRed, double thresholdCoeff, double requiredIntensity) {
 		super(file);
 		this.colors = colors;
 		this.colorFrames = new VisionFrame[colors.length];
 		this.blurAmount = blurAmount;
+		this.thresholdCoeff = thresholdCoeff;
+		this.requiredIntensity = requiredIntensity;
+		
 
 		//filters
 		if (swapBlueRed) {
 			this.swapColor(ProcessableColor.BLUE, ProcessableColor.RED);
 		}
-		contrast(2);
+//		contrast(1.2);
 		if (blurAmount > 0) {
 			fastBlur(blurAmount);
+//			blur(blurAmount);
+
 		}
 		
 		
@@ -33,19 +40,23 @@ public class VisionFrameController extends Frame {
 
 	}
 
-	public VisionFrameController(BufferedImage image, ProcessableColor[] colors, int blurAmount, boolean swapBlueRed) {
+	public VisionFrameController(BufferedImage image, ProcessableColor[] colors, int blurAmount, boolean swapBlueRed, double thresholdCoeff, double requiredIntensity) {
 		super(image);
 		this.colors = colors;
 		this.colorFrames = new VisionFrame[colors.length];
 		this.blurAmount = blurAmount;
+		this.thresholdCoeff = thresholdCoeff;
+		this.requiredIntensity = requiredIntensity;
 
 		// filters
 		if (swapBlueRed) {
 			this.swapColor(ProcessableColor.BLUE, ProcessableColor.RED);
 		}
-		contrast(2);
+//		contrast(1.2);
 		if (blurAmount > 0) {
 			fastBlur(blurAmount);
+//			blur(blurAmount);
+
 		}
 		
 		
@@ -88,7 +99,7 @@ public class VisionFrameController extends Frame {
 	private void populateVisionFrames() {
 		long startTime = System.currentTimeMillis();
 		for (int i = 0; i < colorFrames.length; i++) {
-			colorFrames[i] = new VisionFrame(pixels, colors[i]);
+			colorFrames[i] = new VisionFrame(pixels, colors[i], thresholdCoeff, requiredIntensity);
 		}
 		System.out.println("Populated frames");
 		System.out.println(System.currentTimeMillis() - startTime);
@@ -132,7 +143,7 @@ public class VisionFrameController extends Frame {
 				return colorFrames[i];
 			}
 		}
-		return new VisionFrame(getWidth(), getHeight(), color);
+		return new VisionFrame(getWidth(), getHeight(), color, thresholdCoeff, requiredIntensity);
 	}
 
 }

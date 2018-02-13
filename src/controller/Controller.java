@@ -18,23 +18,26 @@ import model.vision.*;
 public class Controller {
 
 	// VisionFrameController pic;
-	VisionFrameController pic;
-	PreviewFrame window;
-	GarbageCollector garbageCollector;
-	NetworkServerController rioResponder;
-	Camera webcam;
-
-	int framerate = 24;
+	private VisionFrameController pic;
+	private PreviewFrame window;
+	private GarbageCollector garbageCollector;
+	private NetworkServerController rioResponder;
+	private Camera webcam;
+	
+	private double thresholdCoeff = .7;
+	private double requiredIntensity = 1.2;
+	private int blur = 10;
+	private int framerate = 30;
 
 	public Controller(String[] args) {
 
 		long startTime;
 		try {
 			try {
-//				webcam = new Camera(args[0]);
-				 webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
+				webcam = new Camera(args[0]);
 			} catch (Exception e) {
-				webcam = new Camera(640, 480);
+				webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
+//				webcam = new Camera(640, 480);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -42,8 +45,8 @@ public class Controller {
 
 		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.GREEN, ProcessableColor.YELLOW };
 
-		pic = new VisionFrameController(webcam.getImage(), colors, 10, webcam.isIpCamera());
-		window = new PreviewFrame(pic.getPixels2D());
+		pic = new VisionFrameController(webcam.getImage(), colors, blur, webcam.isIpCamera(), thresholdCoeff, requiredIntensity);
+		window = new PreviewFrame(pic.getPixels2D(), this);
 
 		rioResponder = new NetworkServerController(5801, pic);
 		rioResponder.start();
@@ -56,7 +59,7 @@ public class Controller {
 
 				startTime = System.currentTimeMillis();
 
-				pic = new VisionFrameController(webcam.getImage(), colors, 10, webcam.isIpCamera());
+				pic = new VisionFrameController(webcam.getImage(), colors, blur, webcam.isIpCamera(), thresholdCoeff, requiredIntensity);
 				rioResponder.setVisionFrameController(pic);
 				window.updatePicture(pic.getPixels2D());
 
@@ -80,4 +83,26 @@ public class Controller {
 			}
 		}
 	}
+	
+	public void setThresholdCoeff(double value) {
+		this.thresholdCoeff = value;
+	}
+	
+	public void setRequiredIntensity(double value) {
+		this.requiredIntensity = value;
+	}
+	
+	public void setFrameRate(int value) {
+		this.framerate = value;
+	}
+	public void setBlur(int value) {
+		this.blur = value;
+	}
 }
+
+
+
+
+
+
+
