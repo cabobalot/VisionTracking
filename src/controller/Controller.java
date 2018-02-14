@@ -24,10 +24,10 @@ public class Controller {
 	private NetworkServerController rioResponder;
 	private Camera webcam;
 
-	private double thresholdCoeff = .7;
-	private double requiredIntensity = 1.2;
-	private int blur = 10;
-	private int framerate = 30;
+	public double thresholdCoeff = .5;
+	public double requiredIntensity = 1.25;
+	public int blur = 10;
+	public int framerate = 24;
 	public int maxFramerate = 0;
 
 	public Controller(String[] args) {
@@ -37,12 +37,15 @@ public class Controller {
 			try {
 				webcam = new Camera(args[0]);
 			} catch (Exception e) {
-				 webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
 //				webcam = new Camera(640, 480);
+				 webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+//		if(webcam==null)
+			
 
 		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.GREEN, ProcessableColor.YELLOW };
 

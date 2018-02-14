@@ -213,6 +213,15 @@ public class Frame extends Thread {
 		}
 		return retBuffer / (pixels.length * pixels[0].length);
 	}
+	public int getAverageBrightness() {
+		int retBuffer = 0;
+		for (int row = 0; row < pixels.length; row++) {
+			for (int col = 0; col < pixels[0].length; col++) {
+				retBuffer += pixels[row][col].getAverage();
+			}
+		}
+		return retBuffer / (pixels.length * pixels[0].length);
+	}
 
 	public void edgeDetection(int threshold, ProcessableColor color) {
 		Pixel[][] thisPixels = new Pixel[getHeight()][getWidth()];
@@ -389,9 +398,9 @@ public class Frame extends Thread {
 	}
 
 	public void fastBlur(int amount) {
-		amount /= 4;
+		amount /= 2;
 		int red, green, blue;
-		for (int i = 0; i < amount; i++) {
+		for (int i = 0; i < amount/2; i++) {
 			for (int row = 0; row < pixels.length; row++) {
 				for (int col = 0; col < pixels[0].length; col++) {
 					try {
@@ -405,6 +414,30 @@ public class Frame extends Thread {
 								+ pixels[row][col - amount].getBlue() + pixels[row][col + amount].getBlue()
 								+ pixels[row][col].getBlue()) / 5;
 
+						pixels[row][col].setRed(red);
+						pixels[row][col].setGreen(green);
+						pixels[row][col].setBlue(blue);
+					} catch (ArrayIndexOutOfBoundsException e) {
+
+					}
+				}
+			}
+		}
+	}
+	
+	public void fasterBlur(int amount) {
+		int red, green, blue;
+		for (int i = 0; i < amount; i++) {
+			for (int row = 0; row < pixels.length; row++) {
+				for (int col = 0; col < pixels[0].length; col++) {
+					try {
+						red = (pixels[row - 1][col].getRed() + pixels[row+1][col].getRed()
+								+ pixels[row][col].getRed() + pixels[row][col+1].getRed()) / 3;
+						green = (pixels[row - 1][col].getGreen() + pixels[row+1][col].getGreen()
+								+ pixels[row][col].getGreen() + pixels[row][col+1].getGreen()) / 4;
+						blue = (pixels[row - 1][col].getBlue() + pixels[row+1][col].getBlue()
+								+ pixels[row][col].getBlue() + pixels[row][col+1].getBlue()) / 4;
+						
 						pixels[row][col].setRed(red);
 						pixels[row][col].setGreen(green);
 						pixels[row][col].setBlue(blue);

@@ -38,10 +38,10 @@ public class PreviewPanel extends JPanel {
 		this.pixels = pixels;
 
 		this.imageLabel = new JLabel(new ImageIcon(pixelsToBufferedImage(pixels)));
-		this.framerateSlider = new JSlider(0, 1, 60, 30);
-		this.thresholdSlider = new JSlider(0, 10, 150, 50);
-		this.intensitySlider = new JSlider(0, 50, 150, 120);
-		this.blurSlider = new JSlider(0, 0, 20, 10);
+		this.framerateSlider = new JSlider(0, 1, 60, controller.framerate);
+		this.thresholdSlider = new JSlider(0, 10, 150, (int)(controller.thresholdCoeff*100));
+		this.intensitySlider = new JSlider(0, 75, 150, (int)(controller.requiredIntensity*100));
+		this.blurSlider = new JSlider(0, 0, 50, 10);
 		this.framerateLabel = new JLabel("Framerate: 0");
 		this.thresholdLabel = new JLabel("Threshold: 0");
 		this.intensityLabel = new JLabel("Intensity: 0");

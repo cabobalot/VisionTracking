@@ -64,7 +64,8 @@ public class Client extends Thread {
 					out.flush();
 					break;
 				case (Requests.NEAREST_CUBE_DISTANCE):
-					double distance = controller.getColoredFrame(ProcessableColor.YELLOW).getLargestObject().getDistanceFeet(13, 10.5);
+					double distance = controller.getColoredFrame(ProcessableColor.YELLOW).getLargestObject()
+							.getDistanceFeet(13, 10.5);
 					if (distance < 50)
 						out.println(distance);
 					else
@@ -82,13 +83,19 @@ public class Client extends Thread {
 					out.flush();
 					break;
 				case (Requests.AMOUNT_CUBES):
-					out.println(Integer.toString(controller.getColoredFrame(ProcessableColor.YELLOW).getObjects().size()));
+					out.println(
+							Integer.toString(controller.getColoredFrame(ProcessableColor.YELLOW).getObjects().size()));
 					out.flush();
 					break;
 				case (Requests.AMOUNT_TAPE):
-					out.println(Integer.toString(controller.getColoredFrame(ProcessableColor.GREEN).getObjects().size()));
-				out.flush();
-				break;
+					out.println(
+							Integer.toString(controller.getColoredFrame(ProcessableColor.GREEN).getObjects().size()));
+					out.flush();
+					break;
+				case (Requests.AVERAGE_BRIGHTNESS):
+					out.println(Integer.toString((int)(controller.getAverageBrightness()*.3921)));
+					out.flush();
+					break;
 				default:
 					break;
 				}
