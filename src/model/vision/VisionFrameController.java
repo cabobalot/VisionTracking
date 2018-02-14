@@ -54,8 +54,8 @@ public class VisionFrameController extends Frame {
 		}
 //		contrast(1.2);
 		if (blurAmount > 0) {
-			fastBlur(blurAmount);
-//			blur(blurAmount);
+//			fastBlur(blurAmount);
+			blur(blurAmount);
 
 		}
 		

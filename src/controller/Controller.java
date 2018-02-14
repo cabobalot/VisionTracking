@@ -73,10 +73,11 @@ public class Controller {
 				// window.updatePicture(frame.getPixels2D());
 				
 				timeTaken = System.currentTimeMillis() - startTime;
-				averageTimeTaken = (int) (timeTaken*.05 + (averageTimeTaken*.95));
-				maxFramerate = (int) (((1000 / (double) averageTimeTaken) * .1) + ((double) maxFramerate * .9));
+				averageTimeTaken = (int) (timeTaken*.1 + (averageTimeTaken*.9));
+//				maxFramerate = (int) (((1000 / (double) timeTaken) * .1) + ((double) maxFramerate * .9));
+				maxFramerate = (int)(1000/averageTimeTaken);
 
-				System.out.println("Milliseconds taken: " + averageTimeTaken);
+				System.out.println("Milliseconds taken: " + timeTaken);
 				System.out.println("Average: " + averageTimeTaken + "\n");
 
 				TimeUnit.MILLISECONDS.sleep((1000 / framerate) - timeTaken > 0 ? (1000 / framerate) - timeTaken : 0);
