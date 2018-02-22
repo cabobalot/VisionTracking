@@ -24,11 +24,15 @@ public class Controller {
 	private NetworkServerController rioResponder;
 	private Camera webcam;
 
-	public double thresholdCoeff = .5;
-	public double requiredIntensity = 1.25;
-	public int blur = 10;
+	public float hueSpread = .051f;
+	public float threshold = .3f;
+	public int blur = 0;
 	public int framerate = 24;
 	public int maxFramerate = 0;
+	
+	public float yellowHue = .25f;
+	public float greenHue = .35f;
+	public float testHue = .35f;
 
 	public Controller(String[] args) {
 
@@ -37,8 +41,8 @@ public class Controller {
 			try {
 				webcam = new Camera(args[0]);
 			} catch (Exception e) {
-//				webcam = new Camera(640, 480);
-				 webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
+				webcam = new Camera(640, 480);
+//				 webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -47,14 +51,14 @@ public class Controller {
 //		if(webcam==null)
 			
 
-		ProcessableColor[] colors = new ProcessableColor[] { ProcessableColor.GREEN, ProcessableColor.YELLOW };
+		float[] colors = new float[] {testHue};
 
-		pic = new VisionFrameController(webcam.getImage(), colors, blur, webcam.isIpCamera(), thresholdCoeff,
-				requiredIntensity);
+		pic = new VisionFrameController(webcam.getImage(), colors, blur, webcam.isIpCamera(), threshold,
+				hueSpread);
 		window = new PreviewFrame(pic.getPixels2D(), this);
 
-		rioResponder = new NetworkServerController(5801, pic);
-		rioResponder.start();
+//		rioResponder = new NetworkServerController(5801, pic);
+//		rioResponder.start();
 
 		long timeTaken = 0;
 		int averageTimeTaken = 0;
@@ -63,9 +67,9 @@ public class Controller {
 
 				startTime = System.currentTimeMillis();
 
-				pic = new VisionFrameController(webcam.getImage(), colors, blur, webcam.isIpCamera(), thresholdCoeff,
-						requiredIntensity);
-				rioResponder.setVisionFrameController(pic);
+				pic = new VisionFrameController(webcam.getImage(), colors, blur, webcam.isIpCamera(), threshold,
+						hueSpread);
+//				rioResponder.setVisionFrameController(pic);
 				window.update(pic.getPixels2D());
 
 				// Frame frame = new Frame(webcam.getImage());
@@ -88,12 +92,12 @@ public class Controller {
 		}
 	}
 
-	public void setThresholdCoeff(double value) {
-		this.thresholdCoeff = value;
+	public void setThresholdCoeff(float value) {
+		this.threshold = value;
 	}
 
-	public void setRequiredIntensity(double value) {
-		this.requiredIntensity = value;
+	public void setHueSpread(float value) {
+		this.hueSpread = value;
 	}
 
 	public void setFrameRate(int value) {
@@ -102,5 +106,8 @@ public class Controller {
 
 	public void setBlur(int value) {
 		this.blur = value;
+	}
+	public void setTestHue(float value) {
+		this.testHue = value;
 	}
 }

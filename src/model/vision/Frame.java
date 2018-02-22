@@ -137,9 +137,9 @@ public class Frame extends Thread {
 	public void add(Pixel[][] newPixels) {
 		for (int row = 0; row < pixels.length; row++) {
 			for (int col = 0; col < pixels[0].length; col++) {
-				pixels[row][col].setRed(pixels[row][col].getRed() + newPixels[row][col].getRed());
-				pixels[row][col].setGreen(pixels[row][col].getGreen() + newPixels[row][col].getGreen());
-				pixels[row][col].setBlue(pixels[row][col].getBlue() + newPixels[row][col].getBlue());
+				pixels[row][col].setHue(pixels[row][col].getHue() + newPixels[row][col].getHue());
+				pixels[row][col].setSaturation(pixels[row][col].getSaturation() + newPixels[row][col].getSaturation());
+				pixels[row][col].setValue(pixels[row][col].getValue() + newPixels[row][col].getValue());
 			}
 		}
 	}
@@ -191,56 +191,34 @@ public class Frame extends Thread {
 
 	///////////////////// Filters //////////////////////////////
 
-	public void swapColor(ProcessableColor color1, ProcessableColor color2) {
-		int color1Val, color2Val;
-		for (int row = 0; row < pixels.length; row++) {
-			for (int col = 0; col < pixels[0].length; col++) {
-				color1Val = pixels[row][col].getColor(color1);
-				color2Val = pixels[row][col].getColor(color2);
-
-				pixels[row][col].setColor(color1, color2Val);
-				pixels[row][col].setColor(color2, color1Val);
-			}
-		}
-	}
-
-	public int getAverage(ProcessableColor color) {
-		int retBuffer = 0;
-		for (int row = 0; row < pixels.length; row++) {
-			for (int col = 0; col < pixels[0].length; col++) {
-				retBuffer += pixels[row][col].getColor(color);
-			}
-		}
-		return retBuffer / (pixels.length * pixels[0].length);
-	}
 	public int getAverageBrightness() {
 		int retBuffer = 0;
 		for (int row = 0; row < pixels.length; row++) {
 			for (int col = 0; col < pixels[0].length; col++) {
-				retBuffer += pixels[row][col].getAverage();
+				retBuffer += pixels[row][col].getValue();
 			}
 		}
 		return retBuffer / (pixels.length * pixels[0].length);
 	}
 
-	public void edgeDetection(int threshold, ProcessableColor color) {
+	public void edgeDetection(int threshold) {
 		Pixel[][] thisPixels = new Pixel[getHeight()][getWidth()];
 		for (int row = 0; row < pixels.length; row++) {
 			for (int col = 0; col < pixels[0].length; col++) {
 				thisPixels[row][col] = new Pixel(pixels[row][col].getRGB());
 			}
 		}
-		int currentColorVal;
+		float currentColorVal;
 		for (int row = 0; row < pixels.length; row++) {
 			for (int col = 0; col < pixels[0].length; col++) {
-				currentColorVal = pixels[row][col].getColor(color);
+				currentColorVal = pixels[row][col].getHue();
 				try {
-					if (currentColorVal - pixels[row][col - 1].getColor(color) > threshold
-							|| currentColorVal - pixels[row][col + 1].getColor(color) > threshold
-							|| currentColorVal - pixels[row - 1][col].getColor(color) > threshold
-							|| currentColorVal - pixels[row + 1][col].getColor(color) > threshold) {
+					if (currentColorVal - pixels[row][col - 1].getHue() > threshold
+							|| currentColorVal - pixels[row][col + 1].getHue() > threshold
+							|| currentColorVal - pixels[row - 1][col].getHue() > threshold
+							|| currentColorVal - pixels[row + 1][col].getHue() > threshold) {
 
-						thisPixels[row][col].setColor(color);
+						thisPixels[row][col].setColor(Color.WHITE);
 					} else {
 						thisPixels[row][col].setColor(Color.BLACK);
 					}
@@ -254,58 +232,14 @@ public class Frame extends Thread {
 	public void contrast(double power) {
 		for (int row = 0; row < pixels.length; row++) {
 			for (int col = 0; col < pixels[0].length; col++) {
-				pixels[row][col].setRed((int)(Math.pow((pixels[row][col].getRed()/255.0), power)*255));
-				pixels[row][col].setBlue((int)(Math.pow((pixels[row][col].getBlue()/255.0), power)*255));
-				pixels[row][col].setGreen((int)(Math.pow((pixels[row][col].getGreen()/255.0), power)*255));
+				pixels[row][col].setValue((int)(Math.pow((pixels[row][col].getValue()/255.0), power)*255));
 			}
 		}
 	}
 
-	public void colorIsolate(ProcessableColor color, double thresholdCoeff, double requiredIntensity) {
-		thresholdCoeff *= 1.45;
-		requiredIntensity *= .7;
-		ProcessableColor color1, color2;
-		switch (color) {
-		case RED:
-			color1 = ProcessableColor.BLUE;
-			color2 = ProcessableColor.GREEN;
-			requiredIntensity *= .5;
-			thresholdCoeff *= 1;
-			break;
-		case BLUE:
-			color1 = ProcessableColor.RED;
-			color2 = ProcessableColor.GREEN;
-			requiredIntensity *= 1;
-			thresholdCoeff *= 1;
-			break;
-		case GREEN:
-			color1 = ProcessableColor.BLUE;
-			color2 = ProcessableColor.RED;
-			break;
-		case CYAN:
-			color1 = ProcessableColor.MAGENTA;
-			color2 = ProcessableColor.YELLOW;
-			requiredIntensity *= .8;
-			thresholdCoeff *= 1.2;
-			break;
-		case MAGENTA:
-			color1 = ProcessableColor.YELLOW;
-			color2 = ProcessableColor.CYAN;
-			requiredIntensity *= 1;
-			thresholdCoeff *= 1;
-			break;
-		case YELLOW:
-			color1 = ProcessableColor.CYAN;
-			color2 = ProcessableColor.MAGENTA;
-			requiredIntensity *= 1;
-			thresholdCoeff *= 1.25;
-			break;
-		default:
-			color1 = color;
-			color2 = color;
-		}
-
-		int threshold = (int) (thresholdCoeff * (getAverage(color) + 5));
+	public void colorIsolate(float hue, float hueSpread, float threshold) {
+		
+		Color color = new Color(hue, 1f, 1f);
 
 		int blockSize = 2;
 		int thisRow;
@@ -314,12 +248,7 @@ public class Frame extends Thread {
 			thisRow = row * blockSize;
 			for (int col = 0; col < (pixels[0].length) / blockSize; col++) {
 				thisCol = col * blockSize;
-				if (pixels[thisRow][thisCol].getColor(color) > threshold
-						&& pixels[thisRow][thisCol].getColor(color1) < pixels[thisRow][thisCol].getColor(color)
-								* requiredIntensity
-						&& pixels[thisRow][thisCol].getColor(color2) < pixels[thisRow][thisCol].getColor(color)
-								* requiredIntensity) {
-					// pixels[row][col].setColor(color);
+				if (pixels[thisRow][thisCol].getSaturation() > threshold  && pixels[thisRow][thisCol].getValue() > 0.2 && Math.abs(pixels[thisRow][thisCol].getHue()-hue) < hueSpread){
 					this.drawBox(thisCol, thisRow, color, blockSize);
 				} else {
 					// pixels[row][col].setColor(Color.BLACK);
@@ -354,9 +283,9 @@ public class Frame extends Thread {
 			double colTotal = 0, rowTotal = 0, massTotal = 0;
 			for (int row = 0; row < pixels.length; row++) {
 				for (int col = 0; col < pixels[0].length; col++) {
-					massTotal += (double) pixels[row][col].getAverage();
-					rowTotal += (double) pixels[row][col].getAverage() * row;
-					colTotal += (double) pixels[row][col].getAverage() * col;
+					massTotal += (double) pixels[row][col].getValue();
+					rowTotal += (double) pixels[row][col].getValue() * row;
+					colTotal += (double) pixels[row][col].getValue() * col;
 				}
 			}
 			try {
@@ -371,24 +300,19 @@ public class Frame extends Thread {
 	}
 
 	public void blur(int amount) {
-		int red, green, blue;
+		float hue, saturation, value;
 		for (int i = 0; i < amount; i++) {
 			for (int row = 0; row < pixels.length; row++) {
 				for (int col = 0; col < pixels[0].length; col++) {
 					try {
-						red = (pixels[row - 1][col].getRed() + pixels[row + 1][col].getRed()
-								+ pixels[row][col - 1].getRed() + pixels[row][col + 1].getRed()
-								+ pixels[row][col].getRed()) / 5;
-						green = (pixels[row - 1][col].getGreen() + pixels[row + 1][col].getGreen()
-								+ pixels[row][col - 1].getGreen() + pixels[row][col + 1].getGreen()
-								+ pixels[row][col].getGreen()) / 5;
-						blue = (pixels[row - 1][col].getBlue() + pixels[row + 1][col].getBlue()
-								+ pixels[row][col - 1].getBlue() + pixels[row][col + 1].getBlue()
-								+ pixels[row][col].getBlue()) / 5;
-
-						pixels[row][col].setRed(red);
-						pixels[row][col].setGreen(green);
-						pixels[row][col].setBlue(blue);
+						saturation = (pixels[row - 1][col].getSaturation() + pixels[row + 1][col].getSaturation()
+								+ pixels[row][col - 1].getSaturation() + pixels[row][col + 1].getSaturation()
+								+ pixels[row][col].getSaturation()) / 5;
+						value = (pixels[row - 1][col].getValue() + pixels[row + 1][col].getValue()
+								+ pixels[row][col - 1].getValue() + pixels[row][col + 1].getValue()
+								+ pixels[row][col].getValue()) / 5;
+						pixels[row][col].setSaturation(saturation);
+						pixels[row][col].setValue(value);
 					} catch (ArrayIndexOutOfBoundsException e) {
 
 					}
@@ -397,57 +321,33 @@ public class Frame extends Thread {
 		}
 	}
 
-	public void fastBlur(int amount) {
-		amount /= 2;
-		int red, green, blue;
-		for (int i = 0; i < amount/2; i++) {
-			for (int row = 0; row < pixels.length; row++) {
-				for (int col = 0; col < pixels[0].length; col++) {
-					try {
-						red = (pixels[row - amount][col].getRed() + pixels[row + amount][col].getRed()
-								+ pixels[row][col - amount].getRed() + pixels[row][col + amount].getRed()
-								+ pixels[row][col].getRed()) / 5;
-						green = (pixels[row - amount][col].getGreen() + pixels[row + amount][col].getGreen()
-								+ pixels[row][col - amount].getGreen() + pixels[row][col + amount].getGreen()
-								+ pixels[row][col].getGreen()) / 5;
-						blue = (pixels[row - amount][col].getBlue() + pixels[row + amount][col].getBlue()
-								+ pixels[row][col - amount].getBlue() + pixels[row][col + amount].getBlue()
-								+ pixels[row][col].getBlue()) / 5;
-
-						pixels[row][col].setRed(red);
-						pixels[row][col].setGreen(green);
-						pixels[row][col].setBlue(blue);
-					} catch (ArrayIndexOutOfBoundsException e) {
-
-					}
-				}
-			}
-		}
-	}
-	
-	public void fasterBlur(int amount) {
-		int red, green, blue;
-		for (int i = 0; i < amount; i++) {
-			for (int row = 0; row < pixels.length; row++) {
-				for (int col = 0; col < pixels[0].length; col++) {
-					try {
-						red = (pixels[row - 1][col].getRed() + pixels[row+1][col].getRed()
-								+ pixels[row][col].getRed() + pixels[row][col+1].getRed()) / 3;
-						green = (pixels[row - 1][col].getGreen() + pixels[row+1][col].getGreen()
-								+ pixels[row][col].getGreen() + pixels[row][col+1].getGreen()) / 4;
-						blue = (pixels[row - 1][col].getBlue() + pixels[row+1][col].getBlue()
-								+ pixels[row][col].getBlue() + pixels[row][col+1].getBlue()) / 4;
-						
-						pixels[row][col].setRed(red);
-						pixels[row][col].setGreen(green);
-						pixels[row][col].setBlue(blue);
-					} catch (ArrayIndexOutOfBoundsException e) {
-
-					}
-				}
-			}
-		}
-	}
+//	public void fastBlur(int amount) {
+//		amount /= 2;
+//		int red, green, blue;
+//		for (int i = 0; i < amount/2; i++) {
+//			for (int row = 0; row < pixels.length; row++) {
+//				for (int col = 0; col < pixels[0].length; col++) {
+//					try {
+//						red = (pixels[row - amount][col].getRed() + pixels[row + amount][col].getRed()
+//								+ pixels[row][col - amount].getRed() + pixels[row][col + amount].getRed()
+//								+ pixels[row][col].getRed()) / 5;
+//						green = (pixels[row - amount][col].getGreen() + pixels[row + amount][col].getGreen()
+//								+ pixels[row][col - amount].getGreen() + pixels[row][col + amount].getGreen()
+//								+ pixels[row][col].getGreen()) / 5;
+//						blue = (pixels[row - amount][col].getBlue() + pixels[row + amount][col].getBlue()
+//								+ pixels[row][col - amount].getBlue() + pixels[row][col + amount].getBlue()
+//								+ pixels[row][col].getBlue()) / 5;
+//
+//						pixels[row][col].setRed(red);
+//						pixels[row][col].setGreen(green);
+//						pixels[row][col].setBlue(blue);
+//					} catch (ArrayIndexOutOfBoundsException e) {
+//
+//					}
+//				}
+//			}
+//		}
+//	}
 
 	/*
 	 * gets the number of pixels that are not black
@@ -479,17 +379,6 @@ public class Frame extends Thread {
 		}
 	}
 
-	public void drawBox(int x, int y, ProcessableColor color, int radius) {
-		try {
-			for (int row = y - radius; row < y + radius; row++) {
-				for (int col = x - radius; col < x + radius; col++) {
-					pixels[row][col].setColor(color);
-				}
-			}
-		} catch (ArrayIndexOutOfBoundsException e) {
-			drawBox(x, y, color, radius - 1);
-		}
-	}
 
 	public void drawCOM(Color color, double sizeCoeff) {
 		int[] com = getCOM();

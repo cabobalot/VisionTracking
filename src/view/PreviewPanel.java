@@ -20,8 +20,8 @@ public class PreviewPanel extends JPanel {
 	private JLabel framerateLabel;
 	private JSlider thresholdSlider;
 	private JLabel thresholdLabel;
-	private JSlider intensitySlider;
-	private JLabel intensityLabel;
+	private JSlider spreadSlider;
+	private JLabel spreadLabel;
 	private JSlider blurSlider;
 	private JLabel blurLabel;
 	private Controller controller;
@@ -39,12 +39,12 @@ public class PreviewPanel extends JPanel {
 
 		this.imageLabel = new JLabel(new ImageIcon(pixelsToBufferedImage(pixels)));
 		this.framerateSlider = new JSlider(0, 1, 60, controller.framerate);
-		this.thresholdSlider = new JSlider(0, 10, 150, (int)(controller.thresholdCoeff*100));
-		this.intensitySlider = new JSlider(0, 75, 150, (int)(controller.requiredIntensity*100));
-		this.blurSlider = new JSlider(0, 0, 50, 10);
+		this.thresholdSlider = new JSlider(0, 0, 100, (int)(controller.threshold*100));
+		this.spreadSlider = new JSlider(0, 0, 100, (int)(controller.hueSpread*100));
+		this.blurSlider = new JSlider(0, 0, 50, controller.blur);
 		this.framerateLabel = new JLabel("Framerate: 0");
 		this.thresholdLabel = new JLabel("Threshold: 0");
-		this.intensityLabel = new JLabel("Intensity: 0");
+		this.spreadLabel = new JLabel("Intensity: 0");
 		this.blurLabel = new JLabel("Blur: 0");
 
 		layout = new SpringLayout();
@@ -55,16 +55,16 @@ public class PreviewPanel extends JPanel {
 		layout.putConstraint(SpringLayout.WEST, blurSlider, 0, SpringLayout.WEST, framerateSlider);
 		layout.putConstraint(SpringLayout.NORTH, thresholdLabel, 0, SpringLayout.SOUTH, thresholdSlider);
 		layout.putConstraint(SpringLayout.NORTH, framerateLabel, 0, SpringLayout.SOUTH, framerateSlider);
-		layout.putConstraint(SpringLayout.NORTH, intensityLabel, 0, SpringLayout.SOUTH, intensitySlider);
+		layout.putConstraint(SpringLayout.NORTH, spreadLabel, 0, SpringLayout.SOUTH, spreadSlider);
 		layout.putConstraint(SpringLayout.WEST, thresholdLabel, 0, SpringLayout.WEST, thresholdSlider);
 		layout.putConstraint(SpringLayout.EAST, thresholdLabel, -10, SpringLayout.EAST, this);
-		layout.putConstraint(SpringLayout.WEST, intensityLabel, 10, SpringLayout.WEST, intensitySlider);
+		layout.putConstraint(SpringLayout.WEST, spreadLabel, 10, SpringLayout.WEST, spreadSlider);
 		layout.putConstraint(SpringLayout.WEST, framerateLabel, 10, SpringLayout.WEST, framerateSlider);
 		layout.putConstraint(SpringLayout.WEST, imageLabel, 0, SpringLayout.WEST, framerateSlider);
 		layout.putConstraint(SpringLayout.NORTH, thresholdSlider, 0, SpringLayout.NORTH, framerateSlider);
-		layout.putConstraint(SpringLayout.WEST, thresholdSlider, 6, SpringLayout.EAST, intensitySlider);
-		layout.putConstraint(SpringLayout.NORTH, intensitySlider, 0, SpringLayout.NORTH, framerateSlider);
-		layout.putConstraint(SpringLayout.WEST, intensitySlider, 6, SpringLayout.EAST, framerateSlider);
+		layout.putConstraint(SpringLayout.WEST, thresholdSlider, 6, SpringLayout.EAST, spreadSlider);
+		layout.putConstraint(SpringLayout.NORTH, spreadSlider, 0, SpringLayout.NORTH, framerateSlider);
+		layout.putConstraint(SpringLayout.WEST, spreadSlider, 6, SpringLayout.EAST, framerateSlider);
 		layout.putConstraint(SpringLayout.NORTH, framerateSlider, 10, SpringLayout.NORTH, this);
 		layout.putConstraint(SpringLayout.WEST, framerateSlider, 10, SpringLayout.WEST, this);
 		this.setLayout(layout);
@@ -74,10 +74,10 @@ public class PreviewPanel extends JPanel {
 		this.add(imageLabel);
 		this.add(framerateSlider);
 		this.add(thresholdSlider);
-		this.add(intensitySlider);
+		this.add(spreadSlider);
 		this.add(blurSlider);
 
-		this.add(intensityLabel);
+		this.add(spreadLabel);
 		this.add(thresholdLabel);
 		this.add(framerateLabel);
 		this.add(blurLabel);
@@ -90,14 +90,14 @@ public class PreviewPanel extends JPanel {
 
 		// update controller values
 		
-		intensityLabel.setText("Intensity: " + (double)intensitySlider.getValue()/100);
+		spreadLabel.setText("Hue Spread: " + (double)spreadSlider.getValue()/100);
 		framerateLabel.setText("Framerate: " + framerateSlider.getValue() + "/" + controller.maxFramerate);
 		thresholdLabel.setText("Threshold: " + (double)thresholdSlider.getValue()/100);
 		blurLabel.setText("Blur: " + blurSlider.getValue());
 		
 		controller.setFrameRate(framerateSlider.getValue());
-		controller.setRequiredIntensity((double)intensitySlider.getValue() / 100);
-		controller.setThresholdCoeff((double)thresholdSlider.getValue() / 100);
+		controller.setHueSpread((float)spreadSlider.getValue() / 100);
+		controller.setThresholdCoeff((float)thresholdSlider.getValue() / 100);
 		controller.setBlur(blurSlider.getValue());
 
 	}

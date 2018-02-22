@@ -2,6 +2,7 @@ package model.networking;
 
 import java.util.List;
 
+import controller.Controller;
 import model.vision.VisionFrameController;
 
 import java.io.IOException;
@@ -13,11 +14,13 @@ public class NetworkServerController extends Thread {
 	int port;
 	ServerSocket server;
 	List<Client> clients;
-	VisionFrameController controller;
+	VisionFrameController visionFrameController;
+	Controller controller;
 
-	public NetworkServerController(int port, VisionFrameController controller) {
+	public NetworkServerController(int port, Controller controller, VisionFrameController visionFrameController) {
 		this.port = port;
 		try {
+			this.visionFrameController = visionFrameController;
 			this.controller = controller;
 			this.server = new ServerSocket(port);
 			server.setSoTimeout(1);
@@ -27,7 +30,8 @@ public class NetworkServerController extends Thread {
 		clients = new ArrayList<Client>();
 	}
 	
-	public void setVisionFrameController(VisionFrameController controller) {
+	public void setVisionFrameController(Controller controller, VisionFrameController visionFrameController) {
+		this.visionFrameController = visionFrameController;
 		this.controller = controller;
 	}
 
@@ -36,7 +40,7 @@ public class NetworkServerController extends Thread {
 
 			// add connecting clients
 			try {
-				clients.add(new Client(controller, server.accept()));
+				clients.add(new Client(controller, visionFrameController, server.accept()));
 //				System.out.println("Client Connected");
 			} catch (IOException e) {
 			}

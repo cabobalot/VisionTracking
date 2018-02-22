@@ -7,28 +7,27 @@ import java.util.concurrent.TimeUnit;
 import com.github.sarxos.webcam.Webcam;
 
 public class VisionFrameController extends Frame {
-	ProcessableColor[] colors;
+	float[] hues;
 	VisionFrame[] colorFrames;
 	int blurAmount;
-	private double thresholdCoeff;
-	private double requiredIntensity;
+	private float thresholdCoeff;
+	private float hueSpread;
 
-	public VisionFrameController(String file, ProcessableColor[] colors, int blurAmount, boolean swapBlueRed, double thresholdCoeff, double requiredIntensity) {
+	public VisionFrameController(String file, float[] hues, int blurAmount, boolean swapBlueRed, float thresholdCoeff, float hueSpread) {
 		super(file);
-		this.colors = colors;
-		this.colorFrames = new VisionFrame[colors.length];
+		this.hues = hues;
+		this.colorFrames = new VisionFrame[hues.length];
 		this.blurAmount = blurAmount;
-		this.thresholdCoeff = thresholdCoeff;
-		this.requiredIntensity = requiredIntensity;
+		this.hueSpread = hueSpread;
 		
 
 		//filters
 		if (swapBlueRed) {
-			this.swapColor(ProcessableColor.BLUE, ProcessableColor.RED);
+//			this.swapColor(ProcessableColor.BLUE, ProcessableColor.RED);
 		}
 //		contrast(1.2);
 		if (blurAmount > 0) {
-			fastBlur(blurAmount);
+			blur(blurAmount);
 //			blur(blurAmount);
 
 		}
@@ -40,21 +39,19 @@ public class VisionFrameController extends Frame {
 
 	}
 
-	public VisionFrameController(BufferedImage image, ProcessableColor[] colors, int blurAmount, boolean swapBlueRed, double thresholdCoeff, double requiredIntensity) {
+	public VisionFrameController(BufferedImage image, float[] hues, int blurAmount, boolean swapBlueRed, float thresholdCoeff, float hueSpread) {
 		super(image);
-		this.colors = colors;
-		this.colorFrames = new VisionFrame[colors.length];
+		this.hues = hues;
+		this.colorFrames = new VisionFrame[hues.length];
 		this.blurAmount = blurAmount;
 		this.thresholdCoeff = thresholdCoeff;
-		this.requiredIntensity = requiredIntensity;
+		this.hueSpread = hueSpread;
 
 		// filters
 		if (swapBlueRed) {
-			this.swapColor(ProcessableColor.BLUE, ProcessableColor.RED);
+//			this.swapColor(ProcessableColor.BLUE, ProcessableColor.RED);
 		}
-//		contrast(1.2);
 		if (blurAmount > 0) {
-//			fastBlur(blurAmount);
 			blur(blurAmount);
 
 		}
@@ -99,7 +96,7 @@ public class VisionFrameController extends Frame {
 	private void populateVisionFrames() {
 		long startTime = System.currentTimeMillis();
 		for (int i = 0; i < colorFrames.length; i++) {
-			colorFrames[i] = new VisionFrame(pixels, colors[i], thresholdCoeff, requiredIntensity);
+			colorFrames[i] = new VisionFrame(pixels, hues[i], thresholdCoeff, hueSpread);
 		}
 		System.out.println("Populated frames");
 		System.out.println(System.currentTimeMillis() - startTime);
@@ -137,13 +134,13 @@ public class VisionFrameController extends Frame {
 		System.out.println(System.currentTimeMillis() - startTime);
 	}
 
-	public VisionFrame getColoredFrame(ProcessableColor color) {
+	public VisionFrame getColoredFrame(float hue) {
 		for (int i = 0; i < colorFrames.length; i++) {
-			if (color == colors[i]) {
+			if (hue == hues[i]) {
 				return colorFrames[i];
 			}
 		}
-		return new VisionFrame(getWidth(), getHeight(), color, thresholdCoeff, requiredIntensity);
+		return new VisionFrame(getWidth(), getHeight(), hue, thresholdCoeff, hueSpread);
 	}
 
 }

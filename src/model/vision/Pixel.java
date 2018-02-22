@@ -3,12 +3,12 @@ package model.vision;
 import java.awt.Color;
 
 public class Pixel {
-	int red, green, blue;
+	float hue, saturation, value;
 
-	public Pixel(int red, int green, int blue) {
-		this.red = red;
-		this.green = green;
-		this.blue = blue;
+	public Pixel(float hue, float saturation, float value) {
+		this.hue = hue;
+		this.saturation = saturation;
+		this.value = value;
 	}
 
 	public Pixel(int RGB) {
@@ -18,131 +18,59 @@ public class Pixel {
 	public Pixel(Color newColor) {
 		setColor(newColor);
 	}
-	
-	public Pixel(ProcessableColor newColor) {
-		setColor(newColor);
+
+	public float getHue() {
+		return hue;
 	}
 
-	public int getRed() {
-		return red;
+	public float getSaturation() {
+		return saturation;
 	}
 
-	public int getGreen() {
-		return green;
+	public float getValue() {
+		return value;
 	}
 
-	public int getBlue() {
-		return blue;
+	public void setHue(float value) {
+		this.hue = value;
 	}
 
-	public void setRed(int value) {
-		this.red = value;
+	public void setSaturation(float value) {
+		this.saturation = value;
 	}
 
-	public void setGreen(int value) {
-		this.green = value;
-	}
-
-	public void setBlue(int value) {
-		this.blue = value;
-	}
-
-	public int getAverage() {
-		return (getRed() + getGreen() + getBlue()) / 3;
-	}
-
-	public int getYellow() {
-		return (getRed() + getGreen()) / 2;
-	}
-
-	public int getCyan() {
-		return (getBlue() + getGreen()) / 2;
-	}
-
-	public int getMagenta() {
-		return (getRed() + getBlue()) / 2;
-	}
-
-	public int getColor(ProcessableColor color) {
-		switch (color) {
-		case RED:
-			return getRed();
-		case GREEN:
-			return getGreen();
-		case BLUE:
-			return getBlue();
-		case CYAN:
-			return getCyan();
-		case MAGENTA:
-			return getMagenta();
-		case YELLOW:
-			return getYellow();
-		default:
-			return 0;
-		}
-
+	public void setValue(float value) {
+		this.value = value;
 	}
 
 	public void setColor(Color newColor) {
 		// set the red, green, and blue values
-		red = newColor.getRed();
-		green = newColor.getGreen();
-		blue = newColor.getBlue();
+		float[] values = Color.RGBtoHSB(newColor.getRed(), newColor.getGreen(), newColor.getBlue(), null);
+		hue = values[0];
+		saturation = values[1];
+		value = values[2];
+		values = null;
 
 	}
 
-	public void setColor(ProcessableColor color) {
-		switch (color) {
-		case RED:
-			setColor(Color.RED);
-			break;
-		case GREEN:
-			setColor(Color.GREEN);
-			break;
-		case BLUE:
-			setColor(Color.BLUE);
-			break;
-		case CYAN:
-			setColor(Color.CYAN);
-			break;
-		case MAGENTA:
-			setColor(Color.MAGENTA);
-			break;
-		case YELLOW:
-			setColor(Color.YELLOW);
-			break;
-		}
-	}
-
-	public void setColor(ProcessableColor color, int newVal) {
-		switch (color) {
-		case RED:
-			setRed(newVal);
-			break;
-		case GREEN:
-			setGreen(newVal);
-			break;
-		case BLUE:
-			setBlue(newVal);
-			break;
-		default:
-		}
-	}
 
 	public boolean isBlack() {
-		if (getGreen() != 0 || getBlue() != 0 || getRed() != 0)
+	if (value!=0)
 			return false;
 		return true;
 	}
 
 	public int getRGB() {
-		return (getRed() << 16) + (getGreen() << 8) + (getBlue());
+		return Color.HSBtoRGB(hue, saturation, value);
 	}
 
 	public void setRGB(int RGB) {
-		this.red = (RGB >> 16) & 0x000000FF;
-		this.green = (RGB >> 8) & 0x000000FF;
-		this.blue = (RGB) & 0x000000FF;
+		float[] values =Color.RGBtoHSB((RGB >> 16) & 0x000000FF, (RGB >> 8) & 0x000000FF, (RGB) & 0x000000FF, null);
+		setHue(values[0]);
+		setSaturation(values[1]);
+		setValue(values[2]);
+		values=null;
+		
 	}
 
 }

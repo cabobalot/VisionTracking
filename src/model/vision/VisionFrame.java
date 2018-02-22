@@ -8,48 +8,35 @@ public class VisionFrame extends Frame {
 
 	private List<VisionObject> objects;
 
-	protected ProcessableColor colorToIsolate = ProcessableColor.GREEN;
+//	protected ProcessableColor colorToIsolate = ProcessableColor.GREEN;
+	
+	protected float hueToIsolate;
 
-	private double thresholdCoeff;
-	private double requiredIntensity;
+	private float threshold;
+	private float hueSpread;
 
-	public VisionFrame(String fileName, ProcessableColor colorToIsolate, double thresholdCoeff,
-			double requiredIntensity) {
-		super(fileName);
-		this.colorToIsolate = colorToIsolate;
-		this.objects = new ArrayList<VisionObject>();
-		this.thresholdCoeff = thresholdCoeff;
-		this.requiredIntensity = requiredIntensity;
 
-	}
-
-	public VisionFrame(Pixel[][] pixels, ProcessableColor colorToIsolate, double thresholdCoeff,
-			double requiredIntensity) {
+	public VisionFrame(Pixel[][] pixels, float hueToIsolate, float threshold, float hueSpread) {
 		super(pixels);
-		this.colorToIsolate = colorToIsolate;
+		this.hueToIsolate = hueToIsolate;
 		this.objects = new ArrayList<VisionObject>();
-		this.thresholdCoeff = thresholdCoeff;
-		this.requiredIntensity = requiredIntensity;
+		this.threshold = threshold;
+		this.hueSpread = hueSpread;
 	}
 
-	public VisionFrame(int rows, int cols, ProcessableColor colorToIsolate, double thresholdCoeff,
-			double requiredIntensity) {
+	public VisionFrame(int rows, int cols, float hueToIsolate, float threshold, float hueSpread) {
 		super(rows, cols);
-		this.colorToIsolate = colorToIsolate;
+		this.hueToIsolate = hueToIsolate;
 		this.objects = new ArrayList<VisionObject>();
-		this.thresholdCoeff = thresholdCoeff;
-		this.requiredIntensity = requiredIntensity;
-	}
-
-	public void setColorToIsolate(ProcessableColor color) {
-		this.colorToIsolate = color;
+		this.threshold = threshold;
+		this.hueSpread = hueSpread;
 	}
 
 	// entry point
 	public void run() {
-		this.colorIsolate(colorToIsolate, thresholdCoeff, requiredIntensity);
+		this.colorIsolate(hueToIsolate, hueSpread, threshold);
 		this.drawBlackBorder();
-		this.breakIntoObjects(.0001);
+		this.breakIntoObjects(.0005);
 		this.concatenateObjects();
 
 		// this.colorIsolate(colorToIsolate, .7, 1.2);
@@ -99,7 +86,7 @@ public class VisionFrame extends Frame {
 		int minCol = startCol;
 		int minRow = startRow;
 		// new empty VisionObject
-		VisionObject object = new VisionObject(pixels.length, pixels[0].length, colorToIsolate);
+		VisionObject object = new VisionObject(pixels.length, pixels[0].length, new Color(hueToIsolate, 1f, 1f));
 		/*
 		 * 0: north, 1: East, 2: South, 3: West
 		 */
@@ -172,7 +159,7 @@ public class VisionFrame extends Frame {
 				try {
 					if (!pixels[row][col].isBlack()) {
 						pixels[row][col].setColor(Color.black);
-						object.pixels[row][col].setColor(colorToIsolate);
+						object.pixels[row][col].setColor(new Color(hueToIsolate, 1, 1));
 					}
 				} catch (ArrayIndexOutOfBoundsException e) {
 				}
@@ -199,7 +186,7 @@ public class VisionFrame extends Frame {
 			}
 			return objects.get(largestIndex);
 		} catch (IndexOutOfBoundsException e) {
-			return new VisionObject(pixels.length, pixels[0].length, colorToIsolate);
+			return new VisionObject(pixels.length, pixels[0].length, new Color(hueToIsolate, 1, 1));
 		}
 	}
 

@@ -8,20 +8,22 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
-import model.vision.ProcessableColor;
+import controller.Controller;
 import model.vision.VisionFrameController;
 
 public class Client extends Thread {
 
 	private PrintWriter out;
 	private BufferedReader in;
-	private VisionFrameController controller;
+	private VisionFrameController visionFrameController;
 	private Socket socket;
+	private Controller controller;
 
-	public Client(VisionFrameController controller, Socket socket) {
+	public Client(Controller controller, VisionFrameController visionFrameController, Socket socket) {
 		super();
 		try {
 			this.socket = socket;
+			this.visionFrameController = visionFrameController;
 			this.controller = controller;
 			out = new PrintWriter(socket.getOutputStream());
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -56,15 +58,15 @@ public class Client extends Thread {
 				// process client request and respond with an accurate response
 				switch (Integer.parseInt(message)) {
 				case (Requests.HEIGHT):
-					out.println(Integer.toString(controller.getHeight()));
+					out.println(Integer.toString(visionFrameController.getHeight()));
 					out.flush();
 					break;
 				case (Requests.WIDTH):
-					out.println(Integer.toString(controller.getWidth()));
+					out.println(Integer.toString(visionFrameController.getWidth()));
 					out.flush();
 					break;
 				case (Requests.NEAREST_CUBE_DISTANCE):
-					double distance = controller.getColoredFrame(ProcessableColor.YELLOW).getLargestObject()
+					double distance = visionFrameController.getColoredFrame(controller.yellowHue).getLargestObject()
 							.getDistanceFeet(13, 10.5);
 					if (distance < 50)
 						out.println(distance);
@@ -73,27 +75,28 @@ public class Client extends Thread {
 					out.flush();
 					break;
 				case (Requests.NEAREST_CUBE):
-					point = controller.getColoredFrame(ProcessableColor.YELLOW).getLargestObject().getCOM();
+					point = visionFrameController.getColoredFrame(controller.yellowHue).getLargestObject().getCOM();
 					out.println(point[0] + "," + point[1]);
 					out.flush();
 					break;
 				case (Requests.NEAREST_TAPE):
-					point = controller.getColoredFrame(ProcessableColor.GREEN).getLargestObject().getCOM();
+					point = visionFrameController.getColoredFrame(controller.greenHue).getLargestObject().getCOM();
 					out.println(point[0] + "," + point[1]);
 					out.flush();
 					break;
 				case (Requests.AMOUNT_CUBES):
 					out.println(
-							Integer.toString(controller.getColoredFrame(ProcessableColor.YELLOW).getObjects().size()));
+							Integer.toString(visionFrameController.getColoredFrame(controller.yellowHue).getObjects().size()));
 					out.flush();
 					break;
 				case (Requests.AMOUNT_TAPE):
 					out.println(
-							Integer.toString(controller.getColoredFrame(ProcessableColor.GREEN).getObjects().size()));
+							Integer.toString(visionFrameController.getColoredFrame(controller.greenHue).getObjects().size()));
 					out.flush();
 					break;
 				case (Requests.AVERAGE_BRIGHTNESS):
-					out.println(Integer.toString((int)(controller.getAverageBrightness()*.3921)));
+					//maps from 0 to 100
+					out.println(Integer.toString((int)(visionFrameController.getAverageBrightness()*.3921)));
 					out.flush();
 					break;
 				default:
