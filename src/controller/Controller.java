@@ -30,9 +30,9 @@ public class Controller {
 	public int framerate = 24;
 	public int maxFramerate = 0;
 	
-	public float yellowHue = .25f;
+	public float yellowHue = .13f;
 	public float greenHue = .35f;
-	public float testHue = .35f;
+	public float testHue = .13f;
 
 	public Controller(String[] args) {
 
@@ -66,6 +66,8 @@ public class Controller {
 			try {
 
 				startTime = System.currentTimeMillis();
+				
+				colors = new float[] {testHue};
 
 				pic = new VisionFrameController(webcam.getImage(), colors, blur, webcam.isIpCamera(), threshold,
 						hueSpread);

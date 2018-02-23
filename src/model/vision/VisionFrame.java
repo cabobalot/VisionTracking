@@ -1,6 +1,7 @@
 package model.vision;
 
 import java.awt.Color;
+import java.awt.color.ColorSpace;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +47,6 @@ public class VisionFrame extends Frame {
 
 	private void concatenateObjects() {
 		for (VisionObject frame : objects) {
-			// frame.edgeDetection(128, colorToIsolate);
 
 			for (int row = 0; row < pixels.length; row++) {
 				for (int col = 0; col < pixels[0].length; col++) {
@@ -152,6 +152,7 @@ public class VisionFrame extends Frame {
 				maxCol = col;
 
 		} while ((col != startCol) || (row != startRow));
+		Color color = Color.getHSBColor(hueToIsolate, 1f, 1f);
 
 		// find pixels within bounding box
 		for (row = minRow - fudgeFactor; row < maxRow + fudgeFactor; row++) {
@@ -159,7 +160,7 @@ public class VisionFrame extends Frame {
 				try {
 					if (!pixels[row][col].isBlack()) {
 						pixels[row][col].setColor(Color.black);
-						object.pixels[row][col].setColor(new Color(hueToIsolate, 1, 1));
+						object.pixels[row][col].setColor(color);
 					}
 				} catch (ArrayIndexOutOfBoundsException e) {
 				}

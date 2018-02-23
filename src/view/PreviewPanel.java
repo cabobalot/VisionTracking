@@ -40,8 +40,8 @@ public class PreviewPanel extends JPanel {
 		this.imageLabel = new JLabel(new ImageIcon(pixelsToBufferedImage(pixels)));
 		this.framerateSlider = new JSlider(0, 1, 60, controller.framerate);
 		this.thresholdSlider = new JSlider(0, 0, 100, (int)(controller.threshold*100));
-		this.spreadSlider = new JSlider(0, 0, 100, (int)(controller.hueSpread*100));
-		this.blurSlider = new JSlider(0, 0, 50, controller.blur);
+		this.spreadSlider = new JSlider(0, 1, 100, (int)(controller.hueSpread*100));
+		this.blurSlider = new JSlider(0, 0, 100, controller.blur);
 		this.framerateLabel = new JLabel("Framerate: 0");
 		this.thresholdLabel = new JLabel("Threshold: 0");
 		this.spreadLabel = new JLabel("Intensity: 0");

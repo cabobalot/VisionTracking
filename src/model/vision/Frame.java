@@ -7,6 +7,7 @@ import model.util.FastRGB;
 import java.awt.image.DataBufferByte;
 import java.awt.image.BufferedImage;
 import java.awt.*;
+import java.awt.color.ColorSpace;
 import java.io.*;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -239,7 +240,8 @@ public class Frame extends Thread {
 
 	public void colorIsolate(float hue, float hueSpread, float threshold) {
 		
-		Color color = new Color(hue, 1f, 1f);
+		Color color = Color.getHSBColor(hue, 1f, 1f);
+		
 
 		int blockSize = 2;
 		int thisRow;
