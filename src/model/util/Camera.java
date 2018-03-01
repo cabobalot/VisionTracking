@@ -2,6 +2,7 @@ package model.util;
 
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
 import java.net.MalformedURLException;
 
 import com.github.sarxos.webcam.Webcam;
@@ -14,7 +15,7 @@ public class Camera {
 	boolean isIpCamera;
 	BufferedImage image;
 	String url;
-
+	
 	public Camera(int width, int height) {
 		this.url = null;
 		image = new BufferedImage(1, 1, 1);
@@ -24,7 +25,7 @@ public class Camera {
 		isIpCamera = false;
 		webcam.open();
 	}
-
+	
 	public Camera(String url) throws MalformedURLException {
 		this.url = url;
 		image = new BufferedImage(1, 1, 1);
@@ -33,21 +34,37 @@ public class Camera {
 		webcam = Webcam.getDefault();
 		isIpCamera = true;
 		webcam.open();
+//		if (!webcam.isImageNew() && isIpCamera) {
+//			try {
+//			IpCamDeviceRegistry.unregisterAll();
+//			IpCamDeviceRegistry.register("Camera", url, IpCamMode.PUSH);
+//		} catch (Exception e1) {
+//			e1.printStackTrace();
+//		}
+//		image = webcam.getImage();
+//	}
 	}
-
+	
 	public BufferedImage getImage() {
 		image = webcam.getImage();
 		if (!webcam.isImageNew() && isIpCamera) {
 			try {
+				IpCamDeviceRegistry.unregisterAll();
 				IpCamDeviceRegistry.register("Camera", url, IpCamMode.PUSH);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 			image = webcam.getImage();
 		}
+		if (isIpCamera) {
+			ColorConvertOp convert = new ColorConvertOp(null);
+			BufferedImage BGRImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+			convert.filter(image, BGRImage);
+			image = BGRImage;
+		}
 		return image;
 	}
-
+	
 	public boolean isIpCamera() {
 		return isIpCamera;
 	}

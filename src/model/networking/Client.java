@@ -96,7 +96,7 @@ public class Client extends Thread {
 					break;
 				case (Requests.AVERAGE_BRIGHTNESS):
 					//maps from 0 to 100
-					out.println(Integer.toString((int)(visionFrameController.getAverageBrightness()*.3921)));
+					out.println(Integer.toString((int)(visionFrameController.getAverageBrightness()*100)));
 					out.flush();
 					break;
 				default:
