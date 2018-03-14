@@ -9,4 +9,5 @@ public class Requests {
 	public final static int AMOUNT_CUBES = 5;
 	public final static int AMOUNT_TAPE = 6;
 	public final static int AVERAGE_BRIGHTNESS = 7;
+	public final static int ANGLE_OFF_CENTER_CUBE = 8;
 }

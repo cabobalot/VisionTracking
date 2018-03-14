@@ -298,6 +298,29 @@ public class Frame extends Thread {
 		return new int[] { this.com[0], this.com[1] };
 	}
 	
+	public double[] getAngle(double FOV) {
+		double[] angles = new double[2];
+		
+		angles[0] = ((double) getCOM()[0] * FOV) / (double) getWidth();
+		angles[1] = ((double) getCOM()[1] * FOV) / (double) getHeight();
+		
+		return angles;
+	}
+	
+	public double[] getAngleOffCenter(double FOV) {
+		double[] angles = getAngle(FOV);
+		
+		if (getCOM()[0] == 0 && getCOM()[1] == 0)
+			return new double[] { 0, 0 };
+		
+		angles[0] -= FOV / 2;
+		angles[1] -= FOV / 2;
+		angles[1]*= -1;
+		
+		return angles;
+		
+	}
+	
 	public void blur(int amount) {
 		float saturation, value;
 		for (int i = 0; i < amount; i++) {
