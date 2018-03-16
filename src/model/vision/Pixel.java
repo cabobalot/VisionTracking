@@ -10,6 +10,11 @@ public class Pixel {
 		this.saturation = saturation;
 		this.value = value;
 	}
+	public Pixel(float[] HSV){
+		this.hue = HSV[0];
+		this.saturation = HSV[1];
+		this.value = HSV[2];
+	}
 	
 	public Pixel(int RGB) {
 		setRGB(RGB);
@@ -64,12 +69,54 @@ public class Pixel {
 	}
 	
 	public void setRGB(int RGB) {
-		float[] values = Color.RGBtoHSB((RGB >> 16) & 0x000000FF, (RGB >> 8) & 0x000000FF, (RGB >> 0) & 0x000000FF, null);
-		setHue(values[0]);
-		setSaturation(values[1]);
-		setValue(values[2]);
-		values = null;
+		int r = (RGB >> 16) & 0x000000FF;
+		int g = (RGB >> 8) & 0x000000FF;
+		int b = (RGB >> 0) & 0x000000FF;
 		
+		float hue, saturation, brightness;
+		int cmax = (r > g) ? r : g;
+		if (b > cmax)
+			cmax = b;
+		int cmin = (r < g) ? r : g;
+		if (b < cmin)
+			cmin = b;
+		
+		brightness = ((float) cmax) / 255.0f;
+		if (cmax != 0)
+			saturation = ((float) (cmax - cmin)) / ((float) cmax);
+		else
+			saturation = .5f;
+		if (saturation == 0)
+			hue = 0;
+		else {
+			float redc = ((float) (cmax - r)) / ((float) (cmax - cmin));
+			float greenc = ((float) (cmax - g)) / ((float) (cmax - cmin));
+			float bluec = ((float) (cmax - b)) / ((float) (cmax - cmin));
+			if (r == cmax)
+				hue = bluec - greenc;
+			else if (g == cmax)
+				hue = 2.0f + redc - bluec;
+			else
+				hue = 4.0f + greenc - redc;
+			hue = hue / 6.0f;
+			if (hue < 0)
+				hue = hue + 1.0f;
+		}
+		
+		setHue(hue);
+		setSaturation(saturation);
+		setValue(brightness);
 	}
+	
+	public float[] getHSV() {
+		return new float[]{hue, saturation, value};
+	}
+	
+	//	public void setRGB(int RGB) {
+	//		float[] values = Color.RGBtoHSB((RGB >> 16) & 0x000000FF, (RGB >> 8) & 0x000000FF, (RGB >> 0) & 0x000000FF, null);
+	//		setHue(values[0]);
+	//		setSaturation(values[1]);
+	//		setValue(values[2]);		
+	//	}
 	
 }

@@ -33,6 +33,8 @@ public class Controller {
 	public float greenHue = .43f;
 	private float testHue = .43f;
 	
+	private float[] colors;
+	
 	public Controller(String[] args) {
 		
 		long startTime;
@@ -41,7 +43,7 @@ public class Controller {
 				webcam = new Camera(args[0]);
 			} catch (Exception e) {
 				webcam = new Camera(640, 480);
-//				 webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
+				//				 webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -49,7 +51,8 @@ public class Controller {
 		
 		// if(webcam==null)
 		
-		float[] colors = new float[] {greenHue};
+		//		colors = new float[] {};
+		colors = new float[] { yellowHue };
 		
 		pic = new VisionFrameController(webcam.getImage(), colors, blur, threshold, hueSpread);
 		window = new PreviewFrame(pic.getPixels2D(), this);
@@ -63,8 +66,6 @@ public class Controller {
 			try {
 				
 				startTime = System.currentTimeMillis();
-				
-				colors = new float[] { greenHue, yellowHue };
 				
 				pic = new VisionFrameController(webcam.getImage(), colors, blur, threshold, hueSpread);
 				rioResponder.setVisionFrameController(this, pic);

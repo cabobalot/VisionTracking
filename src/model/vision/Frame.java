@@ -43,15 +43,16 @@ public class Frame extends Thread {
 	}
 	
 	public Frame(Pixel[][] pixels) {
-		
+		long startTime = System.currentTimeMillis();
 		this.pixels = new Pixel[pixels.length][pixels[0].length];
 		// Arrays.fill(pixels, new Pixel(0));
 		// deep copy, slow as hell. required as not to use a refrence to pixels
 		for (int row = 0; row < pixels.length; row++) {
 			for (int col = 0; col < pixels[0].length; col++) {
-				this.pixels[row][col] = new Pixel(pixels[row][col].getRGB());
+				this.pixels[row][col] = new Pixel(pixels[row][col].getHSV());
 			}
 		}
+		System.out.println("Read image from pixels\n" + (System.currentTimeMillis() - startTime));
 	}
 	
 	public Frame(int rows, int cols) {

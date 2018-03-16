@@ -13,26 +13,26 @@ public class VisionFrameController extends Frame {
 	private float thresholdCoeff;
 	private float hueSpread;
 	
-	public VisionFrameController(String file, float[] hues, int blurAmount, float thresholdCoeff, float hueSpread) {
-		super(file);
-		this.hues = hues;
-		this.colorFrames = new VisionFrame[hues.length];
-		this.blurAmount = blurAmount;
-		this.hueSpread = hueSpread;
-		
-		// filters
-		
-		if (blurAmount > 0) {
-//			blur(blurAmount);
-			 fastBlur(blurAmount);
-			
-		}
-		
-		populateVisionFrames();
-		process();
-		concatenateColors();
-		
-	}
+//	public VisionFrameController(String file, float[] hues, int blurAmount, float thresholdCoeff, float hueSpread) {
+//		super(file);
+//		this.hues = hues;
+//		this.colorFrames = new VisionFrame[hues.length];
+//		this.blurAmount = blurAmount;
+//		this.hueSpread = hueSpread;
+//		
+//		// filters
+//		
+//		if (blurAmount > 0) {
+//			//			blur(blurAmount);
+//			fastBlur(blurAmount);
+//			
+//		}
+//		
+//		populateVisionFrames();
+//		process();
+//		concatenateColors();
+//		
+//	}
 	
 	public VisionFrameController(BufferedImage image, float[] hues, int blurAmount, float thresholdCoeff, float hueSpread) {
 		super(image);
@@ -45,7 +45,7 @@ public class VisionFrameController extends Frame {
 		// filters
 		
 		if (blurAmount > 0) {
-//			blur(blurAmount);
+			//			blur(blurAmount);
 			fastBlur(blurAmount);
 			
 		}
