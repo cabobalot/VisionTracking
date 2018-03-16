@@ -48,6 +48,7 @@ public class Controller {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		webcam.start();
 		
 		// if(webcam==null)
 		
