@@ -12,12 +12,13 @@ import com.github.sarxos.webcam.ds.ipcam.IpCamDriver;
 import com.github.sarxos.webcam.ds.ipcam.IpCamMode;
 
 public class Camera extends Thread {
-	Webcam webcam;
-	boolean isIpCamera;
-	BufferedImage image;
-	String url;
-	int historicMillisBetweenFrameRequests = 0;
-	long lastTime = System.currentTimeMillis();
+	private Webcam webcam;
+	private boolean isIpCamera;
+	private BufferedImage image;
+	private String url;
+	private int historicMillisBetweenFrameRequests = 0;
+	private long lastTime = System.currentTimeMillis();
+	private int maxFrameRate = 0;
 	
 	public Camera(int width, int height) {
 		this.url = null;
@@ -51,7 +52,9 @@ public class Camera extends Thread {
 	}
 	
 	public void run() {
-		while (!isInterrupted() && isAlive()) {
+		long startTime;
+		while (true) {
+			startTime = System.currentTimeMillis();
 			image = webcam.getImage();
 			if (!webcam.isImageNew() && isIpCamera) {
 				try {
@@ -69,8 +72,11 @@ public class Camera extends Thread {
 				image = BGRImage;
 			}
 			try {
-				TimeUnit.MILLISECONDS.sleep(historicMillisBetweenFrameRequests);
-			} catch (InterruptedException e) {
+				if (historicMillisBetweenFrameRequests - (System.currentTimeMillis() - startTime) > 0) {
+					TimeUnit.MILLISECONDS.sleep(historicMillisBetweenFrameRequests - (System.currentTimeMillis() - startTime));
+				}
+				
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -78,11 +84,13 @@ public class Camera extends Thread {
 	}
 	
 	public BufferedImage getImage() {
-		
 		historicMillisBetweenFrameRequests = (int) (((System.currentTimeMillis() - lastTime) * .05) + (historicMillisBetweenFrameRequests * .95));
-		System.out.println("historicMillisBetweenFrames\n" + historicMillisBetweenFrameRequests);
 		lastTime = System.currentTimeMillis();
 		return image;
+	}
+	
+	public int getMaxFramerate() {
+		return 1000/historicMillisBetweenFrameRequests;
 	}
 	
 	public boolean isIpCamera() {

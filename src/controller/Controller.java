@@ -110,4 +110,8 @@ public class Controller {
 	public void setTestHue(float value) {
 		this.testHue = value;
 	}
+	
+	public int getMaxCameraFramerate() {
+		return webcam.getMaxFramerate();
+	}
 }

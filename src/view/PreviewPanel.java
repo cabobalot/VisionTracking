@@ -91,7 +91,7 @@ public class PreviewPanel extends JPanel {
 		// update controller values
 		
 		spreadLabel.setText("Hue Spread: " + (double)spreadSlider.getValue()/100);
-		framerateLabel.setText("Framerate: " + framerateSlider.getValue() + "/" + controller.maxFramerate);
+		framerateLabel.setText("Framerate: " + framerateSlider.getValue() + "/" + controller.maxFramerate + "/" + controller.getMaxCameraFramerate());
 		thresholdLabel.setText("Threshold: " + (double)thresholdSlider.getValue()/100);
 		blurLabel.setText("Blur: " + blurSlider.getValue());
 		
