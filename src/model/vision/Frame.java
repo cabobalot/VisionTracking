@@ -397,4 +397,12 @@ public class Frame extends Thread {
 		drawBox(com[0], com[1], color, (int) (sizeCoeff * Math.sqrt(getArea()) / 2));
 	}
 	
+	//Fun code!!!
+	public void confetti(int amount) {
+		for (int i = 0; i < amount; i++) {
+			drawBox((int) (getWidth() * Math.random()), (int) (getHeight() * Math.random()), Color.getHSBColor((float)Math.random(), 1f, 1f), (int) (Math.random() * 20));
+		}
+	
+	}
+	
 } // end of SimplePicture class

@@ -56,16 +56,17 @@ public class Camera extends Thread {
 		while (true) {
 			startTime = System.currentTimeMillis();
 			image = webcam.getImage();
-			if (!webcam.isImageNew() && isIpCamera) {
-				try {
-					IpCamDeviceRegistry.unregisterAll();
-					IpCamDeviceRegistry.register("Camera", url, IpCamMode.PUSH);
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-				image = webcam.getImage();
-			}
+			
 			if (isIpCamera) {
+				if (!webcam.isImageNew()) {
+					try {
+						IpCamDeviceRegistry.unregisterAll();
+						IpCamDeviceRegistry.register("Camera", url, IpCamMode.PUSH);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+					image = webcam.getImage();
+				}
 				ColorConvertOp convert = new ColorConvertOp(null);
 				BufferedImage BGRImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
 				convert.filter(image, BGRImage);
@@ -90,7 +91,7 @@ public class Camera extends Thread {
 	}
 	
 	public int getMaxFramerate() {
-		return 1000/historicMillisBetweenFrameRequests;
+		return 1000 / historicMillisBetweenFrameRequests;
 	}
 	
 	public boolean isIpCamera() {

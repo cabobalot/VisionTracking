@@ -25,7 +25,7 @@ public class Controller {
 	
 	public float hueSpread = .05f;
 	public float threshold = .4f;
-	public int blur = 0;
+	public int blur = 10;
 	public int framerate = 24;
 	public int maxFramerate = 0;
 	
@@ -43,7 +43,7 @@ public class Controller {
 				webcam = new Camera(args[0]);
 			} catch (Exception e) {
 				webcam = new Camera(640, 480);
-				//				 webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
+//								 webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

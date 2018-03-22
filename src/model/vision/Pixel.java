@@ -74,24 +74,24 @@ public class Pixel {
 		int b = (RGB >> 0) & 0x000000FF;
 		
 		float hue, saturation, brightness;
-		int cmax = (r > g) ? r : g;
+		float cmax = (r > g) ? r : g;
 		if (b > cmax)
 			cmax = b;
-		int cmin = (r < g) ? r : g;
+		float cmin = (r < g) ? r : g;
 		if (b < cmin)
 			cmin = b;
 		
-		brightness = ((float) cmax) / 255.0f;
+		brightness = (cmax) / 255.0f;
 		if (cmax != 0)
-			saturation = ((float) (cmax - cmin)) / ((float) cmax);
+			saturation = ((cmax - cmin)) / (cmax);
 		else
 			saturation = .5f;
 		if (saturation == 0)
 			hue = 0;
 		else {
-			float redc = ((float) (cmax - r)) / ((float) (cmax - cmin));
-			float greenc = ((float) (cmax - g)) / ((float) (cmax - cmin));
-			float bluec = ((float) (cmax - b)) / ((float) (cmax - cmin));
+			float redc = ((cmax - r)) / ((cmax - cmin));
+			float greenc = ((cmax - g)) / ((cmax - cmin));
+			float bluec = ((cmax - b)) / ((cmax - cmin));
 			if (r == cmax)
 				hue = bluec - greenc;
 			else if (g == cmax)
