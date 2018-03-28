@@ -1,4 +1,4 @@
-package model.vision;
+package model.vision.hsvIsolate;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -6,9 +6,11 @@ import java.util.concurrent.TimeUnit;
 
 import com.github.sarxos.webcam.Webcam;
 
-public class VisionFrameController extends Frame {
+import model.vision.Frame;
+
+public class HSVIsolateController extends Frame {
 	float[] hues;
-	VisionFrame[] colorFrames;
+	HSVIsolateFrame[] colorFrames;
 	int blurAmount;
 	private float thresholdCoeff;
 	private float hueSpread;
@@ -34,10 +36,10 @@ public class VisionFrameController extends Frame {
 //		
 //	}
 	
-	public VisionFrameController(BufferedImage image, float[] hues, int blurAmount, float thresholdCoeff, float hueSpread) {
+	public HSVIsolateController(BufferedImage image, float[] hues, int blurAmount, float thresholdCoeff, float hueSpread) {
 		super(image);
 		this.hues = hues;
-		this.colorFrames = new VisionFrame[hues.length];
+		this.colorFrames = new HSVIsolateFrame[hues.length];
 		this.blurAmount = blurAmount;
 		this.thresholdCoeff = thresholdCoeff;
 		this.hueSpread = hueSpread;
@@ -59,7 +61,7 @@ public class VisionFrameController extends Frame {
 	private void populateVisionFrames() {
 		long startTime = System.currentTimeMillis();
 		for (int i = 0; i < colorFrames.length; i++) {
-			colorFrames[i] = new VisionFrame(pixels, hues[i], thresholdCoeff, hueSpread);
+			colorFrames[i] = new HSVIsolateFrame(pixels, hues[i], thresholdCoeff, hueSpread);
 		}
 		System.out.println("Populated frames");
 		System.out.println(System.currentTimeMillis() - startTime);
@@ -97,13 +99,13 @@ public class VisionFrameController extends Frame {
 		System.out.println(System.currentTimeMillis() - startTime);
 	}
 	
-	public VisionFrame getColoredFrame(float hue) {
+	public HSVIsolateFrame getColoredFrame(float hue) {
 		for (int i = 0; i < colorFrames.length; i++) {
 			if (hue == hues[i]) {
 				return colorFrames[i];
 			}
 		}
-		return new VisionFrame(getWidth(), getHeight(), hue, thresholdCoeff, hueSpread);
+		return new HSVIsolateFrame(getWidth(), getHeight(), hue, thresholdCoeff, hueSpread);
 	}
 	
 }

@@ -1,13 +1,16 @@
-package model.vision;
+package model.vision.hsvIsolate;
 
 import java.awt.Color;
 import java.awt.color.ColorSpace;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VisionFrame extends Frame {
+import model.vision.Frame;
+import model.vision.Pixel;
+
+public class HSVIsolateFrame extends Frame {
 	
-	private List<VisionObject> objects;
+	private List<HSVIsolateObject> objects;
 	
 	//	protected ProcessableColor colorToIsolate = ProcessableColor.GREEN;
 	
@@ -16,18 +19,18 @@ public class VisionFrame extends Frame {
 	private float threshold;
 	private float hueSpread;
 	
-	public VisionFrame(Pixel[][] pixels, float hueToIsolate, float threshold, float hueSpread) {
+	public HSVIsolateFrame(Pixel[][] pixels, float hueToIsolate, float threshold, float hueSpread) {
 		super(pixels);
 		this.hueToIsolate = hueToIsolate;
-		this.objects = new ArrayList<VisionObject>();
+		this.objects = new ArrayList<HSVIsolateObject>();
 		this.threshold = threshold;
 		this.hueSpread = hueSpread;
 	}
 	
-	public VisionFrame(int rows, int cols, float hueToIsolate, float threshold, float hueSpread) {
+	public HSVIsolateFrame(int rows, int cols, float hueToIsolate, float threshold, float hueSpread) {
 		super(rows, cols);
 		this.hueToIsolate = hueToIsolate;
-		this.objects = new ArrayList<VisionObject>();
+		this.objects = new ArrayList<HSVIsolateObject>();
 		this.threshold = threshold;
 		this.hueSpread = hueSpread;
 	}
@@ -45,7 +48,7 @@ public class VisionFrame extends Frame {
 	}
 	
 	private void concatenateObjects() {
-		for (VisionObject frame : objects) {
+		for (HSVIsolateObject frame : objects) {
 			
 			for (int row = 0; row < pixels.length; row++) {
 				for (int col = 0; col < pixels[0].length; col++) {
@@ -58,7 +61,7 @@ public class VisionFrame extends Frame {
 	}
 	
 	private void breakIntoObjects(double minimumArea) {
-		VisionObject object;
+		HSVIsolateObject object;
 		for (int row = 0; row < pixels.length; row++) {
 			for (int col = 0; col < pixels[0].length; col++) {
 				try {
@@ -76,7 +79,7 @@ public class VisionFrame extends Frame {
 		}
 	}
 	
-	private VisionObject findObject(int startRow, int startCol, int fudgeFactor) {
+	private HSVIsolateObject findObject(int startRow, int startCol, int fudgeFactor) {
 		int col = startCol;
 		int row = startRow;
 		int maxRow = startRow;
@@ -84,7 +87,7 @@ public class VisionFrame extends Frame {
 		int minCol = startCol;
 		int minRow = startRow;
 		// new empty VisionObject
-		VisionObject object = new VisionObject(pixels.length, pixels[0].length, new Color(hueToIsolate, 1f, 1f));
+		HSVIsolateObject object = new HSVIsolateObject(pixels.length, pixels[0].length, new Color(hueToIsolate, 1f, 1f));
 		/*
 		 * 0: north, 1: East, 2: South, 3: West
 		 */
@@ -171,7 +174,7 @@ public class VisionFrame extends Frame {
 		
 	}
 	
-	public VisionObject getLargestObject() {
+	public HSVIsolateObject getLargestObject() {
 		int largestIndex = 0;
 		double largestSize = 0;
 		double currentSize;
@@ -185,11 +188,11 @@ public class VisionFrame extends Frame {
 			}
 			return objects.get(largestIndex);
 		} catch (IndexOutOfBoundsException e) {
-			return new VisionObject(pixels.length, pixels[0].length, new Color(hueToIsolate, 1, 1));
+			return new HSVIsolateObject(pixels.length, pixels[0].length, new Color(hueToIsolate, 1, 1));
 		}
 	}
 	
-	public List<VisionObject> getObjects() {
+	public List<HSVIsolateObject> getObjects() {
 		return objects;
 	}
 	

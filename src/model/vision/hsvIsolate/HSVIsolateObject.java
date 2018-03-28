@@ -1,8 +1,11 @@
-package model.vision;
+package model.vision.hsvIsolate;
 
 import java.awt.Color;
 
-public class VisionObject extends Frame{
+import model.vision.Frame;
+import model.vision.Pixel;
+
+public class HSVIsolateObject extends Frame{
 
 	private Color color;
 	
@@ -14,11 +17,11 @@ public class VisionObject extends Frame{
 	 * @param pixels the black and white image with white being the image
 	 * @param color the color of the object
 	 */
-	public VisionObject(Pixel[][] pixels, Color color) {
+	public HSVIsolateObject(Pixel[][] pixels, Color color) {
 		super(pixels);
 		this.color = color;
 	}
-	public VisionObject(int rows, int cols, Color color) {
+	public HSVIsolateObject(int rows, int cols, Color color) {
 		super(rows, cols);
 		this.color = color;
 	}

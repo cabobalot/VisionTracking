@@ -20,7 +20,7 @@ public class Frame extends Thread {
 	 */
 	// protected BufferedImage bufferedImage;
 	
-	protected Pixel[][] pixels;
+	public Pixel[][] pixels;
 	
 	private Integer area;
 	

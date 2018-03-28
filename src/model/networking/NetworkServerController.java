@@ -3,7 +3,7 @@ package model.networking;
 import java.util.List;
 
 import controller.Controller;
-import model.vision.VisionFrameController;
+import model.vision.hsvIsolate.HSVIsolateController;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -14,10 +14,10 @@ public class NetworkServerController extends Thread {
 	int port;
 	ServerSocket server;
 	List<Client> clients;
-	VisionFrameController visionFrameController;
+	HSVIsolateController visionFrameController;
 	Controller controller;
 
-	public NetworkServerController(int port, Controller controller, VisionFrameController visionFrameController) {
+	public NetworkServerController(int port, Controller controller, HSVIsolateController visionFrameController) {
 		this.port = port;
 		try {
 			this.visionFrameController = visionFrameController;
@@ -30,7 +30,7 @@ public class NetworkServerController extends Thread {
 		clients = new ArrayList<Client>();
 	}
 	
-	public void setVisionFrameController(Controller controller, VisionFrameController visionFrameController) {
+	public void setVisionFrameController(Controller controller, HSVIsolateController visionFrameController) {
 		this.visionFrameController = visionFrameController;
 		this.controller = controller;
 	}

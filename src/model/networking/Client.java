@@ -9,17 +9,17 @@ import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
 import controller.Controller;
-import model.vision.VisionFrameController;
+import model.vision.hsvIsolate.HSVIsolateController;
 
 public class Client extends Thread {
 	
 	private PrintWriter out;
 	private BufferedReader in;
-	private VisionFrameController visionFrameController;
+	private HSVIsolateController visionFrameController;
 	private Socket socket;
 	private Controller controller;
 	
-	public Client(Controller controller, VisionFrameController visionFrameController, Socket socket) {
+	public Client(Controller controller, HSVIsolateController visionFrameController, Socket socket) {
 		super();
 		try {
 			this.socket = socket;

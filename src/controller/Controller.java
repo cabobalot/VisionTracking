@@ -13,15 +13,18 @@ import com.github.sarxos.webcam.ds.ipcam.*;
 import model.networking.NetworkServerController;
 import model.util.Camera;
 import model.util.GarbageCollector;
+import model.util.RollingTimer;
 import model.vision.*;
+import model.vision.hsvIsolate.HSVIsolateController;
 
 public class Controller {
 	
 	// VisionFrameController pic;
-	private VisionFrameController pic;
+	private HSVIsolateController pic;
 	private PreviewFrame window;
 	private NetworkServerController rioResponder;
 	private Camera webcam;
+	private RollingTimer frameTimer;
 	
 	public float hueSpread = .05f;
 	public float threshold = .4f;
@@ -33,11 +36,9 @@ public class Controller {
 	public float greenHue = .43f;
 	private float testHue = .43f;
 	
-	private float[] colors;
+	private float[] colors = new float[] { yellowHue };
 	
 	public Controller(String[] args) {
-		
-		long startTime;
 		try {
 			try {
 				webcam = new Camera(args[0]);
@@ -53,22 +54,18 @@ public class Controller {
 		// if(webcam==null)
 		
 		//		colors = new float[] {};
-		colors = new float[] { yellowHue };
-		
-		pic = new VisionFrameController(webcam.getImage(), colors, blur, threshold, hueSpread);
+		pic = new HSVIsolateController(webcam.getImage(), colors, blur, threshold, hueSpread);
 		window = new PreviewFrame(pic.getPixels2D(), this);
+		frameTimer = new RollingTimer(.05);
 		
 		rioResponder = new NetworkServerController(5801, this, pic);
 		rioResponder.start();
-		
-		long timeTaken = 0;
-		int averageTimeTaken = 0;
 		while (true) {
 			try {
 				
-				startTime = System.currentTimeMillis();
+				frameTimer.startTimer();
 				
-				pic = new VisionFrameController(webcam.getImage(), colors, blur, threshold, hueSpread);
+				pic = new HSVIsolateController(webcam.getImage(), colors, blur, threshold, hueSpread);
 				rioResponder.setVisionFrameController(this, pic);
 				window.update(pic.getPixels2D());
 				
@@ -76,14 +73,13 @@ public class Controller {
 				// frame.contrast(5);
 				// window.updatePicture(frame.getPixels2D());
 				
-				timeTaken = System.currentTimeMillis() - startTime;
-				averageTimeTaken = (int) (timeTaken * .1 + (averageTimeTaken * .9));
-				maxFramerate = (int) (1000 / averageTimeTaken);
+				frameTimer.stopTimer();
+				maxFramerate = (int)frameTimer.getOpsPerSecond();
 				
-				System.out.println("Milliseconds taken: " + timeTaken);
-				System.out.println("Average: " + averageTimeTaken + "\n");
+				System.out.println("Milliseconds taken: " + frameTimer.getLastTimeTaken());
+				System.out.println("Average: " + (int)frameTimer.getAverage() + "\n");
 				
-				TimeUnit.MILLISECONDS.sleep((1000 / framerate) - timeTaken > 0 ? (1000 / framerate) - timeTaken : 0);
+				TimeUnit.MILLISECONDS.sleep((1000 / framerate) - frameTimer.getLastTimeTaken() > 0 ? (1000 / framerate) - frameTimer.getLastTimeTaken() : 0);
 				
 			} catch (Exception e) {
 				e.printStackTrace();

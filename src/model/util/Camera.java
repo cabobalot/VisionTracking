@@ -68,7 +68,7 @@ public class Camera extends Thread {
 					image = webcam.getImage();
 				}
 				ColorConvertOp convert = new ColorConvertOp(null);
-				BufferedImage BGRImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+				BufferedImage BGRImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_BGR);
 				convert.filter(image, BGRImage);
 				image = BGRImage;
 			}
