@@ -14,13 +14,13 @@ public class NetworkServerController extends Thread {
 	int port;
 	ServerSocket server;
 	List<Client> clients;
-	HSVIsolateController visionFrameController;
+	HSVIsolateController frameController;
 	Controller controller;
 
-	public NetworkServerController(int port, Controller controller, HSVIsolateController visionFrameController) {
+	public NetworkServerController(int port, Controller controller, HSVIsolateController frameController) {
 		this.port = port;
 		try {
-			this.visionFrameController = visionFrameController;
+			this.frameController = frameController;
 			this.controller = controller;
 			this.server = new ServerSocket(port);
 			server.setSoTimeout(1);
@@ -31,7 +31,7 @@ public class NetworkServerController extends Thread {
 	}
 	
 	public void setVisionFrameController(Controller controller, HSVIsolateController visionFrameController) {
-		this.visionFrameController = visionFrameController;
+		this.frameController = visionFrameController;
 		this.controller = controller;
 	}
 
@@ -40,7 +40,7 @@ public class NetworkServerController extends Thread {
 
 			// add connecting clients
 			try {
-				clients.add(new Client(controller, visionFrameController, server.accept()));
+				clients.add(new Client(controller, frameController, server.accept()));
 //				System.out.println("Client Connected");
 			} catch (IOException e) {
 			}

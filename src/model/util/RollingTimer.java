@@ -3,7 +3,7 @@ package model.util;
 public class RollingTimer {
 	private double responsivness;
 	private long lastTimeTaken;
-	private double average;
+	private double average = 0;
 	private long startTime;
 	
 	private boolean isTiming = false;
@@ -20,14 +20,14 @@ public class RollingTimer {
 		startTime = System.currentTimeMillis();
 	}
 	
-	public long stopTimer(){
+	public long stopTimer() {
 		if (isTiming) {
 			lastTimeTaken = System.currentTimeMillis() - startTime;
 			isTiming = false;
 			commitToAverage(lastTimeTaken);
 			return lastTimeTaken;
-		}
-		else throw new IllegalStateException();
+		} else
+			throw new IllegalStateException();
 		
 	}
 	
@@ -36,7 +36,7 @@ public class RollingTimer {
 	}
 	
 	public void commitToAverage(long ms) {
-		average = average*(1.0-responsivness) + ((double)ms*responsivness);
+		average = average * (1.0 - responsivness) + ((double) ms * responsivness);
 	}
 	
 	public long getLastTimeTaken() {
@@ -48,9 +48,14 @@ public class RollingTimer {
 	}
 	
 	public double getOpsPerSecond() {
-		return (1000/average);
+		if (average != 0)
+			return (1000 / average);
+		return 0;
 	}
+	
 	public double getLastOpsPerSecond() {
-		return (1000/lastTimeTaken);
+		if (lastTimeTaken != 0)
+			return (1000 / lastTimeTaken);
+		return 0;
 	}
 }

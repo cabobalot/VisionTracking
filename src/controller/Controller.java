@@ -30,7 +30,6 @@ public class Controller {
 	public float threshold = .4f;
 	public int blur = 10;
 	public int framerate = 24;
-	public int maxFramerate = 0;
 	
 	public float yellowHue = .16f;
 	public float greenHue = .43f;
@@ -43,8 +42,8 @@ public class Controller {
 			try {
 				webcam = new Camera(args[0]);
 			} catch (Exception e) {
-				webcam = new Camera(640, 480);
-//								 webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
+//				webcam = new Camera(640, 480);
+												 webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -54,9 +53,9 @@ public class Controller {
 		// if(webcam==null)
 		
 		//		colors = new float[] {};
+		frameTimer = new RollingTimer(.05);
 		pic = new HSVIsolateController(webcam.getImage(), colors, blur, threshold, hueSpread);
 		window = new PreviewFrame(pic.getPixels2D(), this);
-		frameTimer = new RollingTimer(.05);
 		
 		rioResponder = new NetworkServerController(5801, this, pic);
 		rioResponder.start();
@@ -74,10 +73,9 @@ public class Controller {
 				// window.updatePicture(frame.getPixels2D());
 				
 				frameTimer.stopTimer();
-				maxFramerate = (int)frameTimer.getOpsPerSecond();
 				
 				System.out.println("Milliseconds taken: " + frameTimer.getLastTimeTaken());
-				System.out.println("Average: " + (int)frameTimer.getAverage() + "\n");
+				System.out.println("Average: " + (int) frameTimer.getAverage() + "\n");
 				
 				TimeUnit.MILLISECONDS.sleep((1000 / framerate) - frameTimer.getLastTimeTaken() > 0 ? (1000 / framerate) - frameTimer.getLastTimeTaken() : 0);
 				
@@ -86,6 +84,8 @@ public class Controller {
 			}
 		}
 	}
+	
+	//methods to interact with the GUI
 	
 	public void setThresholdCoeff(float value) {
 		this.threshold = value;
@@ -107,7 +107,15 @@ public class Controller {
 		this.testHue = value;
 	}
 	
+	public int getMaxFramerate() {
+		return (int) frameTimer.getOpsPerSecond();
+	}
+	
 	public int getMaxCameraFramerate() {
 		return webcam.getMaxFramerate();
+	}
+	
+	public int getCameraFramerate() {
+		return webcam.getFrameRate();
 	}
 }

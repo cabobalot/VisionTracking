@@ -16,9 +16,8 @@ public class Camera extends Thread {
 	private boolean isIpCamera;
 	private BufferedImage image;
 	private String url;
-	private int historicMillisBetweenFrameRequests = 0;
-	private long lastTime = System.currentTimeMillis();
-	private int maxFrameRate = 0;
+	private RollingTimer requestTimer = new RollingTimer(.1);
+	private RollingTimer frameTimer = new RollingTimer(.05);
 	
 	public Camera(int width, int height) {
 		this.url = null;
@@ -52,9 +51,8 @@ public class Camera extends Thread {
 	}
 	
 	public void run() {
-		long startTime;
 		while (true) {
-			startTime = System.currentTimeMillis();
+			frameTimer.startTimer();
 			image = webcam.getImage();
 			
 			if (isIpCamera) {
@@ -72,9 +70,10 @@ public class Camera extends Thread {
 				convert.filter(image, BGRImage);
 				image = BGRImage;
 			}
+			frameTimer.stopTimer();
 			try {
-				if (historicMillisBetweenFrameRequests - (System.currentTimeMillis() - startTime) > 0) {
-					TimeUnit.MILLISECONDS.sleep(historicMillisBetweenFrameRequests - (System.currentTimeMillis() - startTime));
+				if ((int)requestTimer.getAverage() - (frameTimer.getLastTimeTaken()) > 0) {
+					TimeUnit.MILLISECONDS.sleep((int)requestTimer.getAverage() - (frameTimer.getLastTimeTaken()));
 				}
 				
 			} catch (Exception e) {
@@ -85,13 +84,20 @@ public class Camera extends Thread {
 	}
 	
 	public BufferedImage getImage() {
-		historicMillisBetweenFrameRequests = (int) (((System.currentTimeMillis() - lastTime) * .05) + (historicMillisBetweenFrameRequests * .95));
-		lastTime = System.currentTimeMillis();
+		try {
+		requestTimer.stopTimer();
+		} catch(IllegalStateException e) {
+			
+		}
+		requestTimer.startTimer();
 		return image;
 	}
 	
 	public int getMaxFramerate() {
-		return 1000 / historicMillisBetweenFrameRequests;
+		return (int)frameTimer.getOpsPerSecond();
+	}
+	public int getFrameRate() {
+		return (int)requestTimer.getOpsPerSecond();
 	}
 	
 	public boolean isIpCamera() {
