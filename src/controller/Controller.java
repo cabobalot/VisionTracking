@@ -32,27 +32,25 @@ public class Controller {
 	public int framerate = 24;
 	
 	public float yellowHue = .16f;
-	public float greenHue = .43f;
+	public float greenHue = .33f;
 	private float testHue = .43f;
 	
-	private float[] colors = new float[] { yellowHue };
+	private float[] colors = new float[] { yellowHue, greenHue};
 	
 	public Controller(String[] args) {
 		try {
 			try {
 				webcam = new Camera(args[0]);
 			} catch (Exception e) {
-//				webcam = new Camera(640, 480);
-												 webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
+				webcam = new Camera(640, 480);
+//												 webcam = new Camera("http://10.45.85.2:5800/stream.mjpg");
+//				 webcam = new Camera("http://10.0.0.56:8080/video");
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		webcam.start();
-		
-		// if(webcam==null)
-		
-		//		colors = new float[] {};
 		frameTimer = new RollingTimer(.05);
 		pic = new HSVIsolateController(webcam.getImage(), colors, blur, threshold, hueSpread);
 		window = new PreviewFrame(pic.getPixels2D(), this);
@@ -68,9 +66,9 @@ public class Controller {
 				rioResponder.setVisionFrameController(this, pic);
 				window.update(pic.getPixels2D());
 				
-				// Frame frame = new Frame(webcam.getImage());
-				// frame.contrast(5);
-				// window.updatePicture(frame.getPixels2D());
+//				 Frame frame = new Frame(webcam.getImage());
+//				 frame.addStatic((float)blur/100);
+//				 window.update(frame.getPixels2D());
 				
 				frameTimer.stopTimer();
 				

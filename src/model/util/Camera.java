@@ -1,6 +1,8 @@
 package model.util;
 
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.net.MalformedURLException;
@@ -51,7 +53,7 @@ public class Camera extends Thread {
 	}
 	
 	public void run() {
-		while (true) {
+		while (isAlive() && !isInterrupted()) {
 			frameTimer.startTimer();
 			image = webcam.getImage();
 			
@@ -63,17 +65,12 @@ public class Camera extends Thread {
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
-					image = webcam.getImage();
 				}
-				ColorConvertOp convert = new ColorConvertOp(null);
-				BufferedImage BGRImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_BGR);
-				convert.filter(image, BGRImage);
-				image = BGRImage;
 			}
 			frameTimer.stopTimer();
 			try {
-				if ((int)requestTimer.getAverage() - (frameTimer.getLastTimeTaken()) > 0) {
-					TimeUnit.MILLISECONDS.sleep((int)requestTimer.getAverage() - (frameTimer.getLastTimeTaken()));
+				if ((int) requestTimer.getAverage() - (frameTimer.getLastTimeTaken()) > 0) {
+					TimeUnit.MILLISECONDS.sleep((int) requestTimer.getAverage() - (frameTimer.getLastTimeTaken()));
 				}
 				
 			} catch (Exception e) {
@@ -85,8 +82,8 @@ public class Camera extends Thread {
 	
 	public BufferedImage getImage() {
 		try {
-		requestTimer.stopTimer();
-		} catch(IllegalStateException e) {
+			requestTimer.stopTimer();
+		} catch (IllegalStateException e) {
 			
 		}
 		requestTimer.startTimer();
@@ -94,10 +91,11 @@ public class Camera extends Thread {
 	}
 	
 	public int getMaxFramerate() {
-		return (int)frameTimer.getOpsPerSecond();
+		return (int) frameTimer.getOpsPerSecond();
 	}
+	
 	public int getFrameRate() {
-		return (int)requestTimer.getOpsPerSecond();
+		return (int) requestTimer.getOpsPerSecond();
 	}
 	
 	public boolean isIpCamera() {

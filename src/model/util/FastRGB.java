@@ -8,7 +8,7 @@ public class FastRGB {
     public int height;
     private byte[] pixels;
     
-   public  FastRGB(BufferedImage image) {
+   public FastRGB(BufferedImage image) {
         pixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
         width = image.getWidth();
         height = image.getHeight();

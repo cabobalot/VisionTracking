@@ -37,7 +37,7 @@ public class Pixel {
 	}
 	
 	public void setHue(float value) {
-		this.hue = value;
+		this.hue = value%1.0f;
 	}
 	
 	public void setSaturation(float value) {
@@ -50,18 +50,14 @@ public class Pixel {
 	
 	public void setColor(Color newColor) {
 		// set the red, green, and blue values
-		float[] values = Color.RGBtoHSB(newColor.getRed(), newColor.getGreen(), newColor.getBlue(), null);
-		hue = values[0];
-		saturation = values[1];
-		value = values[2];
-		values = null;
+		setRGB((newColor.getRed() << 16) + (newColor.getGreen() << 8) + (newColor.getBlue()));
 		
 	}
 	
 	public boolean isBlack() {
-		if (value != 0)
-			return false;
-		return true;
+		if (value == 0)
+			return true;
+		return false;
 	}
 	
 	public int getRGB() {
@@ -111,12 +107,5 @@ public class Pixel {
 	public float[] getHSV() {
 		return new float[]{hue, saturation, value};
 	}
-	
-	//	public void setRGB(int RGB) {
-	//		float[] values = Color.RGBtoHSB((RGB >> 16) & 0x000000FF, (RGB >> 8) & 0x000000FF, (RGB >> 0) & 0x000000FF, null);
-	//		setHue(values[0]);
-	//		setSaturation(values[1]);
-	//		setValue(values[2]);		
-	//	}
 	
 }

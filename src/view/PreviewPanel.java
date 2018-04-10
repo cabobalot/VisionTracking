@@ -1,3 +1,4 @@
+
 package view;
 
 import java.awt.*;
@@ -112,4 +113,5 @@ public class PreviewPanel extends JPanel {
 
 		return retBuffer;
 	}
+	
 }

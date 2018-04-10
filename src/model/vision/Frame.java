@@ -314,7 +314,7 @@ public class Frame extends Thread {
 		
 		angles[0] -= FOV / 2;
 		angles[1] -= FOV / 2;
-		angles[1]*= -1;
+		angles[1] *= -1;
 		
 		return angles;
 		
@@ -342,7 +342,7 @@ public class Frame extends Thread {
 	
 	public void fastBlur(int amount) {
 		amount = (int) Math.sqrt(amount);
-		float saturation, value;
+		float saturation, value, hue;
 		for (int i = 0; i < amount; i++) {
 			for (int row = 0; row < pixels.length; row++) {
 				for (int col = 0; col < pixels[0].length; col++) {
@@ -351,9 +351,13 @@ public class Frame extends Thread {
 								+ pixels[row][col + amount].getSaturation() + pixels[row][col].getSaturation()) / 5;
 						value = (pixels[row - amount][col].getValue() + pixels[row + amount][col].getValue() + pixels[row][col - amount].getValue() + pixels[row][col + amount].getValue()
 								+ pixels[row][col].getValue()) / 5;
+//						hue = ((pixels[row - amount][col].getHue()+1f + pixels[row + amount][col].getHue()+1f + pixels[row][col - amount].getHue()+1f + pixels[row][col + amount].getHue()+1f
+//								+ pixels[row][col].getHue()+1f) / 5)-1f;
 						
 						pixels[row][col].setSaturation(saturation);
 						pixels[row][col].setValue(value);
+//						pixels[row][col].setHue(hue);
+//						System.out.println(hue);
 					} catch (ArrayIndexOutOfBoundsException e) {
 						
 					}
@@ -400,9 +404,28 @@ public class Frame extends Thread {
 	//Fun code!!!
 	public void confetti(int amount) {
 		for (int i = 0; i < amount; i++) {
-			drawBox((int) (getWidth() * Math.random()), (int) (getHeight() * Math.random()), Color.getHSBColor((float)Math.random(), 1f, 1f), (int) (Math.random() * 20));
+			drawBox((int) (getWidth() * Math.random()), (int) (getHeight() * Math.random()), Color.getHSBColor((float) Math.random(), 1f, 1f), (int) (Math.random() * 20));
 		}
+	}
 	
+	public void addStatic(float amount) {
+		for (int row = 0; row < pixels.length; row++) {
+			for (int col = 0; col < pixels[0].length; col++) {
+				if (Math.random() < amount) {
+					pixels[row][col].setValue((float) Math.random());
+					pixels[row][col].setHue((float) Math.random());
+					pixels[row][col].setSaturation((float) Math.random());
+				}
+			}
+		}
+	}
+	
+	public void fillSaturation(float value) {
+		for (int row = 0; row < pixels.length; row++) {
+			for (int col = 0; col < pixels[0].length; col++) {
+				pixels[row][col].setSaturation(value);
+			}
+		}
 	}
 	
 } // end of SimplePicture class
