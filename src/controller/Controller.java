@@ -27,7 +27,7 @@ public class Controller {
 	private RollingTimer frameTimer;
 	
 	public float hueSpread = .05f;
-	public float threshold = .4f;
+	public float threshold = .02f;
 	public int blur = 10;
 	public int framerate = 24;
 	
@@ -35,7 +35,8 @@ public class Controller {
 	public float greenHue = .33f;
 	private float testHue = .43f;
 	
-	private float[] colors = new float[] { yellowHue, greenHue};
+//	private float[] colors = new float[] { yellowHue, greenHue};
+	private float[] colors = new float[] {yellowHue};
 	
 	public Controller(String[] args) {
 		try {
