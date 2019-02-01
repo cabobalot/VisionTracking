@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.ds.ipcam.*;
 
-import model.networking.NetworkServerController;
+import model.networking.NetworkTableController;
 import model.util.Camera;
 import model.util.GarbageCollector;
 import model.util.RollingTimer;
@@ -22,7 +22,7 @@ public class Controller {
 	// VisionFrameController pic;
 	private HSVIsolateController pic;
 	private PreviewFrame window;
-	private NetworkServerController rioResponder;
+	private NetworkTableController rioResponder;
 	private Camera webcam;
 	private RollingTimer frameTimer;
 	
@@ -56,7 +56,7 @@ public class Controller {
 		pic = new HSVIsolateController(webcam.getImage(), colors, blur, threshold, hueSpread);
 		window = new PreviewFrame(pic.getPixels2D(), this);
 		
-		rioResponder = new NetworkServerController(5801, this, pic);
+		rioResponder = new NetworkTableController(this, pic);
 		rioResponder.start();
 		while (true) {
 			try {
