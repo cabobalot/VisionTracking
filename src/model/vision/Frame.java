@@ -247,7 +247,7 @@ public class Frame extends Thread {
 			for (int col = 0; col < (pixels[0].length) / blockSize; col++) {
 				thisCol = col * blockSize;
 //				if (pixels[thisRow][thisCol].getSaturation() > threshold && pixels[thisRow][thisCol].getValue() > 0.4 && Math.abs(pixels[thisRow][thisCol].getHue() - hue) < hueSpread) {
-				if (pixels[thisRow][thisCol].getSaturation() < threshold && pixels[thisRow][thisCol].getValue() > 0.6) {
+				if (pixels[thisRow][thisCol].getSaturation() < threshold && pixels[thisRow][thisCol].getValue() > 0.4 && pixels[thisRow][thisCol].getValue() < 0.9) {
 					this.drawBox(thisCol, thisRow, color, blockSize);
 				} else {
 					// pixels[row][col].setColor(Color.BLACK);
