@@ -27,7 +27,7 @@ public class Controller {
 	private RollingTimer frameTimer;
 	
 	public float hueSpread = .05f;
-	public float threshold = .02f;
+	public float threshold = .2f;
 	public int blur = 10;
 	public int framerate = 24;
 	
@@ -80,6 +80,10 @@ public class Controller {
 				
 				TimeUnit.MILLISECONDS.sleep((1000 / framerate) - frameTimer.getLastTimeTaken() > 0 ? (1000 / framerate) - frameTimer.getLastTimeTaken() : 0);
 				
+			} catch (NullPointerException e) {
+				e.printStackTrace();
+				rioResponder.interrupt();
+				return;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

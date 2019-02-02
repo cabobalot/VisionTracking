@@ -33,21 +33,32 @@ public class NetworkTableController extends Thread {
 	    inst.startClientTeam(6844); // 1735
 //	    inst.startDSClient();  // recommended if running on DS computer; this gets the robot IP from the DS
 	    
-	    boolean isConected = false;
+	    boolean isConnected = false;
 		
+	    while(!inst.isConnected()) {
+	    	try {
+				sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    }
+	    
+	    System.out.println("network table is conected?  --------------------------- " + inst.isConnected());
+	    
 		while (!this.isInterrupted()) {
 			
-			if(isConected != inst.isConnected()) {
-				System.out.println("network table is conected?  --------------------------- " + inst.isConnected());
-				isConected = inst.isConnected();
-			}
-
+//			if(isConected != inst.isConnected()) {
+//				System.out.println("network table is connected?  --------------------------- " + inst.isConnected());
+//				isConected = inst.isConnected();
+//			}
 			
 			int[] point = visionFrameController.getColoredFrame(controller.yellowHue).getLargestObject().getCOM();
-			nearestCube.forceSetString(point[0] + ", " + point[1]);
+			nearestCube.setString(point[0] + ", " + point[1]);
 //			inst.flush();
 		}
 		inst.stopClient();
+		System.out.println("Network table clean exit");
 	}
 }
 
