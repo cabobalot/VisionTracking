@@ -25,7 +25,8 @@ public class NetworkTableController extends Thread {
 	
 	public void run() {
 		
-		NetworkTableInstance inst = NetworkTableInstance.getDefault();
+//		NetworkTableInstance inst = NetworkTableInstance.getDefault();
+		NetworkTableInstance inst = NetworkTableInstance.create();
 	    NetworkTable table = inst.getTable("vision");
 	    NetworkTableEntry nearestCube = table.getEntry("nearestCube");
 	    inst.startDSClient();  // recommended if running on DS computer; this gets the robot IP from the DS
