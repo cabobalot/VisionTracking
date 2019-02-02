@@ -25,18 +25,29 @@ public class NetworkTableController extends Thread {
 	
 	public void run() {
 		
-//		NetworkTableInstance inst = NetworkTableInstance.getDefault();
-		NetworkTableInstance inst = NetworkTableInstance.create();
+		NetworkTableInstance inst = NetworkTableInstance.getDefault();
+//		NetworkTableInstance inst = NetworkTableInstance.create();
 	    NetworkTable table = inst.getTable("vision");
 	    NetworkTableEntry nearestCube = table.getEntry("nearestCube");
-	    inst.startDSClient();  // recommended if running on DS computer; this gets the robot IP from the DS
+	    nearestCube.setDefaultString("195,0");
+	    inst.startClientTeam(6844); // 1735
+//	    inst.startDSClient();  // recommended if running on DS computer; this gets the robot IP from the DS
+	    
+	    boolean isConected = false;
 		
 		while (!this.isInterrupted()) {
 			
-			int[] point = visionFrameController.getColoredFrame(controller.yellowHue).getLargestObject().getCOM();
-			nearestCube.setString(point[0] + ", " + point[1]);
+			if(isConected != inst.isConnected()) {
+				System.out.println("network table is conected?  --------------------------- " + inst.isConnected());
+				isConected = inst.isConnected();
+			}
+
 			
+			int[] point = visionFrameController.getColoredFrame(controller.yellowHue).getLargestObject().getCOM();
+			nearestCube.forceSetString(point[0] + ", " + point[1]);
+//			inst.flush();
 		}
+		inst.stopClient();
 	}
 }
 

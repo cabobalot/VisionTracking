@@ -43,9 +43,11 @@ public class Controller {
 			try {
 				webcam = new Camera(args[0]);
 			} catch (Exception e) {
-				webcam = new Camera(640, 480);
-												 webcam = new Camera("http://10.68.44.2:5800/stream.mjpg");
-//				 webcam = new Camera("http://10.0.0.56:8080/video");
+//				webcam = new Camera(640, 480);
+				
+				webcam = new Camera("http://10.68.44.2:5800/stream.mjpg");
+				
+//				webcam = new Camera("http://10.0.0.56:8080/video");
 
 			}
 		} catch (Exception e) {
