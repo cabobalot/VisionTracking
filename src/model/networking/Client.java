@@ -75,7 +75,8 @@ public class Client extends Thread {
 						break;
 					case (Requests.NEAREST_CUBE):
 						point = visionFrameController.getColoredFrame(controller.yellowHue).getLargestObject().getCOM();
-						out.println(point[0] + "," + point[1]);
+						String cubeNum = Integer.toString(visionFrameController.getColoredFrame(controller.yellowHue).getObjects().size());
+						out.println(point[0] + "," + point[1] + ";" + cubeNum);
 						out.flush();
 						break;
 					case (Requests.NEAREST_TAPE):
