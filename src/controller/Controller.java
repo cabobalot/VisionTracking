@@ -27,7 +27,7 @@ public class Controller {
 	private RollingTimer frameTimer;
 	
 	public float hueSpread = .05f;
-	public float threshold = .02f;
+	public float threshold = .2f;
 	public int blur = 10;
 	public int framerate = 24;
 	
@@ -42,10 +42,11 @@ public class Controller {
 		try {
 			try {
 				webcam = new Camera(args[0]);
+//				webcam = new Camera("http://10.68.44.2:5800/stream.mjpg");
 			} catch (Exception e) {
-				webcam = new Camera(640, 480);
-												 webcam = new Camera("http://10.68.44.2:5800/stream.mjpg");
-//				 webcam = new Camera("http://10.0.0.56:8080/video");
+//				webcam = new Camera(320, 240);
+				webcam = new Camera("http://10.68.44.2:5800/stream.mjpg");
+//				webcam = new Camera("http://10.0.0.56:8080/video");
 
 			}
 		} catch (Exception e) {
